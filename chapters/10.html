@@ -1,188 +1,28 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第10章 特征值分解与谱定理</title>
-    <link rel="stylesheet" href="theme.css">
-    <script>
-    MathJax = {
-        tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            tags: 'ams'
-        },
-        options: {
-            enableMenu: true
-        }
-    };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/es5/tex-mml-chtml.js"></script>
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>📐 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 矩阵分析导论</a></li>
-            <li><a href="02.html">第2章 线性空间与线性变换</a></li>
-            <li><a href="03.html">第3章 特殊矩阵与矩阵运算</a></li>
-            <li><a href="04.html">第4章 范数与内积空间</a></li>
-            <li><a href="05.html">第5章 特征值与特征向量</a></li>
-            <li><a href="06.html">第6章 矩阵相似性与Jordan标准形</a></li>
-            <li><a href="07.html">第7章 矩阵函数</a></li>
-            <li><a href="08.html">第8章 LU分解与高斯消元法</a></li>
-            <li><a href="09.html">第9章 QR分解</a></li>
-            <li><a href="10.html" class="active">第10章 特征值分解与谱定理</a></li>
-            <li><a href="11.html">第11章 奇异值分解（SVD）</a></li>
-            <li><a href="12.html">第12章 Schur分解与广义特征值</a></li>
-            <li><a href="13.html">第13章 广义逆矩阵与最小二乘</a></li>
-            <li><a href="14.html">第14章 矩阵扰动理论</a></li>
-            <li><a href="15.html">第15章 矩阵导数基础</a></li>
-            <li><a href="16.html">第16章 矩阵微分进阶</a></li>
-            <li><a href="17.html">第17章 矩阵优化方法</a></li>
-            <li><a href="18.html">第18章 流形上的矩阵优化</a></li>
-            <li><a href="19.html">第19章 Kronecker积与矩阵方程</a></li>
-            <li><a href="20.html">第20章 非负矩阵分解（NMF）</a></li>
-            <li><a href="21.html">第21章 稀疏表示与压缩感知</a></li>
-            <li><a href="22.html">第22章 随机矩阵理论入门</a></li>
-            <li><a href="23.html">第23章 张量代数基础</a></li>
-            <li><a href="24.html">第24章 CP分解、Tucker分解与HOSVD</a></li>
-            <li><a href="25.html">第25章 张量网络与高级分解</a></li>
-            <li><a href="26.html">第26章 深度学习中的矩阵分析</a></li>
-            <li><a href="27.html">第27章 矩阵分析前沿趋势</a></li>
-            <li><a href="28.html">第28章 综合项目实战</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <div class="chapter">
-            <h2>第10章 特征值分解与谱定理</h2>
-
-            <p>在第5章中，我们学习了特征值和特征向量的基本概念。当时我们说：方阵 $A$ 的特征值是方程 $\det(A - \lambda I) = 0$ 的根。但特征值的意义远不止于解一个多项式方程——当矩阵具备某种对称性时，特征值和特征向量会揭示出惊人的结构。</p>
-
-            <p>谱定理（Spectral Theorem）是线性代数中最优美的定理之一。它告诉我们：<strong>实对称矩阵可以被一组标准正交的特征向量对角化</strong>。这个定理沟通了代数、几何和分析三个领域。</p>
-
-            <h3>10.1 对称矩阵的谱定理</h3>
-
-            <p>让我们正式叙述这个定理：</p>
-
-            <div class="highlight">
-                <strong>谱定理（实对称矩阵版本）：</strong>
-                <p>设 $A \in \mathbb{R}^{n \times n}$ 是实对称矩阵（$A^T = A$）。则存在正交矩阵 $Q$（$Q^T Q = I$）和对角矩阵 $\Lambda = \operatorname{diag}(\lambda_1, \dots, \lambda_n)$，使得：</p>
-                $$A = Q \Lambda Q^T$$
-                <p>等价地，$A$ 可以写成：</p>
-                $$A = \sum_{i=1}^n \lambda_i q_i q_i^T$$
-                <p>其中 $q_i$ 是 $Q$ 的列向量，构成 $\mathbb{R}^n$ 的一组标准正交基。</p>
-            </div>
-
-            <p>证明思路：</p>
-            <ol>
-                <li><strong>特征值都是实数：</strong>对 $Ax = \lambda x$，两边取共轭转置并用 $A^T = A$ 即可证明 $\lambda = \bar{\lambda}$。</li>
-                <li><strong>不同特征值对应的特征向量正交：</strong>若 $Av = \lambda v$，$Aw = \mu w$，则 $\lambda \langle v, w \rangle = \langle Av, w \rangle = \langle v, A w \rangle = \mu \langle v, w \rangle$。由于 $\lambda \neq \mu$，必有 $\langle v, w \rangle = 0$。</li>
-                <li><strong>可对角化：</strong>用归纳法。取一个特征向量 $q_1$，将其扩展为 $\mathbb{R}^n$ 的一组正交基，构造正交矩阵 $P$，则 $P^T A P$ 为块对角形式，然后对低一维的子矩阵重复此过程。</li>
-            </ol>
-
-            <p>谱定理对 Hermite 矩阵（复对称，$A^* = A$）也同样成立，此时 $Q$ 是酉矩阵（$Q^* Q = I$）。</p>
-
-            <h3>10.2 Rayleigh商与Courant-Fischer极小极大定理</h3>
-
-            <p>特征值的一个重要变分特征由 <strong>Rayleigh 商</strong>给出。对任意非零向量 $x$，Rayleigh 商定义为：</p>
-
-            $$R(A, x) = \frac{x^T A x}{x^T x}$$
-
-            <p>Rayleigh 商的一个重要性质是：它的极值正好是 $A$ 的特征值。</p>
-
-            <p>更一般地，<strong>Courant-Fischer 极小极大定理</strong>给出了特征值的完整变分刻画：</p>
-
-            $$\lambda_k(A) = \max_{\dim S = k} \min_{0 \neq x \in S} \frac{x^T A x}{x^T x}
-            = \min_{\dim S = n-k+1} \max_{0 \neq x \in S} \frac{x^T A x}{x^T x}$$
-
-            <p>这个定理的直觉是：第 $k$ 大的特征值等于在所有 $k$ 维子空间中，Rayleigh 商的最小值的最大值。这个看似抽象的结论在实际中非常有用——它给出了特征值的<strong>摄动界</strong>，并且不依赖于特征向量的计算。</p>
-
-            <div class="tip">
-                <strong>应用：</strong>Courant-Fischer 定理是谱聚类（spectral clustering）和降维方法（如拉普拉斯特征映射）的理论基础。它保证了：如果你用前 $k$ 个特征向量做降维，得到的"最佳" $k$ 维近似是最优的。
-            </div>
-
-            <h3>10.3 谱分解：$A = \sum \lambda_i u_i u_i^T$</h3>
-
-            <p>谱分解就是把对称矩阵 $A$ 写成外积和的形式：</p>
-
-            $$A = \sum_{i=1}^n \lambda_i q_i q_i^T$$
-
-            <p>每个 $q_i q_i^T$ 是一个秩为 1 的矩阵（称为一个谱项）。这个分解极其有用：</p>
-            <ul>
-                <li><strong>矩阵函数：</strong>$f(A) = \sum f(\lambda_i) q_i q_i^T$，比如 $A^{-1} = \sum \lambda_i^{-1} q_i q_i^T$</li>
-                <li><strong>秩-k 近似：</strong>$A_k = \sum_{i=1}^k \lambda_i q_i q_i^T$ 是 $A$ 在谱范数意义下的最优秩-k 近似</li>
-                <li><strong>二次型分析：</strong>$x^T A x = \sum \lambda_i (q_i^T x)^2$ 揭示了二次型在不同方向上的分布</li>
-            </ul>
-
-            <h3>10.4 同时对角化：什么时候两个矩阵可以同时对角化？</h3>
-
-            <p>给定两个对称矩阵 $A$ 和 $B$，什么时候存在同一个正交矩阵 $Q$ 使得 $Q^T A Q$ 和 $Q^T B Q$ 都是对角矩阵？答案是：当且仅当 $A$ 和 $B$ <strong>可交换</strong>（commute）：</p>
-
-            $$AB = BA$$
-
-            <p>这个结论的证明利用了谱定理：先对角化 $A$ 得到 $A = Q_1 \Lambda_1 Q_1^T$，然后验证 $B' = Q_1^T B Q_1$ 与 $\Lambda_1$ 可交换，从而 $B'$ 必须是块对角的，在每个特征值重合的块内再对角化即可。</p>
-
-            <p>同时对角化的概念在量子力学中极其重要——可交换的观测量可以同时被精确测量。在经典力学中，这对应于可积系统的 Action-Angle 变量。</p>
-
-            <h3>10.5 矩阵平方根与极分解</h3>
-
-            <p>利用谱分解，我们可以定义矩阵的<strong>平方根</strong>。对对称正定矩阵 $A = Q \Lambda Q^T$，其平方根定义为：</p>
-
-            $$A^{1/2} = Q \Lambda^{1/2} Q^T$$
-
-            <p>其中 $\Lambda^{1/2} = \operatorname{diag}(\sqrt{\lambda_1}, \dots, \sqrt{\lambda_n})$。这个定义是唯一的（如果要求对称正定的话）。</p>
-
-            <p>矩阵平方根的一个重要应用是<strong>极分解</strong>（polar decomposition），它类似于复数 $z = re^{i\theta}$ 的极坐标表示。任意可逆矩阵 $A$ 可以分解为：</p>
-
-            $$A = UP$$
-
-            <p>其中 $U$ 是正交矩阵（旋转部分），$P$ 是对称正定矩阵（缩放部分）。$P$ 就是 $A^T A$ 的平方根：$P = (A^T A)^{1/2}$，而 $U = AP^{-1}$。</p>
-
-            <p>极分解在连续介质力学中至关重要——它把变形梯度分解为纯旋转和纯伸缩，是理解材料大变形的基础。</p>
-
-            <div class="highlight">
-                <strong>谱定理的重要性：</strong>谱定理不仅仅是一个关于对角化的结论。它告诉我们，对称矩阵的本质就是实数——它是某个"正交坐标系"中的对角矩阵。不对称的矩阵可能有复特征值、可能不可对角化，但对称矩阵永远是"规规矩矩"的。这种规范性使得对称矩阵在物理、工程和优化中无处不在。
-            </div>
-
-            <h3>10.6 计算特征值：Power Iteration与QR算法概述</h3>
-
-            <p>实际计算特征值不是通过求解特征多项式（这在数值上极不稳定）完成的，而是通过迭代方法。</p>
-
-            <p><strong>幂迭代</strong>（Power Iteration）是最简单的方法：从一个随机向量 $x_0$ 开始，反复执行 $x_{k+1} = A x_k / \|A x_k\|$。在适合的条件下，$x_k$ 收敛到 $A$ 的主特征向量（对应最大模特征值），而 $\|A x_k\| / \|x_k\|$ 收敛到对应的特征值。</p>
-
-            <p>幂迭代的收敛速度由 $|\lambda_2/\lambda_1|$ 决定（第二大的特征值与最大的比值）。如果这个比值接近 1，收敛会非常慢。</p>
-
-            <p><strong>QR 算法</strong>是计算所有特征值的标准方法。它的基本思路是：反复做 QR 分解和重构，$A_{k+1} = R_k Q_k$，其中 $A_k = Q_k R_k$。在一定的条件下，$A_k$ 会收敛到一个上三角矩阵（Schur 形式），对角线上就是特征值。</p>
-
-            <p>QR 算法加上位移技术（shift）和隐式技巧，构成了 LAPACK 中 <code>dsyev</code> 和 <code>dgeev</code> 的核心。对于对称矩阵，QR 算法是 $O(n^3)$ 的，且数值精度极高。</p>
-
-            <div class="tip">
-                <strong>实用建议：</strong>实际计算中不要自己实现这些算法。直接用 <code>np.linalg.eig</code>（一般矩阵）或 <code>np.linalg.eigh</code>（对称/Hermite 矩阵）。<code>eigh</code> 比 <code>eig</code> 更快、更精确，因为它利用了对称性。如果只需要前 $k$ 个特征值（比如 PCA 中的 $k \ll n$），<code>scipy.sparse.linalg.eigs</code> 或 <code>svds</code> 加上 ARPACK 引擎会更高效。
-            </div>
-
-            <div class="warning">
-                <strong>踩坑实录：当特征多项式遇到浮点数</strong>
-                <p>早在计算机诞生之初，人们尝试通过求解特征多项式来获取特征值。然而 Wilkinson 在 1960 年代指出：特征多项式的系数对矩阵元素的微小变化极端敏感。一个看似"接近"的多项式 $p(x) = (x-1)(x-2)\cdots(x-20)$ 的系数稍有扰动，根就会完全错位。</p>
-                <p>从计算的角度看，<strong>永远不要通过求根公式或特征多项式来计算特征值</strong>。这是数值线性代数中最经典的教训之一。现代特征值计算全部基于变换（QR、Jacobi、分治等），而非代数方程求根。</p>
-            </div>
-
-            <h3>本章小结</h3>
-
-            <p>谱定理是线性代数的核心定理之一。它说明了对称矩阵可以用正交变换对角化为实对角矩阵，从而获得谱分解表示。基于此，我们可以定义矩阵平方根、极分解以及各种矩阵函数。Courant-Fischer 定理给出了特征值的变分刻画，是理解特征值扰动和谱聚类的基础。</p>
-
-            <p>下一章我们将学习奇异值分解（SVD）——它可以说是矩阵分析中<strong>最重要的</strong>一个分解。SVD 对所有矩阵（不仅是方阵）都适用，并统一了特征值分解和谱定理的思想。</p>
-        </div>
-
-        <div class="footer-nav">
-            <a href="09.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="11.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="为什么实对称矩阵能找到正交特征基？借助具体 2×2 矩阵理解 Rayleigh 商、Courant–Fischer 和分解之间的区别。"><title>10 · 谱定理、Rayleigh 商与极分解 | 高级矩阵分析</title><link rel="stylesheet" href="../assets/css/site.css"><script src="../assets/js/labs.js" defer></script></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-top"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">M</span><span>矩阵分析 <small>Matrix Atlas</small></span></a><nav class="top-links" aria-label="站点导航"><a href="../index.html#syllabus">全部 28 章</a><a href="https://github.com/1998x-stack/advanced-matrix-analysis-tutorial">GitHub</a></nav></header><div class="article-shell"><aside class="article-toc"><h2>本章目录 / 10</h2><nav aria-label="本章目录"><a href="#paradox">01 / 为什么实对称矩阵永远不会缺少正交特征基？</a><a href="#example">02 / 用 2×2 例子拆解谱定理</a><a href="#rayleigh">03 / Rayleigh 商为何能找出极端特征值？</a><a href="#minmax">04 / Courant–Fischer 为什么是子空间优化定理？</a><a href="#polar">05 / 谱分解、SVD 与极分解有什么不同？</a><a href="#experiment">06 / 用小规模数值检查正交谱分解</a><a href="#references">权威参考资料</a></nav></aside><main id="content" class="article-main"><article><header class="article-header"><a class="article-top-link" href="../index.html">← 返回课程地图</a><p class="eyebrow">CHAPTER 10 / ADVANCED MATRIX ANALYSIS</p><h1>谱定理、Rayleigh 商与极分解</h1><p class="dek">为什么实对称矩阵能找到正交特征基？借助具体 2×2 矩阵理解 Rayleigh 商、Courant–Fischer 和分解之间的区别。</p></header><div class="article-body"><section id="paradox" aria-labelledby="paradox-heading"><h2 id="paradox-heading">01 / 为什么实对称矩阵永远不会缺少正交特征基？</h2><p class="lede">一般方阵可能出现复特征值、Jordan 块与非正交的特征向量。但如果 A 是实对称矩阵 <code>Aᵀ=A</code>，情况完全不同：它一定拥有一组实特征值以及对应的<strong>正交归一特征向量</strong>，因而能通过正交基变换变成对角矩阵。这就是实对称谱定理。</p>
+<figure><img src="../assets/figures/spectral-rayleigh.svg" alt="左边 A 的椭圆主轴沿两条互相垂直的特征方向；右边 Rayleigh 商随角度变化位于 1 和 3 之间"><figcaption>对于 A=[[2,1],[1,2]]，特征值是 3 与 1；在特征基中，Rayleigh 商随方向变化但始终处在这两个极值之间。</figcaption></figure>
+<div class="equation" tabindex="0" aria-label="公式 10.1"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>A</mi><mo>=</mo><mi>Q</mi><mi>Λ</mi><msup><mi>Q</mi><mi>T</mi></msup><mo>,</mo><msup><mi>Q</mi><mi>T</mi></msup><mi>Q</mi><mo>=</mo><mi>I</mi></math><span class="eq-tag">(10.1)</span></div>
+<p>在复数域中，对应结论适用于 Hermitian 矩阵 <code>A*=A</code>，表达为酉对角化 <code>A=UΛU*</code>。一般非对称方阵不能被假定具有这样的正交特征基。</p></section><section id="example" aria-labelledby="example-heading"><h2 id="example-heading">02 / 用 2×2 例子拆解谱定理</h2><p>令 <code>A=[[2,1],[1,2]]</code>。容易验证 <code>A(1,1)ᵀ=3(1,1)ᵀ</code>，而 <code>A(1,−1)ᵀ=(1,−1)ᵀ</code>。标准化得到 <code>q₁=(1,1)/√2</code> 和 <code>q₂=(1,−1)/√2</code>，两向量正交且长度为 1。</p>
+<p>所以 <code>Q=(q₁,q₂)</code>、<code>Λ=diag(3,1)</code>，<code>A=3q₁q₁ᵀ+1q₂q₂ᵀ</code>。这是一种“按主方向独立伸缩后再合成”的解释。正定性也可以从这里直接得到：所有特征值为正，因此任意非零 x 的 <code>xᵀAx&gt;0</code>。</p>
+<div class="equation" tabindex="0" aria-label="公式 10.2"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>A</mi><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>λ</mi><mi>i</mi></msub><msub><mi>q</mi><mi>i</mi></msub><msubsup><mi>q</mi><mi>i</mi><mi>T</mi></msubsup></math><span class="eq-tag">(10.2)</span></div></section><section id="rayleigh" aria-labelledby="rayleigh-heading"><h2 id="rayleigh-heading">03 / Rayleigh 商为何能找出极端特征值？</h2><p>对实对称 A 和任何非零向量 x，定义 <code>R_A(x)=xᵀAx/(xᵀx)</code>。在正交特征基中，令 <code>x=Σcᵢqᵢ</code>，便有 <code>R_A(x)=Σλᵢcᵢ²/Σcᵢ²</code>。这是特征值的非负加权平均，因此绝不会落在最小、最大特征值之外。</p>
+<div class="equation" tabindex="0" aria-label="公式 10.3"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>λ</mi><mi>min</mi></msub><mo>≤</mo><mfrac><mrow><msup><mi>x</mi><mi>T</mi></msup><mi>A</mi><mi>x</mi></mrow><mrow><msup><mi>x</mi><mi>T</mi></msup><mi>x</mi></mrow></mfrac><mo>≤</mo><msub><mi>λ</mi><mi>max</mi></msub></math><span class="eq-tag">(10.3)</span></div>
+<p>在本例选取相对于 q₁ 的夹角 θ，单位向量可写为 <code>x=cosθ·q₁+sinθ·q₂</code>。此时 <code>R_A(x)=3cos²θ+1sin²θ=1+2cos²θ</code>。</p>
+<div class="demo" data-lab="rayleigh"><label for="rayleigh-theta">改变 θ：与最大特征方向的夹角</label><input id="rayleigh-theta" type="range" min="0" max="90" step="15" value="45"><output for="rayleigh-theta">θ=45°，Rayleigh 商=2.000；处于 [1,3] 之间。</output></div></section><section id="minmax" aria-labelledby="minmax-heading"><h2 id="minmax-heading">04 / Courant–Fischer 为什么是子空间优化定理？</h2><p>设 <code>λ₁≥λ₂≥…≥λₙ</code> 是实对称矩阵的特征值。Courant–Fischer 通过选 k 维子空间，使子空间内部最小的 Rayleigh 商尽可能大，精确给出第 k 大特征值。</p>
+<div class="equation" tabindex="0" aria-label="公式 10.4"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>λ</mi><mi>k</mi></msub><mo>=</mo><munder><mo>max</mo><mrow><mi>dim</mi><mi>S</mi><mo>=</mo><mi>k</mi></mrow></munder><munder><mo>min</mo><mrow><mi>x</mi><mo>∈</mo><mi>S</mi><mo>,</mo><mi>x</mi><mo>≠</mo><mn>0</mn></mrow></munder><mfrac><mrow><msup><mi>x</mi><mi>T</mi></msup><mi>A</mi><mi>x</mi></mrow><mrow><msup><mi>x</mi><mi>T</mi></msup><mi>x</mi></mrow></mfrac></math><span class="eq-tag">(10.4)</span></div>
+<p>如果 k=1，它等价于寻找 Rayleigh 商最大的方向；如果 k=n，只能选择整个空间，其最小商等于 λₙ。推广结论也是 PCA 与谱划分等方法的变分基础。</p></section><section id="polar" aria-labelledby="polar-heading"><h2 id="polar-heading">05 / 谱分解、SVD 与极分解有什么不同？</h2><p>谱定理主要约束自伴随矩阵的结构；SVD 可处理任意矩形矩阵 <code>A=UΣVᵀ</code>；极分解则在实方阵情况下写为 <code>A=UH</code>，其中 H 是半正定对称矩阵（H=(AᵀA)^{1/2}）。当 A 可逆时正交因子 U 唯一；A 奇异时需注意非唯一性。</p>
+<table><thead><tr><th>分解</th><th>适用对象</th><th>核心输出</th></tr></thead><tbody><tr><td>谱分解</td><td>实对称 / 复 Hermitian</td><td>正交特征方向与实特征值</td></tr><tr><td>SVD</td><td>任意实/复矩阵</td><td>左右奇异向量和非负奇异值</td></tr><tr><td>极分解</td><td>方阵；矩形可推广</td><td>正交/部分等距因子与半正定因子</td></tr></tbody></table>
+<div class="callout warning">把一般方阵的特征值分解写成 <code>QΛQᵀ</code> 是错误的；非正规矩阵可能没有正交特征向量，甚至不可对角化。</div></section><section id="experiment" aria-labelledby="experiment-heading"><h2 id="experiment-heading">06 / 用小规模数值检查正交谱分解</h2><pre class="codeblock"><code>from math import sqrt,isclose
+A=((2.,1.),(1.,2.))
+s=1/sqrt(2)
+Q=((s,s),(s,-s))
+D=((3.,0.),(0.,1.))
+def matmul(X,Y):
+    return tuple(tuple(sum(X[i][k]*Y[k][j] for k in range(2))
+                       for j in range(2)) for i in range(2))
+QT=tuple(zip(*Q))
+assert all(isclose(matmul(Q,QT)[i][j],float(i==j),abs_tol=1e-12)
+           for i in range(2) for j in range(2))
+out=matmul(matmul(Q,D),QT)
+assert all(isclose(out[i][j],A[i][j],abs_tol=1e-12)
+           for i in range(2) for j in range(2))
+print("A = Q D Q^T verified")</code></pre>
+<p>预期输出：<code>A = Q D Q^T verified</code>。这验证的是给定 2×2 数值矩阵，定理的任意维形式仍需数学证明。</p></section><section id="references" aria-labelledby="references-heading"><h2 id="references-heading">权威参考资料</h2><ul class="source-list"><li><a href="https://www.mit.edu/~18.06/">MIT 18.06 Linear Algebra：对称矩阵与谱定理</a></li><li><a href="https://mmids-textbook.github.io/chap05_specgraph/03_extremal/roch-mmids-specgraph-extremal.html">MMiDS：Courant–Fischer 变分刻画</a></li></ul></section></div><nav class="article-nav" aria-label="前后章节"><a href="09.html">← 上一章</a><a href="11.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>高级矩阵分析 / 第 10 章</span><a href="../index.html">返回课程首页</a></footer></body></html>
