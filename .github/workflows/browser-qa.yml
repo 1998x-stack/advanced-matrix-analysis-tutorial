@@ -25,5 +25,5 @@ jobs:
         if: always()
         with:
           name: illustrated-browser-qa
-          path: qa/batch-11-15/
+          path: qa/batch-16-20/
           retention-days: 14
