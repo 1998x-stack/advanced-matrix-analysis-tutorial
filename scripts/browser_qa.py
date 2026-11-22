@@ -98,9 +98,12 @@ def main():
                             now=output.inner_text()
                             lab_ok=now!=old
                             if not lab_ok:failures.append(f"{file} {width}: lab output unchanged")
+                    # Print is a paper-width layout, not a phone-width layout.
+                    page.set_viewport_size({"width":816,"height":1056})
                     page.emulate_media(media="print")
                     print_overflow=page.evaluate("document.documentElement.scrollWidth > window.innerWidth + 1")
                     page.emulate_media(media="screen")
+                    page.set_viewport_size({"width":width,"height":height})
                     if print_overflow: failures.append(f"{file} {width}: print overflow")
                     name=file.replace("/","-").replace(".html","")
                     shot=out/f"{name}-{width}.png"
