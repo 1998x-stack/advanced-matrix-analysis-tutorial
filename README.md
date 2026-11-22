@@ -1,67 +1,72 @@
-# 📐 高级矩阵分析
+# 高级矩阵分析 · Matrix Atlas
 
-> 📐 28章 实战体系
+一个以**几何直觉 → 严格定义 → 图解 → 可复算实验 → 应用边界**组织的 28 章矩阵分析教程。
 
-一套完整的 **高级矩阵分析** 全中文实战课程体系，共 **28 章**。本课程以 HTML 可视化的形式呈现，从基础原理到工程实践循序渐进，适合系统性学习与复习。
+- [课程首页](https://1998x-stack.github.io/advanced-matrix-analysis-tutorial/)
+- [从第 01 章开始](https://1998x-stack.github.io/advanced-matrix-analysis-tutorial/chapters/01.html)
+- [Olah-style-posts 创作规范](https://github.com/1998x-stack/Olah-style-posts)
 
-## 🚀 快速开始
+## 内容架构
 
-无需安装任何依赖，直接用浏览器打开 `index.html` 即可在线阅读全部章节：
+| 模块 | 章节 | 主要内容 |
+|---|---|---|
+| I · 基础结构 | 01–07 | 线性空间、特殊矩阵、范数、特征值、Jordan、矩阵函数 |
+| II · 分解与稳定性 | 08–14 | LU/QR、谱定理、SVD、广义逆、扰动理论 |
+| III · 优化与应用 | 15–21 | 矩阵微分、流形优化、Kronecker、NMF、稀疏 |
+| IV · 高阶扩展 | 22–28 | 随机矩阵、张量分解、矩阵在深度学习中的应用 |
 
-```bash
-open index.html   # macOS
-# 或在浏览器中直接打开 index.html
-```
+**改造状态**：01–10 章为两批独立重构的图解版（原生 MathML、原创 SVG、可重复数值实验）；11–28 保留原内容待逐章升级。请勿将“已迁移路径”与“已完成深度内容审校”混为一谈。
 
-## 📖 章节目录
-
-| # | 章节 | 核心主题 |
-|---|------|----------|
-| 01 | 矩阵分析导论 | 课程全景图、历史脉络、预备知识 |
-| 02 | 线性空间与线性变换 | 向量空间公理、基变换、秩-零化度定理 |
-| 03 | 特殊矩阵与矩阵运算 | 正交/酉矩阵、正定矩阵、分块运算、Hadamard积 |
-| 04 | 范数与内积空间 | 向量范数、矩阵范数、对偶范数、范数等价性 |
-| 05 | 特征值与特征向量 | 特征多项式、谱半径、Gershgorin圆盘定理 |
-| 06 | 矩阵相似性与Jordan标准形 | 相似不变量、Jordan块、广义特征向量、实Jordan形 |
-| 07 | 矩阵函数 | Cayley-Hamilton定理、矩阵指数、微分方程应用 |
-| 08 | LU分解与高斯消元法 | LU分解、PLU分解、Cholesky分解、数值稳定性 |
-| 09 | QR分解 | Gram-Schmidt、Householder变换、Givens旋转、最小二乘 |
-| 10 | 特征值分解与谱定理 | 谱定理、Rayleigh商、Courant-Fischer、极分解 |
-| 11 | 奇异值分解（SVD） | SVD几何意义、Eckart-Young定理、PCA、图像压缩 |
-| 12 | Schur分解与广义特征值 | Schur分解、QZ分解、广义特征值、矩阵束 |
-| 13 | 广义逆矩阵与最小二乘 | Moore-Penrose伪逆、最小范数解、Tikhonov正则化 |
-| 14 | 矩阵扰动理论 | 条件数、Weyl定理、Davis-Kahan定理、Bauer-Fike定理 |
-| 15 | 矩阵导数基础 | 布局约定、标量/向量/矩阵求导、链式法则、速查表 |
-| 16 | 矩阵微分进阶 | 迹技巧、行列式导数、特征值导数、截断SVD导数 |
-| 17 | 矩阵优化方法 | 投影梯度法、近端梯度法、ADMM、矩阵补全 |
-| 18 | 流形上的矩阵优化 | Stiefel流形、Grassmann流形、Riemannian梯度下降 |
-| 19 | Kronecker积与矩阵方程 | Kronecker积、vec算子、Sylvester方程、Lyapunov方程 |
-| 20 | 非负矩阵分解（NMF） | 乘性更新、ALS算法、主题建模、深度NMF |
-| 21 | 稀疏表示与压缩感知 | RIP条件、OMP/LASSO、矩阵补全、鲁棒PCA |
-| 22 | 随机矩阵理论入门 | Wigner半圆律、Marčenko-Pastur、随机SVD、双下降 |
-| 23 | 张量代数基础 | 模-n展开、模-n积、Khatri-Rao积、张量秩 |
-| 24 | CP分解、Tucker分解与HOSVD | CP-ALS、Tucker分解、HOSVD、截断HOSVD |
-| 25 | 张量网络与高级分解 | Tensor-Train、Tensor-Ring、层级Tucker、DNN压缩 |
-| 26 | 深度学习中的矩阵分析 | Attention矩阵视角、LoRA、谱归一化、PMM |
-| 27 | 矩阵分析前沿趋势 | 深度NMF、量子矩阵计算、四元数SVD、自动微分 |
-| 28 | 综合项目实战 | 图像压缩、推荐系统、SVD/NMF实战 |
-
-## 📂 项目结构
+## 仓库结构
 
 ```text
-advanced-matrix-analysis-tutorial/
-├── index.html      # 课程主入口（在线阅读全部章节）
-├── 01.html ~ 28.html   # 各章节正文
-├── courses.json    # 课程元数据（标题/章节/主题）
-└── theme.css       # 统一主题样式
+index.html                    # GitHub Pages 首页
+chapters/01.html ... 28.html  # 全部课程文章，01–10 深度重构
+assets/css/site.css           # 首页与新文章共用的设计系统
+assets/js/labs.js             # 无依赖、可渐进增强的互动实验
+assets/figures/*.svg          # 独立原创教学插图
+courses.json                  # 章节数据与维护状态
+scripts/build_site.py         # 生成 _site/ 静态发布目录
+scripts/validate_site.py      # 检查章节、链接、关键语义
+.github/workflows/            # 持续集成与 GitHub Pages Actions 部署
+docs/                         # 教学证据与迁移说明
+AGENTS.md                     # 作者和自动化代理须遵守的内容标准
+01.html ... 28.html           # 旧链接兼容跳转（请不要删除）
 ```
 
-## ✨ 课程特色
+## 本地预览与构建
 
-- **全中文实战体系**：面向中文读者，由浅入深，覆盖原理与工程实践
-- **28 章完整内容**：系统化章节编排，形成完整知识闭环
-- **可视化呈现**：HTML 图文并茂，适合快速浏览与重点回顾
-- **即开即用**：无需构建、无需服务器，纯静态页面随开随看
+需要 Python 3.10+，无需 Node.js、服务端框架或网络依赖：
 
----
-*本课程由 `advanced-matrix-analysis-tutorial/` 项目维护。*
+```bash
+python scripts/validate_site.py
+python scripts/build_site.py
+python -m http.server 8000
+```
+
+浏览器打开 `http://localhost:8000/`。构建结果写入 `_site/`，仅包含可公开页面、样式、图解、数据与兼容跳转。
+
+## GitHub Pages
+
+推荐使用仓库 **Settings → Pages → Build and deployment → GitHub Actions**，部署工作流为 `.github/workflows/pages.yml`，在推送 `main` 时构建 `_site/` 并部署。若当前 Pages 仍采用 `main/(root)` 分支发布，根目录 `index.html` 与所有旧章节重定向仍可使用；需在更改来源后检查实际站点 URL 与资源链接。创建工作流不等于已更改 Pages 设置或完成部署。
+
+## 审校原则
+
+1. 每一篇独立可理解，不假设读者看过“上一讲”。
+2. 先核对数学条件，再绘图；矩阵维度、实数/复数域、定理前提不能省略。
+3. 内嵌代码与实验需标示数值是示例，不得把示意图当定理证明。
+4. 图必须写明问题、对象、箭头含义和可独立阅读的图注。
+5. 参见 [AGENTS.md](AGENTS.md) 与 [参考资料](docs/references.md)。
+
+## 引用与许可
+
+核心阅读参考 MIT 18.06/18.065 公开课程与标准矩阵分析结论，详见各章节底部及 `docs/evidence.json`；原创网页和图示不直接复制第三方课程配图。保留原内容作者已有署名、引用及相关许可信息。
+
+## 两批深度重构（01–10）
+
+- **01–05**：线性映射、秩-零化度、结构矩阵、范数与内积、特征值与谱半径。
+- **06–10**：Jordan 链、矩阵指数、带部分主元 LU、Householder QR、对称谱定理与 Rayleigh 商。
+- 每章都有独立的学习问题、数学条件、原生 MathML、单独 SVG 与标准库 Python 算例；旧章节仍保留原路径兼容入口。
+- [各章审校依据](docs/references.md) · [数学例子自动化测试](scripts/test_examples.py)
+
+> 浏览器截图和 360/390px 移动端逐页验收需单独执行；静态结构检查不能代替真实浏览器审校。
