@@ -1,214 +1,50 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第20章 非负矩阵分解（NMF）</title>
-    <link rel="stylesheet" href="theme.css">
-    <script>
-    MathJax = {
-        tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            tags: 'ams'
-        },
-        options: {
-            enableMenu: true
-        }
-    };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/es5/tex-mml-chtml.js"></script>
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>📐 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 矩阵分析导论</a></li>
-            <li><a href="02.html">第2章 线性空间与线性变换</a></li>
-            <li><a href="03.html">第3章 特殊矩阵与矩阵运算</a></li>
-            <li><a href="04.html">第4章 范数与内积空间</a></li>
-            <li><a href="05.html">第5章 特征值与特征向量</a></li>
-            <li><a href="06.html">第6章 矩阵相似性与Jordan标准形</a></li>
-            <li><a href="07.html">第7章 矩阵函数</a></li>
-            <li><a href="08.html">第8章 LU分解与高斯消元法</a></li>
-            <li><a href="09.html">第9章 QR分解</a></li>
-            <li><a href="10.html">第10章 特征值分解与谱定理</a></li>
-            <li><a href="11.html">第11章 奇异值分解（SVD）</a></li>
-            <li><a href="12.html">第12章 Schur分解与广义特征值</a></li>
-            <li><a href="13.html">第13章 广义逆矩阵与最小二乘</a></li>
-            <li><a href="14.html">第14章 矩阵扰动理论</a></li>
-            <li><a href="15.html">第15章 矩阵导数基础</a></li>
-            <li><a href="16.html">第16章 矩阵微分进阶</a></li>
-            <li><a href="17.html">第17章 矩阵优化方法</a></li>
-            <li><a href="18.html">第18章 流形上的矩阵优化</a></li>
-            <li><a href="19.html">第19章 Kronecker积与矩阵方程</a></li>
-            <li><a href="20.html" class="active">第20章 非负矩阵分解（NMF）</a></li>
-            <li><a href="21.html">第21章 稀疏表示与压缩感知</a></li>
-            <li><a href="22.html">第22章 随机矩阵理论入门</a></li>
-            <li><a href="23.html">第23章 张量代数基础</a></li>
-            <li><a href="24.html">第24章 CP分解、Tucker分解与HOSVD</a></li>
-            <li><a href="25.html">第25章 张量网络与高级分解</a></li>
-            <li><a href="26.html">第26章 深度学习中的矩阵分析</a></li>
-            <li><a href="27.html">第27章 矩阵分析前沿趋势</a></li>
-            <li><a href="28.html">第28章 综合项目实战</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-
-        <h2>开场白：当"非负"成为约束</h2>
-
-        <p>想象你手头有一叠新闻文章，想知道它们都围绕哪些话题展开。SVD 可以给你一个优雅的低秩逼近——但同时会给你负的系数。"情感极性为 -0.3"? 这在现实世界中是没有意义的。</p>
-
-        <p><strong>非负矩阵分解</strong>（Nonnegative Matrix Factorization, NMF）应运而生。它要求分解出的两个因子矩阵的所有元素都非负：</p>
-
-        $$ A \approx WH, \quad W \geq 0, \; H \geq 0 $$
-
-        <p>其中 $A \in \mathbb{R}^{m \times n}_+$ 是原始数据，$W \in \mathbb{R}^{m \times r}_+$ 是基矩阵，$H \in \mathbb{R}^{r \times n}_+$ 是系数矩阵，$r$ 是分解秩（通常 $r \ll \min(m,n)$）。这个看似简单的非负约束带来了一个革命性的特性——<strong>"parts-based"（基于局部的）表示</strong>。</p>
-
-        <div class="highlight">
-            <strong>核心思想：</strong> SVD 允许正负抵消以达到整体的最佳逼近，而 NMF 只允许"相加"——每个数据点被表示为基向量的<em>非负叠加</em>。这恰好与人脑认知的"整体由局部组成"的直觉一致。
-        </div>
-
-        <h2>20.1 从人脸分解认识NMF</h2>
-
-        <p>2003 年 Lee 和 Seung 在 <em>Nature</em> 上发表了那篇著名的 NMF 论文，其中最震撼的图片来自人脸数据集：</p>
-
-        <p>将 $m$ 张人脸图像（每张 $n$ 像素）堆叠成矩阵 $A \in \mathbb{R}^{m \times n}_+$。SVD 分解得到的"特征脸"（eigenfaces）通常是全局的、有正有负的灰度模式——第 1 个特征脸捕捉整体亮度，第 2 个可能是左亮右暗的差异模式。而 NMF 分解得到的"基图像"则惊人地不同：</p>
-
-        <ul>
-            <li>有些基向量看起来像一对<strong>眼睛</strong>——位置固定，但可以通过系数 $H$ 的列来"点亮"不同的图像中对应位置的眼睛</li>
-            <li>有些基向量像是<strong>鼻子</strong>——边缘轮廓恰好对应鼻梁的位置</li>
-            <li>还有些像是<strong>嘴巴</strong>——捕捉了下半脸的线条</li>
-        </ul>
-
-        <p>这就是 NMF 的"局部即整体"哲学：<strong>一张人脸 = 0.8 × (眼睛基) + 0.3 × (鼻子基) + 0.5 × (嘴巴基) + ...</strong>，每个系数都是非负的，每个基向量都是一个语义上有意义的局部特征。相比之下，SVD 的系数可能正负抵消，语义解释性远不如 NMF。</p>
-
-        <p>当年我第一次跑出这个实验时被深深震撼了——同样的数据，仅仅因为加了一个"≥0"的约束，分解出来的模式就从"全局差异"变成了"局部部件"。这让我意识到：<strong>先验知识（prior knowledge）以约束的形式注入矩阵分解，可以根本性地改变结果的可解释性</strong>。</p>
-
-        <h2>20.2 乘性更新规则（Multiplicative Update）</h2>
-
-        <p>Lee 和 Seung 提出的乘性更新算法是 NMF 最经典的求解方法。目标函数是 Frobenius 范数下的逼近误差：</p>
-
-        $$ \min_{W \geq 0, H \geq 0} \frac{1}{2} \|A - WH\|_F^2 $$
-
-        <p>核心思想是在梯度下降的基础上，将学习率巧妙地设置为当前参数值与梯度之比，从而得到乘性更新公式。对 $H$ 的更新规则推导如下：</p>
-
-        <ol>
-            <li>目标函数关于 $H$ 的梯度：$\nabla_H \mathcal{L} = W^T (WH - A)$</li>
-            <li>梯度下降步：$H \leftarrow H - \eta \odot \nabla_H \mathcal{L}$（逐元素更新）</li>
-            <li>选择学习率 $\eta = H \oslash (W^T WH)$（逐元素除法），得到：</li>
-        </ol>
-
-        $$ H_{kj} \leftarrow H_{kj} \frac{(W^T A)_{kj}}{(W^T W H)_{kj}} $$
-
-        <p>同理对 $W$：</p>
-
-        $$ W_{ik} \leftarrow W_{ik} \frac{(A H^T)_{ik}}{(W H H^T)_{ik}} $$
-
-        <p>两个更新交替进行直到收敛。注意更新中只有乘法和除法——所以叫"乘性更新"——而且只要初始化非负，所有迭代结果始终保持非负。</p>
-
-        <div class="tip">
-            <strong>收敛性保证：</strong> 乘性更新可以看作使用特定自适应步长的梯度下降，它保证目标函数在每个更新步都不增。但这种保证只是"不增"而非"收敛到全局最优"——NMF 的目标函数是非凸的，可能有多个局部极小点。实践中建议用多个随机初始化并选择损失最小的结果。
-        </div>
-
-        <h2>20.3 交替最小二乘法（ALS）</h2>
-
-        <p>乘性更新虽然优雅，但收敛速度较慢。交替最小二乘法（Alternating Least Squares, ALS）是更快的替代方案：</p>
-
-        <ol>
-            <li>固定 $W$，求解 $H = \arg\min_{H \geq 0} \|A - WH\|_F^2$——这是非负最小二乘（NNLS）问题</li>
-            <li>固定 $H$，求解 $W = \arg\min_{W \geq 0} \|A - WH\|_F^2$</li>
-            <li>交替进行直到收敛</li>
-        </ol>
-
-        <p>每个子问题本身是凸的——非负约束下的最小二乘——可以用主动集法（active set method）或投影梯度法高效求解。ALS 通常比乘性更新快 1-2 个数量级，但每次迭代的计算量稍大。</p>
-
-        <p>实际中最常用的实现是 <code>sklearn.decomposition.NMF</code>，它默认使用坐标下降法（Coordinate Descent），兼具 ALS 的速度和乘性更新的简洁性。</p>
-
-        <h2>20.4 NMF与SVD、PCA、ICA的对比</h2>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>方法</th>
-                    <th>约束条件</th>
-                    <th>分解形式</th>
-                    <th>结果解释性</th>
-                    <th>典型应用</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>NMF</strong></td>
-                    <td>因子矩阵非负</td>
-                    <td>$A \approx WH$</td>
-                    <td>高（局部部件，加性组合）</td>
-                    <td>主题建模、音频源分离、推荐</td>
-                </tr>
-                <tr>
-                    <td><strong>SVD</strong></td>
-                    <td>正交性</td>
-                    <td>$A = U\Sigma V^T$</td>
-                    <td>低（正负抵消，难以解释）</td>
-                    <td>降维、推荐系统、图像压缩</td>
-                </tr>
-                <tr>
-                    <td><strong>PCA</strong></td>
-                    <td>正交性，方差最大化</td>
-                    <td>$A \approx U\Sigma V^T$</td>
-                    <td>中（全局模式，方向性）</td>
-                    <td>数据降维、可视化、特征提取</td>
-                </tr>
-                <tr>
-                    <td><strong>ICA</strong></td>
-                    <td>统计独立性</td>
-                    <td>$A \approx W^T S$</td>
-                    <td>中（独立分量，可能有负）</td>
-                    <td>盲源分离、脑电信号处理</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <p>简单总结：NMF 最擅长需要<strong>可解释性</strong>的场景，SVD/PCA 最擅长<strong>最优低秩逼近</strong>，ICA 最擅长<strong>信号分离</strong>。</p>
-
-        <h2>20.5 NMF的典型应用</h2>
-
-        <h3>主题建模（Topic Modeling）</h3>
-        <p>给定词-文档矩阵 $A \in \mathbb{R}^{V \times D}_+$（$V$ 为词汇量，$D$ 为文档数），NMF 将其分解为 $W \in \mathbb{R}^{V \times K}_+$（词-主题矩阵）和 $H \in \mathbb{R}^{K \times D}_+$（主题-文档矩阵）。每列 $H_{:,j}$ 的非零元素指示了文档 $j$ 属于哪些主题——这正是 LDA（Latent Dirichlet Allocation）做类似事情的方式。相比 LDA，NMF 不需要概率假设，求解速度快得多，在文本聚类任务中往往表现相当甚至更好。</p>
-
-        <h3>推荐系统</h3>
-        <p>在协同过滤中，用户-物品评分矩阵 $R$ 被分解为 $R \approx U V$，其中 $U$ 是用户因子矩阵，$V$ 是物品因子矩阵。NMF 的非负性保证了预测评分不出现负值，这在电影推荐（没有负评分）和购买预测（没有负购买量）场景中非常自然。</p>
-
-        <h3>音频源分离</h3>
-        <p>音乐信号的幅度谱图（magnitude spectrogram）是非负的。NMF 将其分解为基频谱模式（如钢琴的每个音符的频谱）和时序激活模式——这正是"听歌识曲"和分离伴奏与人声的基础。</p>
-
-        <h2>20.6 深度NMF：2025年的新趋势</h2>
-
-        <p>传统 NMF 是单层分解：$A \approx W_1 H_1$。深度 NMF（Deep NMF）将其推广为多个层次的分解：</p>
-
-        $$ A \approx W_1 W_2 \cdots W_L H_L $$
-
-        <p>每一层 $W_i$ 都可以看作一个"隐层"的基矩阵。这种多层分解能捕捉数据中的层次化结构——从底层边缘到高层语义——与深度学习的特征层次思想完全一致。相比于自编码器，深度 NMF 保留了非负性和加性组合的解释性；相比于传统 NMF，它的表示能力大幅提升。</p>
-
-        <div class="highlight">
-            <strong>关键洞察：</strong> 深度 NMF 是 2025 年矩阵分析领域最活跃的研究方向之一。它可以看作介于传统矩阵分解和深度学习之间的桥梁——既有分解的<em>可解释性</em>，又有深度网络的<em>表示能力</em>。
-        </div>
-
-        <h2>小结与展望</h2>
-
-        <p>本章我们从 NMF 的基本问题出发，学习了乘性更新和交替最小二乘法两种求解策略，通过对比 SVD/PCA/ICA 理解了 NMF 的独特定位，并探讨了它在主题建模、推荐系统和音频处理中的应用。那张人脸分解的结果告诉我们：<strong>有时候，一个简单的约束就能彻底改变模型的行为和解释力</strong>。</p>
-
-        <p>下一章我们将进入矩阵分析的另一个重要分支——<strong>稀疏表示与压缩感知</strong>。它和 NMF 一样追求"简洁表示"，但走的是完全不同的路：用 $\ell_1$ 范数来诱导稀疏性。</p>
-
-        <div class="footer-nav">
-            <a href="19.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="21.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="从非负数据的加性表示出发，推导 Frobenius/KL 目标、乘性更新和交替 NNLS，并审查 NMF 的唯一性与语义边界。"><title>20 · 非负矩阵分解：乘性更新、ALS 与可辨识性 | 高级矩阵分析</title><link rel="stylesheet" href="../assets/css/site.css"><script src="../assets/js/labs.js" defer></script></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-top"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">M</span><span>矩阵分析 <small>Matrix Atlas</small></span></a><nav class="top-links" aria-label="站点导航"><a href="../index.html#syllabus">全部 28 章</a><a href="https://github.com/1998x-stack/advanced-matrix-analysis-tutorial">GitHub</a></nav></header><div class="article-shell"><aside class="article-toc"><h2>本章目录 / 20</h2><nav aria-label="本章目录"><a href="#model">01 / NMF：用非负基向量加性重建非负数据</a><a href="#objective">02 / 目标函数：先说明优化的是哪一种误差</a><a href="#multiplicative">03 / 乘性更新：保持非负的逐元素迭代</a><a href="#als">04 / ALS 与坐标下降：每个子问题凸，不代表联合问题凸</a><a href="#identifiability">05 / 可辨识性：非负分解为什么不自动唯一？</a><a href="#applications">06 / 应用：主题、谱分解与非负观测</a><a href="#verify">07 / 复算：一轮乘性更新是否保持非负并降低损失？</a><a href="#references">参考资料与进一步阅读</a></nav></aside><main id="content" class="article-main"><article><header class="article-header"><a class="article-top-link" href="../index.html">← 返回课程地图</a><p class="eyebrow">CHAPTER 20 / ADVANCED MATRIX ANALYSIS</p><h1>非负矩阵分解：乘性更新、ALS 与可辨识性</h1><p class="dek">从非负数据的加性表示出发，推导 Frobenius/KL 目标、乘性更新和交替 NNLS，并审查 NMF 的唯一性与语义边界。</p></header><div class="article-body"><section id="model" aria-labelledby="model-heading"><h2 id="model-heading">01 / NMF：用非负基向量加性重建非负数据</h2>
+<p class="lede">非负矩阵分解（NMF）寻找两个非负矩阵 W、H，使非负数据矩阵 V 可由少量基向量的非负组合近似。它不同于 SVD：SVD 追求正交方向和全局最优低秩逼近，NMF 将非负约束作为先验，使每个样本只能通过非负权重叠加基向量。</p>
+<p>本页采用 <code>V∈R₊^{m×n}</code>（行是特征、列是样本）、<code>W∈R₊^{m×r}</code>（列为基向量）、<code>H∈R₊^{r×n}</code>（列为样本系数）的约定，且通常 r≪min(m,n)。于是 V≈WH。scikit-learn 常用样本×特征的输入布局，返回的两个因子形状与这里的 V 方向相反，使用时要先核对维度。</p>
+<figure><img src="../assets/figures/20-nmf-factorization.svg" alt="非负数据矩阵 V 被分解为特征乘秩的基矩阵 W 与秩乘样本的激活矩阵 H"><figcaption>V 的每一列是一个样本；W 的每一列是一个非负基；H 的每一列给出该样本使用各基的非负权重。重建只允许加性组合，不允许正负抵消。</figcaption></figure>
+<div class="equation" role="group" aria-label="NMF 的非负低秩分解" tabindex="0"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="NMF 的非负低秩分解">V≈WH<mo>,</mo><mspace width="0.4em"/>W≥0<mo>,</mo><mspace width="0.4em"/>H≥0</math><span class="eq-tag">(20.1)</span></div>
+<p>非负性可以帮助产生稀疏、加性或局部化表示，但“parts-based”是数据和目标共同产生的经验性解释，不是 NMF 定理保证的语义结论。不同初始化和正则化可能给出完全不同的基。</p></section><section id="objective" aria-labelledby="objective-heading"><h2 id="objective-heading">02 / 目标函数：先说明优化的是哪一种误差</h2>
+<p>最常见的目标是平方 Frobenius 重建误差。固定 W 时，H 的子问题是非负最小二乘；固定 H 时，W 的子问题也一样。联合优化 W、H 却是非凸问题，因为 WH 对两个因子联合而言是双线性的。</p>
+<div class="equation" role="group" aria-label="平方 Frobenius NMF 目标" tabindex="0"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="平方 Frobenius NMF 目标"><munder><mo>min</mo><mrow><mi>W</mi><mo>≥</mo><mn>0</mn><mo>,</mo><mi>H</mi><mo>≥</mo><mn>0</mn></mrow></munder><mspace width="0.4em"/><mfrac><mn>1</mn><mn>2</mn></mfrac><msubsup><mrow><mo>‖</mo><mi>V</mi><mo>−</mo><mi>W</mi><mi>H</mi><mo>‖</mo></mrow><mi>F</mi><mn>2</mn></msubsup></math><span class="eq-tag">(20.2)</span></div>
+<p>对计数型或稀疏数据，也可使用广义 KL 散度；对正值谱幅度，有时使用 Itakura–Saito 散度。不同损失对应不同更新公式和统计假设，不能把平方误差的乘性更新直接说成 KL 或 IS 目标的更新。</p>
+<div class="equation" role="group" aria-label="广义 KL 散度" tabindex="0"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="广义 KL 散度">D<msub><mi>KL</mi></msub><mo>(</mo><mi>V</mi><mo>‖</mo><mi>WH</mi><mo>)</mo><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow><mo></mo></munderover><mo>[</mo><msub><mi>V</mi><mi>ij</mi></msub><mi>log</mi><mo>(</mo><mfrac><msub><mi>V</mi><mi>ij</mi></msub><msub><mrow><mo>(</mo><mi>WH</mi><mo>)</mo></mrow><mi>ij</mi></msub></mfrac><mo>)</mo><mo>−</mo><msub><mi>V</mi><mi>ij</mi></msub><mo>+</mo><msub><mrow><mo>(</mo><mi>WH</mi><mo>)</mo></mrow><mi>ij</mi></msub><mo>]</mo></math><span class="eq-tag">(20.3)</span></div>
+<p>正则项也很重要：对 H 加 L1 惩罚会鼓励稀疏激活，对 W/H 加 L2 惩罚会抑制过大因子。实际模型还需说明样本尺度、是否做行列归一化、秩 r 如何选择以及是否固定一个因子。</p></section><section id="multiplicative" aria-labelledby="multiplicative-heading"><h2 id="multiplicative-heading">03 / 乘性更新：保持非负的逐元素迭代</h2>
+<p>对平方 Frobenius 目标，两个因子的梯度为 <code>∇H=WᵀWH−WᵀV</code>、<code>∇W=WHHᵀ−VHᵀ</code>。Lee–Seung 乘性更新把梯度中的正负部分组成逐元素比例，交替更新 H 与 W：</p>
+<div class="equation" role="group" aria-label="NMF 的 Frobenius 乘性更新" tabindex="0"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="NMF 的 Frobenius 乘性更新">H←H<mo>⊙</mo><mfrac><msup><mi>W</mi><mi>T</mi></msup><mi>V</mi></mfrac><mo>/</mo><mo>(</mo><msup><mi>W</mi><mi>T</mi></msup><mi>W</mi><mi>H</mi><mo>)</mo><mo>,</mo><mspace width="0.5em"/>W←W<mo>⊙</mo><mfrac><mrow><mi>V</mi><msup><mi>H</mi><mi>T</mi></msup></mrow><mrow><mi>W</mi><mi>H</mi><msup><mi>H</mi><mi>T</mi></msup></mrow></mfrac></math><span class="eq-tag">(20.4)</span></div>
+<p>若初值严格非负且分母正，乘法更新会保持非负；经典平方误差规则有目标不增的辅助函数证明。但若某个元素初始为零，它可能永远保持零（zero-locking）；实现常加入小正数初始化或分母稳定项 ε。加 ε 是工程修改，不能不加说明地把原始单调性证明原封不动套过来。</p>
+<figure><img src="../assets/figures/20-nmf-updates.svg" alt="先固定 W 更新 H，再固定新 H 更新 W；右侧展示目标下降趋势和因子缩放/置换歧义"><figcaption>图中误差曲线只是单调下降形状示意，不代表任何真实数据测量。右侧 W′=WD、H′=D⁻¹H 对任意正对角 D 保持乘积不变，行列同步置换也不改变重建。</figcaption></figure>
+<div class="demo" data-lab="nmf"><label for="nmf-iterations">执行乘性更新轮数（固定 3×3 示例）</label><input id="nmf-iterations" type="range" min="0" max="8" step="1" value="1"><output aria-live="polite" for="nmf-iterations">1 轮完整 H/W 更新：重建损失约 1.096632（初始 3.066600）。</output></div></section><section id="als" aria-labelledby="als-heading"><h2 id="als-heading">04 / ALS 与坐标下降：每个子问题凸，不代表联合问题凸</h2>
+<p>交替最小二乘（ALS）固定 W，精确或近似求解非负最小二乘子问题得到 H；再固定 H 更新 W。每个子问题是凸的，但 W、H 联合目标依然非凸。若每个子问题都被精确求解，目标不会上升；但算法仍可能停在不同的局部驻点，且迭代成本取决于求解器。</p>
+<div class="equation" role="group" aria-label="交替非负最小二乘" tabindex="0"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="交替非负最小二乘">H<msub><mi>k+1</mi></msub><mo>∈</mo><munder><mo>argmin</mo><mrow><mi>H</mi><mo>≥</mo><mn>0</mn></mrow></munder><msubsup><mrow><mo>‖</mo><mi>V</mi><mo>−</mo><msub><mi>W</mi><mi>k</mi></msub><mi>H</mi><mo>‖</mo></mrow><mi>F</mi><mn>2</mn></msubsup><mo>,</mo><mspace width="0.5em"/>W<msub><mi>k+1</mi></msub><mo>∈</mo><munder><mo>argmin</mo><mrow><mi>W</mi><mo>≥</mo><mn>0</mn></mrow></munder><msubsup><mrow><mo>‖</mo><mi>V</mi><mo>−</mo><mi>W</mi><msub><mi>H</mi><mrow><mi>k+1</mi></mrow></msub><mo>‖</mo></mrow><mi>F</mi><mn>2</mn></msubsup></math><span class="eq-tag">(20.5)</span></div>
+<p>常见实现包括主动集非负最小二乘、坐标下降、HALS（hierarchical alternating least squares）和乘性更新。scikit-learn 的 NMF 提供 coordinate-descent（CD）和 multiplicative-update（MU）求解器；MU 还能配合不同 beta-divergence。不能笼统宣称 ALS 总比乘性更新快几个数量级，速度取决于矩阵规模、秩、稀疏度和停止容差。</p></section><section id="identifiability" aria-labelledby="identifiability-heading"><h2 id="identifiability-heading">05 / 可辨识性：非负分解为什么不自动唯一？</h2>
+<p>即使 V=WH 精确成立，只要 D 是正对角矩阵，就有 <code>V=(WD)(D⁻¹H)</code>；同时交换 W 的列与 H 的对应行，也不改变乘积。因此尺度与置换歧义是结构性的。除此之外，还可能存在不等价的其他分解。NMF 一般不具有自动可辨识性，恢复真实因子需要额外几何或统计条件。</p>
+<p>可解释性还受秩 r、初始化、正则化、数据预处理和样本分布影响。若每列表示文档、每行表示词，W 的列可以解释为词-主题权重，H 的列可以解释为文档-主题强度；这些解释需要结合词项和稳定性分析，而不能仅凭非负数值就断言一个因子是“真实主题”。</p>
+<table><thead><tr><th>性质</th><th>NMF 自动保证吗？</th><th>说明</th></tr></thead><tbody><tr><td>W、H 非负</td><td>是（按约束求解）</td><td>算法需保持可行性</td></tr><tr><td>乘积近似 V</td><td>由目标优化</td><td>误差由损失衡量</td></tr><tr><td>全局最优</td><td>否</td><td>联合问题非凸</td></tr><tr><td>因子唯一</td><td>否</td><td>存在尺度、置换及其他歧义</td></tr><tr><td>语义部件</td><td>否</td><td>需要数据与先验支持</td></tr></tbody></table></section><section id="applications" aria-labelledby="applications-heading"><h2 id="applications-heading">06 / 应用：主题、谱分解与非负观测</h2>
+<p>主题建模可将词-文档计数矩阵分解为词-主题基和主题-文档权重；音频处理中常对非负幅度谱图做 NMF，W 表示频谱模板、H 表示随时间变化的激活；图像分解则可在非负像素或光谱数据上学习加性基。幅度谱丢失相位，重建波形还需额外相位估计或一致性处理。</p>
+<p>如果数据含负值，不能直接把 NMF 当成无约束替代品；应先确认是否有物理意义的非负表示，或选择允许符号的模型。对推荐系统中的评分，非负约束是否合理也取决于评分尺度与偏置模型，不应把“预测非负”视为普遍优势。</p></section><section id="verify" aria-labelledby="verify-heading"><h2 id="verify-heading">07 / 复算：一轮乘性更新是否保持非负并降低损失？</h2>
+<pre class="codeblock"><code>V=[[2.,1.,0.],[1.,2.,1.],[0.,1.,2.]]
+W=[[1.,.2],[.2,1.],[.5,.5]]
+H=[[1.,.5,.2],[.2,.5,1.]]
+def mm(A,B):
+    return [[sum(A[i][k]*B[k][j] for k in range(len(B)))
+             for j in range(len(B[0]))] for i in range(len(A))]
+def tr(A): return [list(row) for row in zip(*A)]
+def loss(W,H):
+    R=mm(W,H)
+    return .5*sum((V[i][j]-R[i][j])**2
+                  for i in range(3) for j in range(3))
+def hadamard_ratio(A,N,D):
+    return [[A[i][j]*N[i][j]/D[i][j]
+             for j in range(len(A[0]))] for i in range(len(A))]
+before=loss(W,H)
+Wt=tr(W)
+H=hadamard_ratio(H,mm(Wt,V),mm(mm(Wt,W),H))
+Ht=tr(H)
+W=hadamard_ratio(W,mm(V,Ht),mm(mm(W,H),Ht))
+after=loss(W,H)
+assert before &gt; after
+assert all(x&gt;=0 for row in W+H for x in row)
+assert abs(before-3.0666)&lt;1e-10
+assert abs(after-1.09663175479187)&lt;1e-10
+print(&quot;Frobenius loss:&quot;,before,&quot;-&gt;&quot;,after)</code></pre>
+<p>预期损失从 3.066600 降到约 1.096632，且所有因子元素仍非负。这只验证该初始化的一次更新；不能据此证明全局最优、因子唯一或对其他初始化也有相同下降幅度。</p></section><section id="references" aria-labelledby="references-heading"><h2 id="references-heading">参考资料与进一步阅读</h2><ul class="source-list"><li><a href="https://www.cs.cornell.edu/courses/cs6241/2020sp/readings/Lee-Seung-2001-NMF.pdf">Lee &amp; Seung (2001), Algorithms for Non-negative Matrix Factorization</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html">scikit-learn NMF：目标函数、CD/MU 求解器与 beta divergence</a></li><li><a href="https://epubs.siam.org/doi/book/10.1137/1.9781611976410">Gillis, Nonnegative Matrix Factorization：identifiability and algorithms</a></li><li><a href="https://arxiv.org/abs/1604.00653">Pan &amp; Doshi-Velez (2016), A Characterization of the Non-Uniqueness of NMF</a></li></ul><p class="article-note">矩阵维度与向量化约定在本页固定为实数域、列优先 vec；复数情形将转置替换为共轭转置。</p></section></div><nav class="article-nav" aria-label="前后章节"><a href="19.html">← 上一章</a><a href="21.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>高级矩阵分析 / 第 20 章</span><a href="../index.html">返回课程首页</a></footer></body></html>
