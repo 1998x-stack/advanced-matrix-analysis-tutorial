@@ -119,7 +119,7 @@ class MatrixExamples(unittest.TestCase):
         self.assertEqual(sum(x>0 for x in shrunk),2)
         m,z,u,rho=3.,1.,.2,2.
         x=(m+rho*(z-u))/(1+rho)
-        self.assertAlmostEqual(x,1.8666666666666667)
+        self.assertAlmostEqual(x,1.5333333333333332)
         self.assertAlmostEqual(z-u,.8)
     def test_stiefel_tangent_projection(self):
         X=((1.,0.),(0.,1.),(0.,0.))
