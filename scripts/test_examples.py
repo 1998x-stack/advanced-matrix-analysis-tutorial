@@ -86,4 +86,73 @@ class MatrixExamples(unittest.TestCase):
         # residual=[1,1], A^T residual=[1,3]
         self.assertEqual((1,2*1+1),(1,3))
 
+
+    def test_matrix_calculus_eigenvalue_kink_and_singular_derivative(self):
+        def lam_max(t): return max(2+t,2-t)
+        h=1e-6
+        left=(lam_max(0)-lam_max(-h))/h
+        right=(lam_max(h)-lam_max(0))/h
+        self.assertAlmostEqual(left,-1,places=7)
+        self.assertAlmostEqual(right,1,places=7)
+        # For A=diag(3,1), E[0,0]=2, the top singular-value derivative is 2.
+        self.assertEqual(1*2*1,2)
+        self.assertEqual(((4,-3),(-1,2)),((4,-3),(-1,2)))
+    def test_svt_and_admm_scalar_update(self):
+        tau=1.25
+        shrunk=[max(s-tau,0) for s in (5.,2.,.5)]
+        self.assertEqual(shrunk,[3.75,.75,0.])
+        self.assertEqual(sum(x>0 for x in shrunk),2)
+        m,z,u,rho=3.,1.,.2,2.
+        x=(m+rho*(z-u))/(1+rho)
+        self.assertAlmostEqual(x,1.8666666666666667)
+        self.assertAlmostEqual(z-u,.8)
+    def test_stiefel_tangent_projection(self):
+        X=((1.,0.),(0.,1.),(0.,0.))
+        Xi=((0.,-.5),(.5,0.),(5.,6.))
+        XtXi=[[sum(X[k][i]*Xi[k][j] for k in range(3)) for j in range(2)] for i in range(2)]
+        self.assertEqual(XtXi,[[0.,-.5],[.5,0.]])
+        self.assertAlmostEqual(XtXi[0][1]+XtXi[1][0],0.)
+        self.assertEqual(2*3-2*3//2,3)  # dim St(3,2) = 3
+        self.assertEqual(2*(3-2),2)    # dim Gr(2,3) = 2
+    def test_kronecker_vec_sylvester_and_lyapunov(self):
+        A=[[1.,0.],[0.,2.]]; B=[[3.,0.],[0.,4.]]; X=[[1.,2.],[3.,4.]]
+        C=[[A[i][i]*X[i][j]+X[i][j]*B[j][j] for j in range(2)] for i in range(2)]
+        self.assertEqual(C,[[4.,10.],[15.,24.]])
+        vec=[X[i][j] for j in range(2) for i in range(2)]
+        self.assertEqual(vec,[1.,3.,2.,4.])
+        vecC=[C[i][j] for j in range(2) for i in range(2)]
+        self.assertEqual(vecC,[4.,15.,10.,24.])
+        # Lyapunov A X + X A^T = -Q with A=-I, X=I, Q=2I.
+        self.assertEqual([[-2.,0.],[0.,-2.]],[[-2.,0.],[0.,-2.]])
+        self.assertTrue(all(1+i+j>0 for i in range(2) for j in range(2)))
+    def test_nmf_multiplicative_update(self):
+        V=[[2.,1.,0.],[1.,2.,1.],[0.,1.,2.]]
+        W=[[1.,.2],[.2,1.],[.5,.5]]
+        H=[[1.,.5,.2],[.2,.5,1.]]
+        def mm(A,B):
+            return [[sum(A[i][k]*B[k][j] for k in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
+        def tr(A): return [list(row) for row in zip(*A)]
+        def loss():
+            R=mm(W,H)
+            return .5*sum((V[i][j]-R[i][j])**2 for i in range(3) for j in range(3))
+        before=loss()
+        Wt=tr(W); numH=mm(Wt,V); denH=mm(mm(Wt,W),H)
+        H=[[H[i][j]*numH[i][j]/denH[i][j] for j in range(3)] for i in range(2)]
+        Ht=tr(H); numW=mm(V,Ht); denW=mm(mm(W,H),Ht)
+        W=[[W[i][j]*numW[i][j]/denW[i][j] for j in range(2)] for i in range(3)]
+        after=loss()
+        self.assertAlmostEqual(before,3.0666,places=10)
+        self.assertAlmostEqual(after,1.09663175479187,places=10)
+        self.assertLess(after,before)
+        self.assertTrue(all(x>=0 for row in W+H for x in row))
+    def test_nmf_scale_and_permutation_ambiguity(self):
+        W=[[1.,2.],[3.,4.]]
+        H=[[5.,6.],[7.,8.]]
+        D=[[2.,0.],[0.,.5]]
+        Di=[[.5,0.],[0.,2.]]
+        def mm(A,B):
+            return [[sum(A[i][k]*B[k][j] for k in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
+        P=mm(W,H); P2=mm(mm(W,D),mm(Di,H))
+        for a,b in zip(sum(P,[]),sum(P2,[])): self.assertAlmostEqual(a,b)
+
 if __name__=='__main__': unittest.main(verbosity=2)

@@ -3,7 +3,7 @@
 
 Usage:
   python scripts/build_site.py
-  python scripts/browser_qa.py --output qa/batch-11-15
+  python scripts/browser_qa.py --output qa/batch-16-20
 
 Requires Playwright and a downloaded Chromium browser.
 """
@@ -19,13 +19,13 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "_site"
-BATCH = [f"chapters/{n:02}.html" for n in range(11,16)]
+BATCH = [f"chapters/{n:02}.html" for n in range(16,21)]
 PAGES = ["index.html"] + BATCH
-VIEWPORTS = [(1440,900),(390,844),(360,780)]
+VIEWPORTS = [(1440,900),(768,900),(390,844),(360,780)]
 
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument("--output",default="qa/batch-11-15")
+    parser.add_argument("--output",default="qa/batch-16-20")
     args=parser.parse_args()
     out=ROOT / args.output
     out.mkdir(parents=True,exist_ok=True)
@@ -98,13 +98,20 @@ def main():
                             now=output.inner_text()
                             lab_ok=now!=old
                             if not lab_ok:failures.append(f"{file} {width}: lab output unchanged")
+                    page.emulate_media(media="print")
+                    print_overflow=page.evaluate("document.documentElement.scrollWidth > window.innerWidth + 1")
+                    page.emulate_media(media="screen")
+                    if print_overflow: failures.append(f"{file} {width}: print overflow")
                     name=file.replace("/","-").replace(".html","")
                     shot=out/f"{name}-{width}.png"
                     page.screenshot(path=str(shot),full_page=True)
+                    page.keyboard.press("Tab")
+                    keyboard_focus=page.evaluate("document.activeElement && document.activeElement.tagName !== 'BODY'")
+                    if not keyboard_focus: failures.append(f"{file} {width}: keyboard focus missing")
                     rows.append(dict(file=file,width=width,height=height,title=title,
                                      h1=h1,math=math,broken_images=broken,overflow=overflow,
-                                     math_bad_geometry=bad_math,js_errors=new_errors,
-                                     interactive=lab_ok,screenshot=str(shot.relative_to(ROOT))))
+                                     math_bad_geometry=bad_math,print_overflow=print_overflow,js_errors=new_errors,
+                                     interactive=lab_ok,keyboard_focus=keyboard_focus,screenshot=str(shot.relative_to(ROOT))))
                 context.close()
             browser.close()
     finally:
