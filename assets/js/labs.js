@@ -76,6 +76,44 @@ document.querySelectorAll('[data-lab]').forEach(lab => {
       const central = (plus-minus)/(2*h);
       output.textContent = 'h=1e−' + n + '；中心差分 '
         + central.toFixed(8) + '；解析方向导数 −2.00000000。';
+    } else if (kind === 'svd-gap') {
+      const gap = n, next = 2-gap;
+      output.textContent = 'Δ=' + gap.toFixed(1)
+        + '：σ₂=2，σ₃=' + next.toFixed(1) + '；'
+        + (gap > 1e-9
+          ? '截断位置有间隙，最佳 rank-2 近似唯一。'
+          : '截断处并列，最佳 rank-2 近似不唯一。');
+    } else if (kind === 'svt') {
+      const tau = n, s = [5,2,.5].map(v => Math.max(v-tau,0));
+      const kept = s.filter(v => v>0).map(v => v.toFixed(2));
+      output.textContent = 'τ=' + tau.toFixed(2) + '：保留奇异值 ['
+        + kept.join(', ') + ']，输出秩为 ' + kept.length + '。';
+    } else if (kind === 'stiefel') {
+      const defect = n*n*Math.sqrt(25.25**2 + 36.25**2 + 2*30**2);
+      output.textContent = 'η=' + n.toFixed(2)
+        + '：试探点 Gram 误差 ‖XtrialᵀXtrial−I‖F≈'
+        + defect.toFixed(4) + '；QR retraction 后为数值零。';
+    } else if (kind === 'sylvester') {
+      const x = 1/n;
+      output.textContent = 'δ=' + n.toFixed(1)
+        + '：标量 Sylvester 子问题 δx=1 的解 x='
+        + x.toFixed(3) + '；δ 越接近 0，解对扰动越敏感。';
+    } else if (kind === 'nmf') {
+      const V=[[2,1,0],[1,2,1],[0,1,2]];
+      let W=[[1,.2],[.2,1],[.5,.5]];
+      let H=[[1,.5,.2],[.2,.5,1]];
+      const mul=(A,B)=>A.map(row=>B[0].map((_,j)=>row.reduce((s,v,k)=>s+v*B[k][j],0)));
+      const tr=A=>A[0].map((_,j)=>A.map(row=>row[j]));
+      const objective=()=>{const R=mul(W,H);return .5*R.reduce((s,row,i)=>s+row.reduce((z,v,j)=>z+(V[i][j]-v)**2,0),0);};
+      const initial=objective();
+      for(let k=0;k<n;k++){
+        const Wt=tr(W), numH=mul(Wt,V), denH=mul(mul(Wt,W),H);
+        H=H.map((row,i)=>row.map((v,j)=>denH[i][j]===0?0:v*numH[i][j]/denH[i][j]));
+        const Ht=tr(H), numW=mul(V,Ht), denW=mul(mul(W,H),Ht);
+        W=W.map((row,i)=>row.map((v,j)=>denW[i][j]===0?0:v*numW[i][j]/denW[i][j]));
+      }
+      output.textContent=n+' 轮完整 H/W 更新：损失 '
+        +objective().toFixed(6)+'（初始 '+initial.toFixed(6)+'），因子保持非负。';
     }
   }
   field.addEventListener('input', show);

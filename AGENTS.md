@@ -9,7 +9,7 @@
 - 唯一课程目录源：`courses.json`。章节正文放在 `chapters/NN.html`，01–28 编号稳定。
 - 根目录 `NN.html` 是历史入口的兼容重定向，禁止移除。
 - 新版 CSS 放在 `assets/css/site.css`；新增交互逻辑集中 `assets/js/labs.js`；插图放在 `assets/figures`。
-- 06–28 的旧版仍依赖 `chapters/theme.css`；没有逐篇审校前不能标为“深度图解”。
+- 21–28 的旧版仍依赖 `chapters/theme.css`；没有逐篇审校前不能标为“深度图解”。
 - 在 `docs/evidence.json` 记录有来源支持的陈述及日期；课内题目必须有清楚假设。
 
 ## 每篇文章必须满足
@@ -53,3 +53,12 @@
 - **14 扰动**：Weyl 用 Hermitian/实对称，Davis–Kahan 明确谱隔离，Bauer–Fike 限可对角化；示意圆盘非真实特征轨迹。
 - **15 导数**：必须声明分子/分母布局或 Frobenius 梯度；伴随变换和微分乘积次序不能混淆。
 - 第 11–15 章新增实验必须在 `scripts/test_examples.py` 有确定性验证。
+
+
+## 第四批风险审计（16–20）
+- **16 矩阵微分进阶**：迹只允许循环置换；Jacobi 伴随矩阵形式对奇异 A 仍成立，逆矩阵形式要求可逆；简单根导数与重根方向导数区分；奇异值导数要求简单正奇异值；矩阵函数的差商在重复特征值处用 f′ 延拓。
+- **17 矩阵优化**：投影梯度的全局凸收敛依赖 f 凸/L-smooth 与闭凸 C；非凸投影无一般全局保证；核范数 prox 是奇异值阈值化；ADMM 需检查原始/对偶残差，非凸变体不套用标准凸定理。
+- **18 流形优化**：Stiefel/Grassmann 的变量含义不同；投影公式注明嵌入 Frobenius 度量；Grassmann 使用商空间/水平表示；retraction 需满列秩，QR 符号约定需稳定。
+- **19 Kronecker 与矩阵方程**：vec 固定列优先；Sylvester 唯一解条件是谱集合无交；Bartels–Stewart 用 Schur 结构而非显式构造大 Kronecker 矩阵；Lyapunov 方程右端符号与软件接口一致。
+- **20 NMF**：W/H 形状与数据转置约定明确；Frobenius 与 KL/IS 更新不可混用；经典乘性更新的单调性前提与 epsilon 工程修改分开；非负约束不保证因子唯一或语义部件。
+- 第 16–20 章交互实验默认值必须与图文和 Python 回归测试使用同一数值算例。
