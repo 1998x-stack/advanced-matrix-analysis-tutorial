@@ -7,3 +7,6 @@
 @media (max-width:480px){.article-body figure{overflow-x:auto;overscroll-behavior-x:contain}.article-body figure img{width:100%;min-width:660px;height:auto}.article-body figcaption{max-width:100%;min-width:0}}
 
 @media print{.article-body figure{overflow:visible!important}.article-body figure img{min-width:0!important;width:100%!important}}
+
+/* Keep long MathML expressions visible from the left edge on narrow screens. */
+@media(max-width:480px){.article-body .equation{display:block;overflow-x:auto;white-space:nowrap;text-align:left}.article-body .equation math{display:inline-block;min-width:max-content;vertical-align:middle}.article-body .equation .eq-tag{display:inline-block;margin-left:1rem;vertical-align:middle}}
