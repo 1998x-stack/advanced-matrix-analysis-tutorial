@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" role="img" aria-labelledby="pp-title pp-desc"><title id="pp-title">投影梯度把迭代拉回约束集，近端算子把坐标软阈值</title><desc id="pp-desc">左图：约束集 C 是平面上的圆盘，梯度步 Y 落在集合外，投影 Π_C(Y) 取到 C 上最近点。右图：一维软阈值 S_λ(y)=sign(y)max(|y|−λ,0) 在 |y|≤λ 的死区内输出为零，其余部分整体平移 λ。</desc><rect width="900" height="380" rx="14" fill="#fffdf9" stroke="#dce3df"/>
+<circle cx="220" cy="190" r="120" fill="#e8f4f2" stroke="#147f80" stroke-width="2"/>
+<circle cx="116" cy="130" r="5" fill="#c66345"/>
+<circle cx="55" cy="95" r="5" fill="#7461ba"/>
+<path d="M116 130 L63 99" stroke="#7461ba" stroke-width="2" fill="none"/>
+<path d="M63 99 L116 130" stroke="#c66345" stroke-width="2" fill="none" marker-end="url(#pp-arrow)"/>
+<defs><marker id="pp-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1 1 L8 4.5 L1 8" fill="none" stroke="#c66345" stroke-width="1.6"/></marker></defs>
+<text x="196" y="196" font-size="15" fill="#147f80" font-family="sans-serif">C</text>
+<text x="128" y="126" font-size="14" fill="#c66345" font-family="sans-serif">Xₜ=Π_C(Y)</text>
+<text x="8" y="88" font-size="14" fill="#7461ba" font-family="sans-serif">Y（梯度步）</text>
+<text x="40" y="330" font-size="15" fill="#53676d" font-family="sans-serif">投影：min_X‖X−Y‖ 且 X∈C</text>
+<line x1="460" y1="20" x2="460" y2="360" stroke="#dce3df" stroke-width="1.5"/>
+<line x1="500" y1="190" x2="876" y2="190" stroke="#53676d" stroke-width="1.4"/>
+<line x1="680" y1="45" x2="680" y2="340" stroke="#53676d" stroke-width="1.4"/>
+<text x="880" y="196" font-size="14" fill="#53676d" font-family="sans-serif">y</text>
+<text x="686" y="55" font-size="14" fill="#53676d" font-family="sans-serif">S_λ(y)</text>
+<path d="M522.5,347.5 L837.5,32.5" stroke="#53676d" stroke-width="1.2" stroke-dasharray="5 5"/>
+<path d="M500,325 L635,190 L725,190 L860,55" stroke="#c66345" stroke-width="2.8" fill="none"/>
+<line x1="635" y1="190" x2="725" y2="190" stroke="#147f80" stroke-width="6"/>
+<text x="612" y="215" font-size="14" fill="#147f80" font-family="sans-serif">死区 |y|≤λ → 0</text>
+<text x="760" y="120" font-size="14" fill="#53676d" font-family="sans-serif">虚线：y 本身</text>
+<text x="486" y="330" font-size="15" fill="#53676d" font-family="sans-serif">软阈值：prox 的闭式解</text></svg>
