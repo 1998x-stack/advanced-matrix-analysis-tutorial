@@ -1,0 +1,18 @@
+name: Validate content
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  static-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/validate_site.py
+      - run: python scripts/build_site.py
+      - run: test -f _site/chapters/05.html && test -f _site/index.html

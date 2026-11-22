@@ -12,7 +12,8 @@
         "历史脉络",
         "预备知识"
       ],
-      "file": "01.html"
+      "file": "chapters/01.html",
+      "status": "illustrated"
     },
     {
       "num": "02",
@@ -22,7 +23,8 @@
         "基变换",
         "秩-零化度定理"
       ],
-      "file": "02.html"
+      "file": "chapters/02.html",
+      "status": "illustrated"
     },
     {
       "num": "03",
@@ -33,7 +35,8 @@
         "分块运算",
         "Hadamard积"
       ],
-      "file": "03.html"
+      "file": "chapters/03.html",
+      "status": "illustrated"
     },
     {
       "num": "04",
@@ -44,7 +47,8 @@
         "对偶范数",
         "范数等价性"
       ],
-      "file": "04.html"
+      "file": "chapters/04.html",
+      "status": "illustrated"
     },
     {
       "num": "05",
@@ -54,7 +58,8 @@
         "谱半径",
         "Gershgorin圆盘定理"
       ],
-      "file": "05.html"
+      "file": "chapters/05.html",
+      "status": "illustrated"
     },
     {
       "num": "06",
@@ -65,7 +70,8 @@
         "广义特征向量",
         "实Jordan形"
       ],
-      "file": "06.html"
+      "file": "chapters/06.html",
+      "status": "legacy"
     },
     {
       "num": "07",
@@ -75,7 +81,8 @@
         "矩阵指数",
         "微分方程应用"
       ],
-      "file": "07.html"
+      "file": "chapters/07.html",
+      "status": "legacy"
     },
     {
       "num": "08",
@@ -86,7 +93,8 @@
         "Cholesky分解",
         "数值稳定性"
       ],
-      "file": "08.html"
+      "file": "chapters/08.html",
+      "status": "legacy"
     },
     {
       "num": "09",
@@ -97,7 +105,8 @@
         "Givens旋转",
         "最小二乘"
       ],
-      "file": "09.html"
+      "file": "chapters/09.html",
+      "status": "legacy"
     },
     {
       "num": "10",
@@ -108,7 +117,8 @@
         "Courant-Fischer",
         "极分解"
       ],
-      "file": "10.html"
+      "file": "chapters/10.html",
+      "status": "legacy"
     },
     {
       "num": "11",
@@ -119,7 +129,8 @@
         "PCA",
         "图像压缩"
       ],
-      "file": "11.html"
+      "file": "chapters/11.html",
+      "status": "legacy"
     },
     {
       "num": "12",
@@ -130,7 +141,8 @@
         "广义特征值",
         "矩阵束"
       ],
-      "file": "12.html"
+      "file": "chapters/12.html",
+      "status": "legacy"
     },
     {
       "num": "13",
@@ -140,7 +152,8 @@
         "最小范数解",
         "Tikhonov正则化"
       ],
-      "file": "13.html"
+      "file": "chapters/13.html",
+      "status": "legacy"
     },
     {
       "num": "14",
@@ -151,7 +164,8 @@
         "Davis-Kahan定理",
         "Bauer-Fike定理"
       ],
-      "file": "14.html"
+      "file": "chapters/14.html",
+      "status": "legacy"
     },
     {
       "num": "15",
@@ -162,7 +176,8 @@
         "链式法则",
         "速查表"
       ],
-      "file": "15.html"
+      "file": "chapters/15.html",
+      "status": "legacy"
     },
     {
       "num": "16",
@@ -173,7 +188,8 @@
         "特征值导数",
         "截断SVD导数"
       ],
-      "file": "16.html"
+      "file": "chapters/16.html",
+      "status": "legacy"
     },
     {
       "num": "17",
@@ -184,7 +200,8 @@
         "ADMM",
         "矩阵补全"
       ],
-      "file": "17.html"
+      "file": "chapters/17.html",
+      "status": "legacy"
     },
     {
       "num": "18",
@@ -194,7 +211,8 @@
         "Grassmann流形",
         "Riemannian梯度下降"
       ],
-      "file": "18.html"
+      "file": "chapters/18.html",
+      "status": "legacy"
     },
     {
       "num": "19",
@@ -205,7 +223,8 @@
         "Sylvester方程",
         "Lyapunov方程"
       ],
-      "file": "19.html"
+      "file": "chapters/19.html",
+      "status": "legacy"
     },
     {
       "num": "20",
@@ -216,7 +235,8 @@
         "主题建模",
         "深度NMF"
       ],
-      "file": "20.html"
+      "file": "chapters/20.html",
+      "status": "legacy"
     },
     {
       "num": "21",
@@ -227,7 +247,8 @@
         "矩阵补全",
         "鲁棒PCA"
       ],
-      "file": "21.html"
+      "file": "chapters/21.html",
+      "status": "legacy"
     },
     {
       "num": "22",
@@ -238,7 +259,8 @@
         "随机SVD",
         "双下降"
       ],
-      "file": "22.html"
+      "file": "chapters/22.html",
+      "status": "legacy"
     },
     {
       "num": "23",
@@ -249,7 +271,8 @@
         "Khatri-Rao积",
         "张量秩"
       ],
-      "file": "23.html"
+      "file": "chapters/23.html",
+      "status": "legacy"
     },
     {
       "num": "24",
@@ -260,7 +283,8 @@
         "HOSVD",
         "截断HOSVD"
       ],
-      "file": "24.html"
+      "file": "chapters/24.html",
+      "status": "legacy"
     },
     {
       "num": "25",
@@ -271,7 +295,8 @@
         "层级Tucker",
         "DNN压缩"
       ],
-      "file": "25.html"
+      "file": "chapters/25.html",
+      "status": "legacy"
     },
     {
       "num": "26",
@@ -282,7 +307,8 @@
         "谱归一化",
         "PMM"
       ],
-      "file": "26.html"
+      "file": "chapters/26.html",
+      "status": "legacy"
     },
     {
       "num": "27",
@@ -293,7 +319,8 @@
         "四元数SVD",
         "自动微分"
       ],
-      "file": "27.html"
+      "file": "chapters/27.html",
+      "status": "legacy"
     },
     {
       "num": "28",
@@ -303,7 +330,8 @@
         "推荐系统",
         "SVD/NMF实战"
       ],
-      "file": "28.html"
+      "file": "chapters/28.html",
+      "status": "legacy"
     }
   ]
 }
