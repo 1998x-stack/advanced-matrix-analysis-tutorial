@@ -76,6 +76,15 @@ document.querySelectorAll('[data-lab]').forEach(lab => {
       const central = (plus-minus)/(2*h);
       output.textContent = 'h=1e−' + n + '；中心差分 '
         + central.toFixed(8) + '；解析方向导数 −2.00000000。';
+    } else if (kind === 'kron-dim') {
+      const size = [10, 100, 1000][Number(raw)];
+      const elems = size * size * size * size, bytes = elems * 8;
+      const fmt = bytes >= 1e12 ? (bytes/1e12).toFixed(2) + ' TB'
+        : bytes >= 1e9 ? (bytes/1e9).toFixed(2) + ' GB'
+        : bytes >= 1e6 ? (bytes/1e6).toFixed(2) + ' MB' : bytes + ' B';
+      output.textContent = 'A、B 均为 ' + size + '×' + size + '：A⊗B 为 '
+        + (size*size) + '×' + (size*size) + '，元素数 n⁴='
+        + elems.toExponential(2) + '，float64 约 ' + fmt + '。';
     }
   }
   field.addEventListener('input', show);
