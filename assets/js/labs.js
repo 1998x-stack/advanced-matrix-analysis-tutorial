@@ -85,6 +85,11 @@ document.querySelectorAll('[data-lab]').forEach(lab => {
       output.textContent = 'A、B 均为 ' + size + '×' + size + '：A⊗B 为 '
         + (size*size) + '×' + (size*size) + '，元素数 n⁴='
         + elems.toExponential(2) + '，float64 约 ' + fmt + '。';
+    } else if (kind === 'nmf-rank') {
+      const r = Number(raw);
+      output.textContent = r === 1
+        ? 'r=1：残差 ‖A−WH‖_F = 0.3660；相对误差 6.68%。'
+        : 'r=2：残差 0.0000；相对误差 0.00%（W=A、H=I 即精确重建）。';
     }
   }
   field.addEventListener('input', show);

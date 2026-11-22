@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" role="img" aria-labelledby="nmf-title nmf-desc"><title id="nmf-title">非负矩阵分解：数据由非负基部件叠加而成</title><desc id="nmf-desc">A≈WH：W 的每一列是一个非负基部件（眼、鼻、嘴等局部模式），H 是非负系数矩阵。与 SVD 不同，所有因子非负，因此数据只能由部件相加得到，不允许正负相消。</desc><rect width="900" height="340" rx="14" fill="#fffdf9" stroke="#dce3df"/>
+<text x="30" y="142" font-size="15" fill="#53676d" font-family="sans-serif">A ≥ 0　(m×n)</text>
+<rect x="30" y="150" width="80" height="110" fill="#e8f4f2" stroke="#203035" stroke-width="1.6"/>
+<text x="120" y="214" font-size="26" fill="#203035" font-family="serif">≈</text>
+<text x="165" y="112" font-size="15" fill="#53676d" font-family="sans-serif">W ≥ 0　(m×r)</text>
+<rect x="165" y="120" width="72" height="150" fill="#fff" stroke="#203035" stroke-width="1.6"/>
+<line x1="189" y1="120" x2="189" y2="270" stroke="#203035" stroke-width="1"/>
+<line x1="213" y1="120" x2="213" y2="270" stroke="#203035" stroke-width="1"/>
+<text x="171" y="200" font-size="14" fill="#147f80" font-family="sans-serif">眼</text>
+<text x="195" y="200" font-size="14" fill="#c66345" font-family="sans-serif">鼻</text>
+<text x="219" y="200" font-size="14" fill="#7461ba" font-family="sans-serif">嘴</text>
+<text x="165" y="288" font-size="14" fill="#53676d" font-family="sans-serif">列=局部部件</text>
+<text x="258" y="214" font-size="26" fill="#203035" font-family="serif">×</text>
+<text x="300" y="142" font-size="15" fill="#53676d" font-family="sans-serif">H ≥ 0　(r×n)</text>
+<rect x="300" y="150" width="150" height="110" fill="#fff" stroke="#203035" stroke-width="1.6"/>
+<line x1="300" y1="186.7" x2="450" y2="186.7" stroke="#203035" stroke-width="1"/>
+<line x1="300" y1="223.3" x2="450" y2="223.3" stroke="#203035" stroke-width="1"/>
+<text x="308" y="174" font-size="14" fill="#53676d" font-family="sans-serif">0.8　0.0　0.2</text>
+<text x="308" y="211" font-size="14" fill="#53676d" font-family="sans-serif">0.3　0.5　0.1</text>
+<text x="308" y="248" font-size="14" fill="#53676d" font-family="sans-serif">0.5　0.4　0.0</text>
+<line x1="510" y1="24" x2="510" y2="316" stroke="#dce3df" stroke-width="1.5"/>
+<text x="540" y="70" font-size="15" fill="#203035" font-family="sans-serif">NMF：A ≈ WH，因子全非负</text>
+<text x="540" y="100" font-size="14" fill="#53676d" font-family="sans-serif">数据 = 非负部件之和，系数即“用了多少”。</text>
+<text x="540" y="122" font-size="14" fill="#53676d" font-family="sans-serif">可验证观察：H 的每列非负，故重建只能相加。</text>
+<text x="540" y="180" font-size="15" fill="#203035" font-family="sans-serif">SVD：A = UΣVᵀ，因子可正可负</text>
+<text x="540" y="210" font-size="14" fill="#53676d" font-family="sans-serif">允许正负相消，逼近更优但部件不一定是局部。</text>
+<text x="540" y="232" font-size="14" fill="#53676d" font-family="sans-serif">非负约束换来可解释性，代价是解不唯一。</text>
+<text x="540" y="288" font-size="14" fill="#c66345" font-family="sans-serif">注意：图为人脸分解的示意，非真实数据。</text></svg>
