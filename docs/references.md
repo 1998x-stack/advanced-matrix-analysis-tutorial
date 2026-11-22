@@ -15,6 +15,12 @@
 | 09 | Householder QR | [LAPACK DGEQRF](https://www.netlib.org/lapack/explore-html/d0/da1/group__geqrf_gade26961283814bb4e62183d9133d8bf5.html) |
 | 10 | Rayleigh、Courant–Fischer | [MMiDS Textbook](https://mmids-textbook.github.io/chap05_specgraph/03_extremal/roch-mmids-specgraph-extremal.html) |
 
+| 11 | 奇异值、截断低秩最优性 | [LAPACK DGESVD](https://www.netlib.org/lapack/explore-html/d1/d7f/group__gesvd_gac6bd5d4e645049e49bb70691180abf07.html) |
+| 12 | 复/实 Schur、广义 QZ | [DGEES](https://netlib.org/lapack/explore-html/d5/d38/group__gees_gab48df0b5c60d7961190d868087f485bc.html) · [DGGES](https://www.netlib.org/lapack/explore-html/d7/d25/group__gges_ga556be4f39b39e5008c8eb36814aa7e20.html) |
+| 13 | 秩亏最小二乘、最小范数伪逆 | [LAPACK DGELSD](https://www.netlib.org/lapack/explore-html/d9/d67/group__gelsd_ga0bee7e1b9e7e43f59ecf2419b2759c42.html) |
+| 14 | Weyl、Davis–Kahan、Bauer–Fike | [Cornell CS 6210](https://www.cs.cornell.edu/courses/cs6210/2025fa/lec/2025-11-03.html) · [Eigenvalue Perturbation](https://tbetcke.github.io/math0058_lecture_notes/eigenvalues_perturbation_theory.html) |
+| 15 | 微分、迹技巧与梯度约定 | [The Matrix Cookbook](https://www2.imm.dtu.dk/pubdb/pubs/3274-full.html) |
+
 ## 不可混淆的数学前提
 
 - Jordan 标准形的“总是存在”结论默认在复数域；直接数值求 Jordan 形对扰动敏感。

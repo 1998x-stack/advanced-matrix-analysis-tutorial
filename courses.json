@@ -130,7 +130,7 @@
         "图像压缩"
       ],
       "file": "chapters/11.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "12",
@@ -142,7 +142,7 @@
         "矩阵束"
       ],
       "file": "chapters/12.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "13",
@@ -153,7 +153,7 @@
         "Tikhonov正则化"
       ],
       "file": "chapters/13.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "14",
@@ -165,7 +165,7 @@
         "Bauer-Fike定理"
       ],
       "file": "chapters/14.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "15",
@@ -177,7 +177,7 @@
         "速查表"
       ],
       "file": "chapters/15.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "16",

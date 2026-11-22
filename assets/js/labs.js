@@ -49,6 +49,33 @@ document.querySelectorAll('[data-lab]').forEach(lab => {
       const cosine = Math.cos(n*Math.PI/180), r = 1+2*cosine*cosine;
       output.textContent = 'θ=' + n + '°：R_A(x)=' + r.toFixed(4)
         + '（范围 [1,3]；θ 从主特征方向计量）。';
+    } else if (kind === 'svd-rank') {
+      const k = Number(raw), error = k === 0 ? Math.sqrt(29) : k === 1 ? 2 : 0;
+      const kept = k === 0 ? '[]' : k === 1 ? '[5]' : '[5,2]';
+      const fraction = k === 0 ? 0 : k === 1 ? 25/29 : 1;
+      output.textContent = 'k=' + k + '：保留 ' + kept + '；Frobenius 误差 '
+        + error.toFixed(4) + '；能量比例 ' + (fraction*100).toFixed(2) + '%。';
+    } else if (kind === 'qz-beta') {
+      output.textContent = raw === 'finite'
+        ? 'α=2，β=1：λ=α/β=2，有限广义特征值。'
+        : 'α=3，β=0：齐次广义特征值在无穷远，不可直接求 B⁻¹A。';
+    } else if (kind === 'ridge') {
+      const x = 4/(4+n);
+      output.textContent = 'λ=' + n.toFixed(2)
+        + '：xλ=(' + x.toFixed(4) + ',0)；预测 Ax=('
+        + (2*x).toFixed(4) + ',0)。';
+    } else if (kind === 'gap') {
+      const theta = 0.5*Math.atan(2*n)*180/Math.PI;
+      const bound = n/(1-n);
+      output.textContent = 'ε=' + n.toFixed(2)
+        + '：实际旋转 ' + theta.toFixed(3)
+        + '°；由原间隙得到的保守 sinθ 界 '
+        + bound.toFixed(3) + '。';
+    } else if (kind === 'gradient') {
+      const h = 10**(-n), plus = (1-h)**2, minus = (1+h)**2;
+      const central = (plus-minus)/(2*h);
+      output.textContent = 'h=1e−' + n + '；中心差分 '
+        + central.toFixed(8) + '；解析方向导数 −2.00000000。';
     }
   }
   field.addEventListener('input', show);

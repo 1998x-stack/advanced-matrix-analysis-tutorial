@@ -1,5 +1,5 @@
 {
-  "scope": "chapters 01-10",
+  "scope": "chapters 01-15",
   "version": "2026-11-22",
   "claims": [
     {
@@ -36,6 +36,31 @@
       "chapter": "10",
       "claim": "Courant-Fischer characterizes ordered symmetric eigenvalues via subspace optimization",
       "source": "https://mmids-textbook.github.io/chap05_specgraph/03_extremal/roch-mmids-specgraph-extremal.html"
+    },
+    {
+      "chapter": "11",
+      "claim": "SVD of an arbitrary real matrix A=U Sigma V^T with nonnegative singular values",
+      "source": "https://www.netlib.org/lapack/explore-html/d1/d7f/group__gesvd_gac6bd5d4e645049e49bb70691180abf07.html"
+    },
+    {
+      "chapter": "12",
+      "claim": "DGEES computes real Schur form; DGGES computes generalized real Schur with alpha beta eigenvalue pairs",
+      "source": "https://www.netlib.org/lapack/explore-html/d7/d25/group__gges_ga556be4f39b39e5008c8eb36814aa7e20.html"
+    },
+    {
+      "chapter": "13",
+      "claim": "DGELSD computes minimum norm least squares solutions even for rank-deficient matrices",
+      "source": "https://www.netlib.org/lapack/explore-html/d9/d67/group__gelsd_ga0bee7e1b9e7e43f59ecf2419b2759c42.html"
+    },
+    {
+      "chapter": "14",
+      "claim": "Davis-Kahan requires spectral gap and Bauer-Fike controls perturbations for diagonalizable matrices",
+      "source": "https://www.cs.cornell.edu/courses/cs6210/2025fa/lec/2025-11-03.html"
+    },
+    {
+      "chapter": "15",
+      "claim": "matrix differential and trace gradient identities with explicitly stated layout",
+      "source": "https://www2.imm.dtu.dk/pubdb/pubs/3274-full.html"
     }
   ]
 }
