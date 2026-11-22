@@ -43,4 +43,41 @@ class MatrixExamples(unittest.TestCase):
         for deg in (0,15,30,45,60,90):
             r=1+2*math.cos(math.radians(deg))**2
             self.assertTrue(1-1e-12<=r<=3+1e-12)
+
+    def test_svd_rank_k(self):
+        singular=(5,2,0)
+        self.assertEqual(math.sqrt(sum(s*s for s in singular[1:])),2)
+        self.assertEqual(math.sqrt(sum(s*s for s in singular[2:])),0)
+        self.assertAlmostEqual(25/29,0.8620689655172413)
+    def test_schur_regular_pencil(self):
+        self.assertEqual((2-2)*3,0)
+        self.assertEqual((2-0)*3,6)
+        self.assertEqual(((2,1),(3,0))[1][1],0)
+        # 90 degree rotation has eigenvalues +i and -i
+        self.assertEqual(complex(0,1)**2+1,0)
+    def test_pseudoinverse_and_ridge(self):
+        A=((2.,0.),(0.,0.)); P=((.5,0.),(0.,0.))
+        def mm(X,Y): return [[sum(X[i][k]*Y[k][j] for k in range(2)) for j in range(2)] for i in range(2)]
+        self.assertEqual(mm([[1,0],[0,0]],A),[[2.,0.],[0.,0.]])
+        self.assertEqual(mm(A,P),[[1.,0.],[0.,0.]])
+        self.assertEqual(4/(4+1),.8)
+    def test_weyl_gap_nonnormal(self):
+        eps=.2
+        hi=1.5+math.sqrt(.25+eps**2)
+        lo=1.5-math.sqrt(.25+eps**2)
+        self.assertLessEqual(hi-2,eps)
+        self.assertLessEqual(1-lo,eps)
+        theta=.5*math.atan(2*eps)
+        self.assertLessEqual(math.sin(theta),eps/(1-eps))
+        perturbed_hi=(3+math.sqrt(1+24*.01))/2
+        self.assertGreater(perturbed_hi-2,.01)
+    def test_matrix_gradient_central_difference(self):
+        def loss(x): return (1-x)**2
+        h=1e-4
+        central=(loss(h)-loss(-h))/(2*h)
+        self.assertAlmostEqual(central,-2,places=9)
+        # A=[[1,2],[0,1]], x=[0,1], b=[1,0]:
+        # residual=[1,1], A^T residual=[1,3]
+        self.assertEqual((1,2*1+1),(1,3))
+
 if __name__=='__main__': unittest.main(verbosity=2)

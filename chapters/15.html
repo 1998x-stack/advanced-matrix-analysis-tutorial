@@ -20,7 +20,7 @@
 <p>选定方向 H，以中心差分 <code>[L(X+hH)−L(X−hH)]/(2h)</code> 近似方向导数 <code>〈∇L,H〉F</code>。中心差分的截断误差在足够光滑时通常为 O(h²)，但 h 太小会造成浮点相消和舍入误差。实际测试应选一组 h 并观察误差趋势。</p>
 <figure><img src="../assets/figures/15-gradient-check.svg" alt="横轴是步长对数，纵轴是误差对数；曲线呈典型 U 型，左侧与右侧分别由误差来源控制"><figcaption>中心差分误差的典型竞争结构（示意，不是某个环境的实际测量结果）：较大 h 以截断误差为主，太小 h 可能被浮点舍入误差支配。</figcaption></figure>
 <p>固定具体矩阵 <code>A=[[1,2],[0,1]]</code>、<code>b=(1,0)</code>、<code>x=(0,1)</code>。此时残差 <code>Ax−b=(1,1)</code>，梯度 <code>(1,3)</code>；沿方向 <code>H=(1,−1)</code> 的解析方向导数为 <code>−2</code>。</p>
-<div class="demo" data-lab="gradient"><label for="gradient-h">中心差分步长 h（指数 1–7）</label><input id="gradient-h" type="range" min="1" max="7" value="4" step="1"><output for="gradient-h">h=1e−4，数值方向导数≈−2.000000；解析值 −2。</output></div>
+<div class="demo" data-lab="gradient"><label for="gradient-h">中心差分步长 h（指数 1–7）</label><input id="gradient-h" type="range" min="1" max="7" value="4" step="1"><output aria-live="polite" for="gradient-h">h=1e−4，数值方向导数≈−2.000000；解析值 −2。</output></div>
 <pre class="codeblock"><code>from math import isclose
 A=((1.,2.),(0.,1.))
 b=(1.,0.)

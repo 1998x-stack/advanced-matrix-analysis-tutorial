@@ -45,3 +45,11 @@
 - **09 QR**：精简 Q 的尺寸为 m×n；矩形时 QᵀQ=I，但 QQᵀ 不必等于 I。
 - **10 谱定理**：实对称/复 Hermitian 才保证正交/酉特征基；Rayleigh 商和 Courant–Fischer 先写排序约定。
 - CI 除 HTML/SVG 本地检查外执行 `python scripts/test_examples.py`；若没有真实浏览器 QA，不能标记该项通过。
+
+## 第三批风险审计（11–15）
+- **11 SVD**：A 为 m×n，U/V 空间不同；零奇异值不能求倒数；rank-k 在谱/Frobenius 范数最优。
+- **12 Schur/QZ**：复 Schur 真上三角，实 Schur 可有 2×2 共轭块；广义无限特征值用 α/β 与 regular pencil 前提。
+- **13 伪逆**：四个 Penrose 条件必须包含两个对称/厄米条件；优先最小残差，再选最小范数；阈值反映数值秩。
+- **14 扰动**：Weyl 用 Hermitian/实对称，Davis–Kahan 明确谱隔离，Bauer–Fike 限可对角化；示意圆盘非真实特征轨迹。
+- **15 导数**：必须声明分子/分母布局或 Frobenius 梯度；伴随变换和微分乘积次序不能混淆。
+- 第 11–15 章新增实验必须在 `scripts/test_examples.py` 有确定性验证。
