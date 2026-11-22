@@ -90,6 +90,12 @@ document.querySelectorAll('[data-lab]').forEach(lab => {
       output.textContent = r === 1
         ? 'r=1：残差 ‖A−WH‖_F = 0.3660；相对误差 6.68%。'
         : 'r=2：残差 0.0000；相对误差 0.00%（W=A、H=I 即精确重建）。';
+    } else if (kind === 'shrink') {
+      const lam = n, y = 0.3;
+      const l1 = Math.max(y - lam, 0);
+      const l2 = y / (1 + 2 * lam);
+      output.textContent = 'λ=' + lam.toFixed(2) + '（固定 y=0.3）：ℓ₁ 解='
+        + l1.toFixed(4) + '，ℓ₂ 解=' + l2.toFixed(4) + '。';
     }
   }
   field.addEventListener('input', show);
