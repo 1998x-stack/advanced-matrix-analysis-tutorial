@@ -71,7 +71,7 @@
         "实Jordan形"
       ],
       "file": "chapters/06.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "07",
@@ -82,7 +82,7 @@
         "微分方程应用"
       ],
       "file": "chapters/07.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "08",
@@ -94,7 +94,7 @@
         "数值稳定性"
       ],
       "file": "chapters/08.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "09",
@@ -106,7 +106,7 @@
         "最小二乘"
       ],
       "file": "chapters/09.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "10",
@@ -118,7 +118,7 @@
         "极分解"
       ],
       "file": "chapters/10.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "11",

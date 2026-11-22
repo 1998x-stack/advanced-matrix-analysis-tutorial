@@ -14,5 +14,6 @@ jobs:
         with:
           python-version: '3.12'
       - run: python scripts/validate_site.py
+      - run: python scripts/test_examples.py
       - run: python scripts/build_site.py
       - run: test -f _site/chapters/05.html && test -f _site/index.html
