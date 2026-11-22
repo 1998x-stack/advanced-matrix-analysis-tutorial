@@ -29,3 +29,9 @@
 - Cholesky 要求严格正定（标准无主元版本）；PLU 的行交换必须同步作用于右端项。
 - 范数界与数值算法实际前向误差不是同一个断言。
 - 讲义中的 Python 示例特意保持在小规模固定数组上，不能代替经验证的工业级数值库。
+
+| 16 | 迹微分、谱函数与奇异值导数 | [MIT 18.S096 Matrix Calculus](https://ocw.mit.edu/courses/18-s096-matrix-calculus-for-machine-learning-and-beyond-january-iap-2023/pages/lecture-notes-and-readings/) · [MIT 18.065 Lecture 16](https://ocw.mit.edu/courses/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/resources/lecture-16-derivatives-of-inverse-and-singular-values/) · [Lewis (1996)](https://doi.org/10.1287/moor.21.3.576) |
+| 17 | 近端方法、核范数 SVT 与 ADMM | [Boyd et al. ADMM](https://www.nparikh.org/publications/admm/) · [Cai–Candès–Shen SVT](https://doi.org/10.1137/080738970) · [Beck–Teboulle FISTA](https://doi.org/10.1137/080716542) |
+| 18 | Stiefel/Grassmann、切空间与 retraction | [Pymanopt Manifolds](https://pymanopt.org/docs/stable/manifolds.html) · [Absil–Mahony–Sepulchre](https://press.princeton.edu/books/hardcover/9780691132983/optimization-algorithms-on-matrix-manifolds) · [Boumal (2023)](https://www.nicolasboumal.net/book/) |
+| 19 | vec 恒等式、Sylvester 与 Lyapunov 方程 | [Cornell CS 6210](https://www.cs.cornell.edu/~bindel/class/cs6210-f16/lec/2016-11-02.pdf) · [SciPy solve_sylvester](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.solve_sylvester.html) · [SciPy solve_continuous_lyapunov](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.solve_continuous_lyapunov.html) |
+| 20 | NMF 乘性更新、求解器与可辨识性 | [Lee–Seung (2001)](https://www.cs.cornell.edu/courses/cs6241/2020sp/readings/Lee-Seung-2001-NMF.pdf) · [scikit-learn NMF](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html) · [Gillis, NMF](https://epubs.siam.org/doi/book/10.1137/1.9781611976410) |

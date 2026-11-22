@@ -1,6 +1,6 @@
 {
-  "scope": "chapters 01-15",
-  "version": "2026-11-22",
+  "scope": "chapters 01-20",
+  "version": "2026-11-23",
   "claims": [
     {
       "chapter": "04",
@@ -61,6 +61,56 @@
       "chapter": "15",
       "claim": "matrix differential and trace gradient identities with explicitly stated layout",
       "source": "https://www2.imm.dtu.dk/pubdb/pubs/3274-full.html"
+    },
+    {
+      "chapter": "16",
+      "claim": "simple eigenvalue and singular value directional derivatives; repeated eigenvalue spectral-function differentiability must be treated separately",
+      "source": "https://ocw.mit.edu/courses/18-s096-matrix-calculus-for-machine-learning-and-beyond-january-iap-2023/pages/lecture-notes-and-readings/"
+    },
+    {
+      "chapter": "16",
+      "claim": "Fréchet derivative of a spectral function and generalized gradient at nonsmooth points",
+      "source": "https://doi.org/10.1287/moor.21.3.576"
+    },
+    {
+      "chapter": "17",
+      "claim": "ADMM primal and dual residual stopping conditions and convex splitting framework",
+      "source": "https://www.nparikh.org/publications/admm/"
+    },
+    {
+      "chapter": "17",
+      "claim": "nuclear norm proximal operator is singular value thresholding for matrix completion",
+      "source": "https://doi.org/10.1137/080738970"
+    },
+    {
+      "chapter": "18",
+      "claim": "Stiefel orthonormal-frame manifold and Grassmann subspace manifold with retraction methods",
+      "source": "https://pymanopt.org/docs/stable/manifolds.html"
+    },
+    {
+      "chapter": "19",
+      "claim": "column-major vec Kronecker identity and Bartels-Stewart Sylvester solver",
+      "source": "https://www.cs.cornell.edu/~bindel/class/cs6210-f16/lec/2016-11-02.pdf"
+    },
+    {
+      "chapter": "19",
+      "claim": "SciPy continuous Lyapunov equation solves AX+XA^H=Q using Bartels-Stewart; sign convention explicit",
+      "source": "https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.solve_continuous_lyapunov.html"
+    },
+    {
+      "chapter": "20",
+      "claim": "Frobenius and generalized KL NMF multiplicative updates have nonincreasing objective under the stated algorithm",
+      "source": "https://www.cs.cornell.edu/courses/cs6241/2020sp/readings/Lee-Seung-2001-NMF.pdf"
+    },
+    {
+      "chapter": "20",
+      "claim": "NMF CD and MU solvers, beta-divergence options and nonconvex alternate minima",
+      "source": "https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html"
+    },
+    {
+      "chapter": "20",
+      "claim": "NMF factors are not generally identifiable; scaling and permutation ambiguity and other nonuniqueness",
+      "source": "https://epubs.siam.org/doi/book/10.1137/1.9781611976410"
     }
   ]
 }

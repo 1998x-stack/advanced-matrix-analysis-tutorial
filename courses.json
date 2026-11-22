@@ -183,60 +183,66 @@
       "num": "16",
       "title": "矩阵微分进阶",
       "topics": [
-        "迹技巧",
-        "行列式导数",
-        "特征值导数",
-        "截断SVD导数"
+        "迹技巧与 Frobenius 梯度",
+        "Jacobi 行列式公式",
+        "简单特征值与奇异值导数",
+        "Daleckii–Krein 矩阵函数导数",
+        "截断 SVD 的谱间隙与可微性"
       ],
       "file": "chapters/16.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "17",
       "title": "矩阵优化方法",
       "topics": [
-        "投影梯度法",
-        "近端梯度法",
-        "ADMM",
-        "矩阵补全"
+        "投影梯度与凸约束",
+        "近端梯度与 FISTA",
+        "核范数近端与奇异值阈值化",
+        "矩阵补全与两块 ADMM",
+        "原始/对偶残差停止准则"
       ],
       "file": "chapters/17.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "18",
       "title": "流形上的矩阵优化",
       "topics": [
-        "Stiefel流形",
-        "Grassmann流形",
-        "Riemannian梯度下降"
+        "Stiefel 正交标架",
+        "Grassmann 子空间与商流形",
+        "切空间与度量投影",
+        "QR/Polar Retraction",
+        "Riemannian 梯度下降"
       ],
       "file": "chapters/18.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "19",
       "title": "Kronecker积与矩阵方程",
       "topics": [
-        "Kronecker积",
-        "vec算子",
-        "Sylvester方程",
-        "Lyapunov方程"
+        "Kronecker 积与混合积",
+        "列优先 vec 恒等式",
+        "Sylvester 唯一解条件",
+        "Bartels–Stewart 算法",
+        "连续 Lyapunov 方程与稳定性"
       ],
       "file": "chapters/19.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "20",
       "title": "非负矩阵分解（NMF）",
       "topics": [
-        "乘性更新",
-        "ALS算法",
-        "主题建模",
-        "深度NMF"
+        "非负低秩分解与目标函数",
+        "Frobenius/KL/IS 损失",
+        "Lee–Seung 乘性更新",
+        "ALS 与非负最小二乘",
+        "尺度/置换歧义与可辨识性"
       ],
       "file": "chapters/20.html",
-      "status": "legacy"
+      "status": "illustrated"
     },
     {
       "num": "21",

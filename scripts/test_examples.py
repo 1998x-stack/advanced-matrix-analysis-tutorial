@@ -96,7 +96,17 @@ class MatrixExamples(unittest.TestCase):
         self.assertAlmostEqual(right,1,places=7)
         # For A=diag(3,1), E[0,0]=2, the top singular-value derivative is 2.
         self.assertEqual(1*2*1,2)
-        self.assertEqual(((4,-3),(-1,2)),((4,-3),(-1,2)))
+        # det([[a,b],[c,d]]) gradient is [[d,-c],[-b,a]].
+        A=[[2.,1.],[3.,4.]]
+        grad=[[4.,-3.],[-1.,2.]]
+        def det(M): return M[0][0]*M[1][1]-M[0][1]*M[1][0]
+        h=1e-6
+        for i in range(2):
+            for j in range(2):
+                Ap=[row[:] for row in A]; Am=[row[:] for row in A]
+                Ap[i][j]+=h; Am[i][j]-=h
+                numeric=(det(Ap)-det(Am))/(2*h)
+                self.assertAlmostEqual(numeric,grad[i][j],places=7)
     def test_svt_and_admm_scalar_update(self):
         tau=1.25
         shrunk=[max(s-tau,0) for s in (5.,2.,.5)]
