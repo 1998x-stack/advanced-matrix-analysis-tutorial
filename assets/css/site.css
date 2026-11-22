@@ -8,5 +8,5 @@
 
 @media print{.article-body figure{overflow:visible!important}.article-body figure img{min-width:0!important;width:100%!important}}
 
-/* Keep long MathML expressions visible from the left edge on narrow screens. */
-@media(max-width:480px){.article-body .equation{display:block;overflow-x:auto;white-space:nowrap;text-align:left}.article-body .equation math{display:inline-block;min-width:max-content;vertical-align:middle}.article-body .equation .eq-tag{display:inline-block;margin-left:1rem;vertical-align:middle}}
+/* Long MathML formulas remain single-line scroll regions on narrow screens. */
+@media(max-width:480px){.article-body .equation{display:flex;justify-content:flex-start;align-items:center;overflow-x:auto;white-space:nowrap}.article-body .equation math{display:block;flex:0 0 auto;width:max-content;min-width:max-content;max-width:none}.article-body .equation .eq-tag{flex:0 0 auto;margin-left:1rem}}
