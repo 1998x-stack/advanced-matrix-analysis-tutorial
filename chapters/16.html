@@ -1,251 +1,58 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第16章 矩阵微分进阶</title>
-    <link rel="stylesheet" href="theme.css">
-    <script>
-    MathJax = {
-        tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            tags: 'ams'
-        },
-        options: {
-            enableMenu: true
-        }
-    };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/es5/tex-mml-chtml.js"></script>
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>📐 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 矩阵分析导论</a></li>
-            <li><a href="02.html">第2章 线性空间与线性变换</a></li>
-            <li><a href="03.html">第3章 特殊矩阵与矩阵运算</a></li>
-            <li><a href="04.html">第4章 范数与内积空间</a></li>
-            <li><a href="05.html">第5章 特征值与特征向量</a></li>
-            <li><a href="06.html">第6章 矩阵相似性与Jordan标准形</a></li>
-            <li><a href="07.html">第7章 矩阵函数</a></li>
-            <li><a href="08.html">第8章 LU分解与高斯消元法</a></li>
-            <li><a href="09.html">第9章 QR分解</a></li>
-            <li><a href="10.html">第10章 特征值分解与谱定理</a></li>
-            <li><a href="11.html">第11章 奇异值分解（SVD）</a></li>
-            <li><a href="12.html">第12章 Schur分解与广义特征值</a></li>
-            <li><a href="13.html">第13章 广义逆矩阵与最小二乘</a></li>
-            <li><a href="14.html">第14章 矩阵扰动理论</a></li>
-            <li><a href="15.html">第15章 矩阵导数基础</a></li>
-            <li><a href="16.html" class="active">第16章 矩阵微分进阶</a></li>
-            <li><a href="17.html">第17章 矩阵优化方法</a></li>
-            <li><a href="18.html">第18章 流形上的矩阵优化</a></li>
-            <li><a href="19.html">第19章 Kronecker积与矩阵方程</a></li>
-            <li><a href="20.html">第20章 非负矩阵分解（NMF）</a></li>
-            <li><a href="21.html">第21章 稀疏表示与压缩感知</a></li>
-            <li><a href="22.html">第22章 随机矩阵理论入门</a></li>
-            <li><a href="23.html">第23章 张量代数基础</a></li>
-            <li><a href="24.html">第24章 CP分解、Tucker分解与HOSVD</a></li>
-            <li><a href="25.html">第25章 张量网络与高级分解</a></li>
-            <li><a href="26.html">第26章 深度学习中的矩阵分析</a></li>
-            <li><a href="27.html">第27章 矩阵分析前沿趋势</a></li>
-            <li><a href="28.html">第28章 综合项目实战</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-
-        <h2>开场白：当特征值不可微时</h2>
-
-        <p>上一章我们学习了矩阵微积分的基础——标量和向量对矩阵的导数。你可能会觉得：掌握了链式法则和维度匹配，矩阵导数也不过如此嘛。</p>
-
-        <p>然而，当你碰到需要求<strong>特征值</strong>或<strong>奇异值</strong>的导数时，事情会变得非常棘手。因为在特征值有重根的点上，特征值函数甚至不是可微的！</p>
-
-        <p>几年前我参与过一个项目，需要在一个优化问题中通过特征值分解来反向传播梯度。具体的场景是：我们要学习一个对称正定矩阵 $S$，使得它的最大特征值对应的特征向量能完成某个分类任务。代码看起来天衣无缝——Eigen 分解在前向传播中完美运行，但在反向传播时，NaN 梯度像幽灵一样窜了出来。我们花了整整三天定位问题，最后发现：<strong>当 $S$ 的两个最大特征值非常接近时，特征值分解的导数会趋向于无穷大</strong>，瞬间摧毁整个训练过程。</p>
-
-        <p>这不是我们的 bug——这是<strong>特征值导数的固有奇异性</strong>。像这样的"陷阱"在矩阵微积分的高级话题中比比皆是。而要绕过它们，你必须真正理解本章介绍的这些进阶技巧。</p>
-
-        <h2>1. 迹技巧（Trace Tricks）</h2>
-
-        <p>迹（trace）是矩阵微积分中最强大的工具之一。在推导矩阵导数时，我们经常利用迹的两个性质来简化计算：<strong>循环置换</strong>（cyclic permutation）和<strong>线性性</strong>。</p>
-
-        <p>迹的循环置换性质是：</p>
-
-        $$ \mathrm{tr}(ABC) = \mathrm{tr}(BCA) = \mathrm{tr}(CAB) $$
-
-        <p>只要乘积是方阵，循环置换不改变迹的值。注意：元素个数必须对得上——$A \in \mathbb{R}^{m \times n}, B \in \mathbb{R}^{n \times p}, C \in \mathbb{R}^{p \times m}$ 才能使 $ABC$ 是 $m \times m$ 方阵。</p>
-
-        <p>有了这个性质，我们就可以用 <strong>Frobenius 内积</strong>来推导导数。Frobenius 内积的定义是：</p>
-
-        $$ \langle A, B \rangle_F = \mathrm{tr}(A^T B) = \sum_{i,j} a_{ij} b_{ij} $$
-
-        <p>它把矩阵"拉直"成向量后做标准内积。我们在求导时常常用 Frobenius 内积来表达"扰动"的方向。具体来说，对于标量函数 $f(X)$，我们写出它的一阶近似：</p>
-
-        $$ df = \mathrm{tr}\left( \left( \frac{\partial f}{\partial X} \right)^T dX \right) $$
-
-        <p>然后利用循环置换和已知的导数公式，从右边"剥离"出 $dX$，剩下的部分就是 $\partial f / \partial X$。</p>
-
-        <p>来看一个具体例子。计算 $f(X) = \mathrm{tr}(AXB)$ 的导数：</p>
-
-        $$ df = \mathrm{tr}(A \, dX \, B) = \mathrm{tr}(B A \, dX) = \mathrm{tr}((A^T B^T)^T dX) $$
-
-        <p>因此 $\partial f / \partial X = A^T B^T$。</p>
-
-        <p>再看一个稍微复杂点的。计算 $f(X) = \mathrm{tr}(X A X^T)$ 的导数：</p>
-
-        $$ \begin{aligned}
-        df &= \mathrm{tr}(dX \, A X^T + X A \, dX^T) \\
-           &= \mathrm{tr}(A X^T dX) + \mathrm{tr}((X A)^T dX) \\
-           &= \mathrm{tr}((X A^T + X A)^T dX) \\
-           &= \mathrm{tr}((X(A^T + A))^T dX)
-        \end{aligned} $$
-
-        <p>因此 $\partial f / \partial X = X(A^T + A)$。当 $A$ 对称时，简化为 $2XA$。</p>
-
-        <div class="highlight">
-            <strong>迹技巧的核心思想：</strong> 把所有的导数计算统一到 Frobenius 内积的框架下。无论你的函数多复杂——包含迹、行列式、逆、还是矩阵函数——只要你能写出 $df = \mathrm{tr}(G^T dX)$ 的形式，导数就是 $G$。这使得矩阵微积分变得异常系统化。
-        </div>
-
-        <h2>2. 行列式的导数 — Jacobi 公式</h2>
-
-        <p>行列式的导数有一个非常优雅的表达式，称为 <strong>Jacobi 公式</strong>：</p>
-
-        $$ d(\det A) = \det(A) \, \mathrm{tr}(A^{-1} dA) $$
-
-        <p>或者用梯度形式写为：</p>
-
-        $$ \frac{\partial \det A}{\partial A} = \det(A) A^{-T} $$
-
-        <p>我们来推导它。考虑行列式的定义：$\det A = \sum_{\pi} \mathrm{sgn}(\pi) \prod_i a_{i, \pi(i)}$。从这出发推导有些繁琐，一个更简洁的方式是利用行列式的<strong>展开式与伴随矩阵</strong>的关系。</p>
-
-        <p>由行列式的定义，对 $\det A$ 求全微分：</p>
-
-        $$ d(\det A) = \sum_{i,j} \frac{\partial \det A}{\partial a_{ij}} \, da_{ij} $$
-
-        <p>而 $\partial \det A / \partial a_{ij} = (-1)^{i+j} M_{ij}$，其中 $M_{ij}$ 是去掉第 $i$ 行第 $j$ 列后的余子式。这正是伴随矩阵（adjugate matrix）的 $(j,i)$ 元素：$\mathrm{adj}(A)_{ji} = (-1)^{i+j} M_{ij}$。于是：</p>
-
-        $$ d(\det A) = \sum_{i,j} (\mathrm{adj}(A))_{ji} \, da_{ij} = \mathrm{tr}(\mathrm{adj}(A) \, dA) $$
-
-        <p>又因为 $\mathrm{adj}(A) = \det(A) A^{-1}$（当 $A$ 可逆时），于是：</p>
-
-        $$ d(\det A) = \det(A) \, \mathrm{tr}(A^{-1} dA) $$
-
-        <p>证毕。这个公式的美妙之处在于它的简洁——一个复杂的非线性函数 $\det A$ 的微分竟然可以用迹和逆来表达。它出现在许多统计和 ML 应用中，包括多元正态分布的 MLE 推导和变分推断中的 ELBO 计算。</p>
-
-        <p>一个重要的推论是<strong>对数行列式的导数</strong>：</p>
-
-        $$ \frac{\partial \log \det A}{\partial A} = A^{-T} $$
-
-        <p>由链式法则 $d(\log \det A) = \frac{1}{\det A} d(\det A) = \mathrm{tr}(A^{-1} dA)$ 即得。这个公式在参数化协方差矩阵和优化 Gaussian 过程超参数时极其常用。</p>
-
-        <h2>3. 特征值与奇异值的导数</h2>
-
-        <p>这是矩阵微积分中最微妙的部分。先说好消息：对于<strong>对称矩阵</strong>，如果特征值都是单根（即没有重特征值），那么特征值和特征向量都是可微的。</p>
-
-        <p>设 $A = A^T$，$\lambda$ 是 $A$ 的一个简单特征值（代数重数为 1），对应的归一化特征向量为 $\mathbf{v}$，即 $A \mathbf{v} = \lambda \mathbf{v}$，$\|\mathbf{v}\| = 1$。那么：</p>
-
-        $$ d\lambda = \mathbf{v}^T dA \, \mathbf{v} $$
-
-        <p>或者等价地：</p>
-
-        $$ \frac{\partial \lambda}{\partial A} = \mathbf{v} \mathbf{v}^T $$
-
-        <p>推导非常直接：对 $A\mathbf{v} = \lambda \mathbf{v}$ 两边取微分：</p>
-
-        $$ dA \, \mathbf{v} + A \, d\mathbf{v} = d\lambda \, \mathbf{v} + \lambda \, d\mathbf{v} $$
-
-        <p>左乘 $\mathbf{v}^T$（注意 $\mathbf{v}^T \mathbf{v} = 1$）：</p>
-
-        $$ \mathbf{v}^T dA \, \mathbf{v} + \underbrace{\mathbf{v}^T A}_{=\lambda \mathbf{v}^T} d\mathbf{v} = d\lambda + \lambda \mathbf{v}^T d\mathbf{v} $$
-
-        <p>等式左边第二项等于 $\lambda \mathbf{v}^T d\mathbf{v}$，右边也有 $\lambda \mathbf{v}^T d\mathbf{v}$，两边消去后得到 $d\lambda = \mathbf{v}^T dA \mathbf{v}$。</p>
-
-        <div class="warning">
-            <strong>踩坑实录：特征值重根与 NaN 梯度。</strong> 回到本章开头的故事。当 $A$ 有重特征值时，特征值函数不再是可微的。为什么？在重特征值附近，特征值作为矩阵元素的函数在"分岔点"处有奇异性——微小的扰动就可以使一个重特征值分裂为多个不同的特征值。这种奇异性在数学上表现为导数趋向无穷大。在实际工程中，这会导致反向传播产生 NaN。<br><br>
-            解决办法有几种：(1) 在损失函数中加入正则项，迫使特征值保持适当的间距；(2) 使用子梯度（subgradient）替代梯度；(3) 完全避免通过特征值分解反向传播，改用等价的替代公式。我在那次项目中最终选择了方案 (1)——在损失中加入了一个小的惩罚项 $\epsilon \sum_{i \neq j} 1/(\lambda_i - \lambda_j)^2$，强制特征值保持距离。虽然不是最优雅的解法，但训练稳定了。
-        </div>
-
-        <p>奇异值的导数与特征值类似。对于 $X = U \Sigma V^T$，第 $k$ 个奇异值 $\sigma_k$ 对 $X$ 的导数为：</p>
-
-        $$ \frac{\partial \sigma_k}{\partial X} = \mathbf{u}_k \mathbf{v}_k^T $$
-
-        <p>当 $\sigma_k$ 是单根奇异值时有效。注意，如果某些奇异值相等（比如一个矩阵有多个相等的奇异值），同样会出现不可微的问题。</p>
-
-        <h2>4. 矩阵函数的导数 — Daleckii-Krein 公式</h2>
-
-        <p>在第 7 章我们学习了矩阵函数——$f(A)$ 通过谱分解或 Jordan 标准形定义。现在我们来求矩阵函数的导数。具体来说，我们关心 $\partial f(A) / \partial A$——这是一个四维张量，但我们可以用以下公式描述它在一阶扰动下的行为。</p>
-
-        <p><strong>Daleckii-Krein 公式</strong>给出了对称矩阵谱函数导数的封闭形式。设 $A = Q \Lambda Q^T$ 是对称特征值分解，其中 $\Lambda = \mathrm{diag}(\lambda_1, \ldots, \lambda_n)$。对矩阵函数 $f(A) = Q f(\Lambda) Q^T$ 来说，它在方向 $H$ 上的 Fréchet 导数为：</p>
-
-        $$ Df(A)[H] = Q \left( G \odot (Q^T H Q) \right) Q^T $$
-
-        <p>其中 $\odot$ 是 Hadamard（逐元素）乘积，$G$ 是一个 $n \times n$ 的矩阵，其元素为：</p>
-
-        $$ g_{ij} = \begin{cases}
-        \frac{f(\lambda_i) - f(\lambda_j)}{\lambda_i - \lambda_j}, & \lambda_i \neq \lambda_j \\
-        f'(\lambda_i), & \lambda_i = \lambda_j
-        \end{cases} $$
-
-        <p>对于矩阵指数 $e^A$，有 $f(\lambda) = e^\lambda$，$f'(\lambda) = e^\lambda$，因此 $g_{ij} = (e^{\lambda_i} - e^{\lambda_j})/(\lambda_i - \lambda_j)$。</p>
-
-        <p>这个公式为什么重要？因为很多优化问题涉及矩阵函数——比如在量子力学中演化矩阵 $e^{-itH}$，在扩散模型中对协方差矩阵应用激活函数（如 ReLU 在谱域的推广），在几何深度学习中对流形上的函数进行谱滤波。</p>
-
-        <div class="tip">
-            <strong>实用建议：</strong> 即使你不打算手动实现这些公式，理解 Daleckii-Krein 公式的存在性也很重要。当你在使用自动微分框架计算 $f(A)$ 的梯度时（比如 <code>torch.linalg.matrix_exp</code> 的反向传播），底层的梯度计算就是基于这个公式或其变体。知道它可以帮助你理解为什么当 $\lambda_i$ 接近 $\lambda_j$ 时梯度会变得不稳定——因为分母 $\lambda_i - \lambda_j$ 趋近于零。
-        </div>
-
-        <h2>5. 截断 SVD 的导数</h2>
-
-        <p>在实际应用中，我们很少使用完整的 SVD——更常见的是<strong>截断 SVD</strong>（truncated SVD）。给定 $X \in \mathbb{R}^{m \times n}$，我们计算 $X_k = U_k \Sigma_k V_k^T$，只保留最大的 $k$ 个奇异值及其对应的奇异向量。</p>
-
-        <p>那么问题来了：$X_k$ 对 $X$ 的导数是什么？这在推荐系统的矩阵分解、低秩近似学习等问题中非常关键。</p>
-
-        <p>理论上，如果 $k$ 对应的奇异值都是单根（即 $\sigma_k > \sigma_{k+1}$），那么 $U_k, \Sigma_k, V_k$ 都是可微的。但糟糕的是，截断 SVD 的梯度计算涉及 $U_k$ 和 $V_k$ 中每个列向量的导数，这需要解一系列线性方程组（称为 Sylvester 方程），计算复杂度为 $O(mnk)$，对于大矩阵非常昂贵。</p>
-
-        <p>近年来，自动微分社区对这一话题有了新的认识。2025 年的一项关键观察是：<strong>如果你只关心通过 $X_k$ 的标量损失 $L$ 的梯度，你不需要显式计算截断 SVD 的完整导数——你可以通过隐式微分（implicit differentiation）更高效地得到结果。</strong></p>
-
-        <p>核心思想是：前向传播时我们计算 $X_k = U_k \Sigma_k V_k^T$，反向传播时我们绕过 SVD 分解本身的导数，直接对"$X_k$ 是最优秩 $k$ 近似"这一事实进行微分。具体来说，从 Eckart-Young 定理我们知道 $X_k$ 满足：</p>
-
-        $$ X_k = \arg\min_{\text{rank}(Z) \leq k} \|X - Z\|_F^2 $$
-
-        <p>这个优化问题的最优性条件给出了一个方程。通过对该方程隐式求导，我们可以直接得到 $\partial L / \partial X$，而不需要经过 $U_k, \Sigma_k, V_k$。这就是<strong>隐式微分</strong>的技巧，它在 PyTorch 1.12+ 的 <code>torch.linalg.svd</code> 反向传播中已有部分实现。</p>
-
-        <pre><code>import torch
-
-# 演示截断SVD的反向传播（PyTorch 2.x+ 版本良好支持）
-m, n, k = 10, 8, 3
-X = torch.randn(m, n, requires_grad=True)
-
-# 前向：计算截断SVD
-U, S, Vh = torch.linalg.svd(X, full_matrices=False)
-Uk, Sk, Vhk = U[:, :k], S[:k], Vh[:k, :]
-Xk = Uk @ torch.diag(Sk) @ Vhk
-
-# 定义损失并反向传播
-loss = (Xk * Xk).sum()  # 简单的平方和损失
-loss.backward()
-
-# X.grad 现在是 d(loss)/dX
-print("梯度形状:", X.grad.shape)  # (10, 8)
-print("梯度范数:", X.grad.norm().item())</code></pre>
-
-        <p>这段代码可能看起来平平无奇，但注意——<code>torch.linalg.svd</code> 的反向传播在内部正确处理了所有细节。如果你打算自己实现一个自定义优化算法（比如低秩适应 LoRA 的更高效变体），理解底层原理会帮助你避免许多隐蔽的 bug。</p>
-
-        <h2>结语：从导数到优化</h2>
-
-        <p>本章我们深入学习了矩阵微积分的高级话题。你已经掌握了迹技巧——这个看似简单的工具能帮助你系统性地推导任何矩阵导数；你理解了行列式和对数行列式的导数——它们是统计推断的核心公式；你也知道了特征值导数的美妙与危险——重特征值处的不可微性是矩阵微积分中最具挑战性的问题之一。</p>
-
-        <p>在下一章，我们将从导数走向优化。有了这些导数工具，我们就可以开始解决实际的优化问题了：如何在矩阵空间中进行梯度下降？如何处理矩阵的正定性、正交性等约束？那些称之为"流形优化"的方法真的比传统方法更优吗？下一章将解答这些问题。</p>
-
-        <div class="footer-nav">
-            <a href="15.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="17.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="迹技巧、Jacobi 公式、特征值与奇异值导数、Daleckii-Krein 与截断 SVD 的隐式微分：重根处为何不可微，如何在有限精度下稳定求导。"><title>16 · 矩阵微分进阶：迹技巧与谱函数导数 | 高级矩阵分析</title><link rel="stylesheet" href="../assets/css/site.css"><script src="../assets/js/labs.js" defer></script></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-top"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">M</span><span>矩阵分析 <small>Matrix Atlas</small></span></a><nav class="top-links" aria-label="站点导航"><a href="../index.html#syllabus">全部 28 章</a><a href="https://github.com/1998x-stack/advanced-matrix-analysis-tutorial">GitHub</a></nav></header><div class="article-shell"><aside class="article-toc"><h2>本章目录 / 16</h2><nav aria-label="本章目录"><a href="#problem">01 / 为什么重特征值让梯度爆炸？</a><a href="#trace">02 / 迹与 Frobenius 内积</a><a href="#determinant">03 / 行列式与对数行列式</a><a href="#eigen">04 / 特征值与奇异值的导数</a><a href="#matrixfn">05 / Daleckii–Krein 公式</a><a href="#truncated">06 / 截断 SVD 与隐式微分</a><a href="#replicate">07 / 可复算算例</a><a href="#references">参考与延伸阅读</a></nav></aside><main id="content" class="article-main"><article><header class="article-header"><a class="article-top-link" href="../index.html">← 返回课程地图</a><p class="eyebrow">CHAPTER 16 / ADVANCED MATRIX ANALYSIS</p><h1>矩阵微分进阶：迹技巧与谱函数导数</h1><p class="dek">当目标量是特征值、奇异值或行列式时，逐元素求偏导不再够用。本文沿“迹恒等式 → 谱函数微分 → 隐式微分”给出一条可复算的求导路线，并说明重根处为何不可微。</p></header><div class="article-body">
+<section id="problem" aria-labelledby="problem-heading"><h2 id="problem-heading">01 / 为什么重特征值让梯度爆炸？</h2>
+<p class="lede">考虑对称矩阵族 <code>A(ε) = [[1, ε], [ε, 1]]</code>。它的两个特征值是 <code>λ±(ε) = 1 ± |ε|</code>：在 <code>ε=0</code> 处二者相等，两条曲线形成尖点，斜率从 <code>+1</code> 突变到 <code>−1</code>。于是 <code>dλ/dε</code> 在 <code>ε=0</code> 不存在，<code>|dλ/dε|</code> 随 <code>ε→0</code> 无界增长。</p>
+<figure><img src="../assets/figures/16-eigenvalue-singularity.svg" alt="两条特征值曲线在 λ=1 处相交成尖点，并标注 ε 趋于 0 时导数发散。"><figcaption>对称矩阵族 <code>A(ε)=[[1,ε],[ε,1]]</code> 的特征值 <code>λ±=1±|ε|</code>。虚线标出 <code>ε=0</code>。可验证观察：任意 <code>ε≠0</code> 时两曲线斜率分别为 <code>+1</code> 与 <code>−1</code>；<code>ε=0</code> 处不存在共同切线。</figcaption></figure>
+<p>这不是数值实现的缺陷，而是<strong>特征值作为矩阵元素之函数的固有奇异性</strong>。本章余下部分给出一套工具：只要特征值两两分离，导数就有封闭表达式；一旦出现重根，就必须改用替代量或显式处理不可微点。</p>
+<div class="callout"><strong>对象与前提：</strong> 全文在实矩阵或复矩阵上讨论。谱函数求导主要针对实对称 / 复 Hermitian 矩阵；对一般可对角化矩阵的类似结论需要额外的谱分离假设。</div></section>
+<section id="trace" aria-labelledby="trace-heading"><h2 id="trace-heading">02 / 迹与 Frobenius 内积：统一的求导框架</h2>
+<p>迹具有<strong>线性性</strong>与<strong>循环置换性</strong>：只要乘积是方阵，轮换因子不改变迹的值。</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="16.1"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="迹的循环置换"><mi>tr</mi><mo>(</mo><mi>A</mi><mi>B</mi><mi>C</mi><mo>)</mo><mo>=</mo><mi>tr</mi><mo>(</mo><mi>B</mi><mi>C</mi><mi>A</mi><mo>)</mo><mo>=</mo><mi>tr</mi><mo>(</mo><mi>C</mi><mi>A</mi><mi>B</mi><mo>)</mo></math><span class="eq-tag">16.1</span></div>
+<p>为使 <code>ABC</code> 是方阵，需要 <code>A∈F^{m×n}</code>、<code>B∈F^{n×p}</code>、<code>C∈F^{p×m}</code>，维数必须首尾相接。Frobenius 内积把矩阵“拉直”成向量再做标准内积，它正是把矩阵导数写成内积形式的桥梁。</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="16.2"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Frobenius 内积"><msub><mrow><mo>⟨</mo><mi>A</mi><mo>,</mo><mi>B</mi><mo>⟩</mo></mrow><mi>F</mi></msub><mo>=</mo><mi>tr</mi><mo>(</mo><msup><mi>A</mi><mi>T</mi></msup><mi>B</mi><mo>)</mo><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>b</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math><span class="eq-tag">16.2</span></div>
+<p>对标量函数 <code>f(X)</code> 写出一阶近似 <code>df = tr(Gᵀ dX)</code> 后，<code>G</code> 就是按分母布局约定的 <code>∂f/∂X</code>。求导于是变成“用循环置换把 <code>dX</code> 剥离出来”的机械操作。</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="16.3"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="矩阵微分与梯度"><mi>d</mi><mi>f</mi><mo>=</mo><mi>tr</mi><mrow><mo>(</mo><msup><mrow><mo>(</mo><mfrac><mrow><mo>∂</mo><mi>f</mi></mrow><mrow><mo>∂</mo><mi>X</mi></mrow></mfrac><mo>)</mo></mrow><mi>T</mi></msup><mi>d</mi><mi>X</mi><mo>)</mo></mrow></math><span class="eq-tag">16.3</span></div>
+<p>以 <code>f(X)=tr(AXB)</code> 为例：<code>df = tr(A dX B) = tr(BA dX)</code>，于是 <code>∂f/∂X = (BA)ᵀ = AᵀBᵀ</code>。关键约定是<strong>明确布局</strong>：若改用分子布局的写法，结果会相差一个转置，两种约定不能混用。</p></section>
+<section id="determinant" aria-labelledby="determinant-heading"><h2 id="determinant-heading">03 / 行列式与对数行列式：Jacobi 公式</h2>
+<p>对可逆矩阵 <code>A</code>，行列式的微分由 <strong>Jacobi 公式</strong>给出。它把 <code>det</code> 的微分写成迹的形式，梯度可由此直接读出。</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="16.4"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Jacobi 公式"><mi>d</mi><mo>(</mo><mi>det</mi><mi>A</mi><mo>)</mo><mo>=</mo><mi>det</mi><mo>(</mo><mi>A</mi><mo>)</mo><mi>tr</mi><mo>(</mo><msup><mi>A</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>d</mi><mi>A</mi><mo>)</mo></math><span class="eq-tag">16.4</span></div>
+<p>推导用到行列式的微分展开：<code>d(det A)=Σ_{i,j}(∂det A/∂a_{ij}) da_{ij}</code>，其中偏导是余子式，恰好组成伴随矩阵 <code>adj(A)</code>；再由 <code>adj(A)=det(A)A⁻¹</code>（<code>A</code> 可逆时）即得。</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="16.5"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="对数行列式梯度"><mfrac><mrow><mo>∂</mo><mi>log</mi><mi>det</mi><mi>A</mi></mrow><mrow><mo>∂</mo><mi>A</mi></mrow></mfrac><mo>=</mo><msup><mi>A</mi><mrow><mo>−</mo><mi>T</mi></mrow></msup></math><span class="eq-tag">16.5</span></div>
+<p>由链式法则 <code>d(log det A)=(1/det A)d(det A)=tr(A⁻¹ dA)</code> 立得。它出现在用 Cholesky 因子参数化协方差矩阵的对数似然优化中：当 <code>A</code> 正定时，<code>log det A</code> 同时充当对数似然项与对数障碍。</p>
+<div class="callout"><strong>边界条件：</strong> <code>A</code> 奇异时 <code>det A=0</code>，<code>A⁻¹</code> 及式 16.4 均不存在；<code>log det A</code> 还额外要求 <code>A</code> 正定，否则对数无定义。</div></section>
+<section id="eigen" aria-labelledby="eigen-heading"><h2 id="eigen-heading">04 / 特征值与奇异值：分离时有封闭导数</h2>
+<p>设实对称矩阵 <code>A=Aᵀ</code>，<code>λ</code> 是<strong>代数重数为 1</strong> 的特征值，单位特征向量 <code>v</code> 满足 <code>Av=λv</code>、<code>‖v‖₂=1</code>。对 <code>Av=λv</code> 两边微分并左乘 <code>vᵀ</code>，交叉项相消，得到</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="16.6"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="特征值导数"><mi>d</mi><mi>λ</mi><mo>=</mo><msup><mi>v</mi><mi>T</mi></msup><mi>d</mi><mi>A</mi><mi>v</mi><mo>,</mo><mspace width="1em"></mspace><mfrac><mrow><mo>∂</mo><mi>λ</mi></mrow><mrow><mo>∂</mo><mi>A</mi></mrow></mfrac><mo>=</mo><mi>v</mi><msup><mi>v</mi><mi>T</mi></msup></math><span class="eq-tag">16.6</span></div>
+<p>其中 <code>vvᵀ</code> 是到 <code>v</code> 所张直线的正交投影。奇异值有对应结论：若 <code>X=UΣVᵀ</code> 且 <code>σ_k</code> 是单根奇异值，则</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="16.7"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="奇异值导数"><mfrac><mrow><mo>∂</mo><msub><mi>σ</mi><mi>k</mi></msub></mrow><mrow><mo>∂</mo><mi>X</mi></mrow></mfrac><mo>=</mo><msub><mi>u</mi><mi>k</mi></msub><msubsup><mi>v</mi><mi>k</mi><mi>T</mi></msubsup></math><span class="eq-tag">16.7</span></div>
+<p><code>u_k</code>、<code>v_k</code> 分别为左右奇异向量。<strong>前提同样关键：</strong> 上式只对单根奇异值成立；一旦出现重复特征值或重复奇异值，导数含无界分量——这正是第 01 节尖点的来源。</p>
+<div class="callout"><strong>工程含义：</strong> 若损失依赖特征值分解，训练中两个特征值一旦靠拢，梯度幅值会急剧增大。常见对策是加入使谱间隙保持下界的正则项，或改用不显式经过特征分解的等价公式；具体取舍取决于问题规模与精度要求。</div></section>
+<section id="matrixfn" aria-labelledby="matrixfn-heading"><h2 id="matrixfn-heading">05 / Daleckii–Krein：谱函数的 Fréchet 导数</h2>
+<p>设 <code>A=QΛQᵀ</code> 是对称谱分解，<code>Λ=diag(λ₁,…,λₙ)</code>，<code>f</code> 在谱上可微。矩阵函数 <code>f(A)=Q f(Λ)Qᵀ</code> 在方向 <code>H</code> 上的 Fréchet 导数由 <strong>Daleckii–Krein 公式</strong>给出：</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="16.8"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Daleckii-Krein 公式"><mi>D</mi><mi>f</mi><mo>(</mo><mi>A</mi><mo>)</mo><mo>[</mo><mi>H</mi><mo>]</mo><mo>=</mo><mi>Q</mi><mrow><mo>(</mo><mi>G</mi><mo>⊙</mo><mo>(</mo><msup><mi>Q</mi><mi>T</mi></msup><mi>H</mi><mi>Q</mi><mo>)</mo><mo>)</mo></mrow><msup><mi>Q</mi><mi>T</mi></msup></math><span class="eq-tag">16.8</span></div>
+<p>这里 <code>⊙</code> 是 Hadamard 逐元素乘积，差商矩阵 <code>G</code> 的元素按谱间隙定义：</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="16.9"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="差商矩阵 G"><msub><mi>g</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mrow><mo>{</mo><mtable><mtr><mtd><mfrac><mrow><mi>f</mi><mo>(</mo><msub><mi>λ</mi><mi>i</mi></msub><mo>)</mo><mo>−</mo><mi>f</mi><mo>(</mo><msub><mi>λ</mi><mi>j</mi></msub><mo>)</mo></mrow><mrow><msub><mi>λ</mi><mi>i</mi></msub><mo>−</mo><msub><mi>λ</mi><mi>j</mi></msub></mrow></mfrac></mtd><mtd><msub><mi>λ</mi><mi>i</mi></msub><mo>≠</mo><msub><mi>λ</mi><mi>j</mi></msub></mtd></mtr><mtr><mtd><msup><mi>f</mi><mo>′</mo></msup><mo>(</mo><msub><mi>λ</mi><mi>i</mi></msub><mo>)</mo></mtd><mtd><msub><mi>λ</mi><mi>i</mi></msub><mo>=</mo><msub><mi>λ</mi><mi>j</mi></msub></mtd></mtr></mtable><mo>}</mo></mrow></math><span class="eq-tag">16.9</span></div>
+<p>差商 <code>(f(λ_i)−f(λ_j))/(λ_i−λ_j)</code> 就是第 04 节“重根危险”的另一种写法：当 <code>λ_i→λ_j</code> 时分母趋零，而对角元取极限 <code>f′(λ_i)</code>。取 <code>f(t)=e^t</code> 即得矩阵指数 <code>e^A</code> 的 Fréchet 导数，其对角元为 <code>f′(λ_i)=e^{λ_i}</code>。</p></section>
+<section id="truncated" aria-labelledby="truncated-heading"><h2 id="truncated-heading">06 / 截断 SVD：不必穿过分解求导</h2>
+<p>给定 <code>X∈R^{m×n}</code>，秩 <code>k</code> 截断 <code>X_k=U_kΣ_kV_kᵀ</code> 保留最大的 <code>k</code> 个奇异值。由 Eckart–Young–Mirsky 定理，它是下述优化问题的最优解（谱范数与 Frobenius 范数下均成立）：</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="16.10"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Eckart-Young"><msub><mi>X</mi><mi>k</mi></msub><mo>=</mo><munder><mi>argmin</mi><mrow><mi>rank</mi><mo>(</mo><mi>Z</mi><mo>)</mo><mo>≤</mo><mi>k</mi></mrow></munder><msub><mrow><mo>‖</mo><mi>X</mi><mo>−</mo><mi>Z</mi><mo>‖</mo></mrow><mi>F</mi></msub></math><span class="eq-tag">16.10</span></div>
+<p>若显式对 <code>U_k,Σ_k,V_k</code> 求导，需要逐列求解 Sylvester 型线性方程组，代价约 <code>O(mnk)</code>，且当 <code>σ_k ≈ σ_{k+1}</code> 时极不稳定。现代做法是<strong>隐式微分</strong>：只对最优化条件求导，绕过分解本身，直接得到标量损失 <code>L</code> 关于输入 <code>X</code> 的梯度，而不构造完整的四维张量。</p>
+<div class="callout"><strong>适用条件：</strong> 隐式微分仍需谱间隙假设 <code>σ_k &gt; σ_{k+1}</code>。间隙消失时“最优秩 k 近似”对 <code>X</code> 不再局部唯一，梯度也就没有良定义。</div></section>
+<section id="replicate" aria-labelledby="replicate-heading"><h2 id="replicate-heading">07 / 可复算算例：逐项核对公式</h2>
+<p>下面只用 Python 标准库，固定一个 2×2 对称矩阵，逐项核对迹恒等式、Jacobi 公式与特征值导数。数值结论只对该算例成立，不构成一般证明。</p>
+<pre class="codeblock"><code>A = ((2.0, 0.0), (0.0, 0.5))
+dA = ((0.1, 0.0), (0.0, 0.3))
+B = ((1.0, 2.0), (3.0, 4.0))
+def mul(m, n):
+    return tuple(tuple(sum(m[i][k]*n[k][j] for k in range(2)) for j in range(2)) for i in range(2))
+def tr(m): return m[0][0] + m[1][1]
+def det(m): return m[0][0]*m[1][1] - m[0][1]*m[1][0]
+assert abs(det(A) - 1.0) &lt; 1e-12
+assert abs(tr(mul(A, B)) - tr(mul(B, A))) &lt; 1e-12          # 迹循环置换
+invA = ((0.5, 0.0), (0.0, 2.0))                              # A 可逆且对角
+assert abs(tr(mul(invA, dA)) - (0.1/2.0 + 0.3/0.5)) &lt; 1e-12  # Jacobi：tr(A⁻¹dA)
+assert abs(dA[1][1] - 0.3) &lt; 1e-12                           # dλ = e2ᵀ dA e2
+print("det =", det(A), "; dlambda =", dA[1][1])</code></pre>
+<p>预期输出：<code>det = 1.0 ; dlambda = 0.3</code>。核对要点：<code>A</code> 在 <code>e₂</code> 方向的伸缩是 0.5，扰动 <code>dA</code> 在该方向为 0.3，故 <code>dλ=0.3</code>。<strong>失败模式：</strong> 若把特征值改成相等，例如 <code>A=[[1,0],[0,1]]</code> 配非对角扰动 <code>dA=[[0,1],[1,0]]</code>，则 <code>v</code> 不再唯一，<code>vᵀ dA v</code> 随所选特征向量改变——这正是不可微的算例证据。</p>
+<div class="demo" data-lab="gradient"><label for="grad-h">差分步长 h = 1e−n（n 从 1 到 12）</label><input id="grad-h" type="range" min="1" max="12" step="1" value="6"><output for="grad-h">h=1e−6；中心差分 −2.00000000；解析方向导数 −2.00000000。</output></div>
+<p>该控件计算对称差分 <code>(f(1−h)−f(1+h))/(2h)</code>，对 <code>f(x)=x²</code> 恒等于 <code>−2</code>。把滑块推向两端可观察：步长过大会引入截断误差，过小则浮点相减吞掉有效位。默认状态无需脚本即可从文字读出结论，键盘可用方向键调节。</p></section>
+<section id="references" aria-labelledby="references-heading"><h2 id="references-heading">参考与延伸阅读</h2><ul class="source-list"><li><a href="https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf">Petersen &amp; Pedersen, <em>The Matrix Cookbook</em>：行列式、逆与迹的微分恒等式汇编</a></li><li><a href="https://doi.org/10.1137/1.9780898717778">N. J. Higham, <em>Functions of Matrices: Theory and Computation</em>, SIAM, 2008：矩阵函数与 Fréchet 导数</a></li><li><a href="https://arxiv.org/abs/1710.08717">Seeger et al., <em>Auto-Differentiating Linear Algebra</em>, arXiv:1710.08717：线性代数运算（含 SVD）的反向传播</a></li><li><a href="https://ocw.mit.edu/courses/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/">MIT 18.065 Matrix Methods：谱分解与矩阵函数的应用背景</a></li></ul><p class="article-note">本页公式给出标准结果及其适用条件；算例为本页构造的低维检查，用于核对符号约定，不能替代一般证明。</p></section></div><nav class="article-nav" aria-label="前后章节"><a href="15.html">← 第 15 章</a><a href="17.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>高级矩阵分析 / 第 16 章</span><a href="../index.html">返回课程首页</a></footer></body></html>

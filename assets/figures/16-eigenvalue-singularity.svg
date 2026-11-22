@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" role="img" aria-labelledby="sing-title sing-desc"><title id="sing-title">重特征值附近特征值曲线呈尖点，导数发散</title><desc id="sing-desc">对称矩阵族 A(ε)=[[1,ε],[ε,1]] 的两个特征值为 λ±=1±|ε|。当 ε→0 时两条曲线在 λ=1 处相交，斜率不连续，dλ/dε 的绝对值趋于无穷，所以重特征值处特征值函数不可微。</desc><rect width="720" height="380" rx="14" fill="#fffdf9" stroke="#dce3df"/>
+<line x1="60" y1="250" x2="672" y2="250" stroke="#53676d" stroke-width="1.4"/>
+<path d="M660 250 L672 250 M672 250 L664 246 M672 250 L664 254" fill="none" stroke="#53676d" stroke-width="1.4"/>
+<line x1="360" y1="60" x2="360" y2="344" stroke="#53676d" stroke-width="1.4"/>
+<path d="M360 72 L360 60 M360 60 L356 68 M360 60 L364 68" fill="none" stroke="#53676d" stroke-width="1.4"/>
+<line x1="360" y1="250" x2="360" y2="340" stroke="#53676d" stroke-width="1" stroke-dasharray="4 4"/>
+<text x="676" y="254" font-size="15" fill="#53676d" font-family="sans-serif">ε</text>
+<text x="366" y="70" font-size="15" fill="#53676d" font-family="sans-serif">λ</text>
+<text x="40" y="245" font-size="14" fill="#53676d" font-family="sans-serif">λ=1</text>
+<text x="326" y="266" font-size="14" fill="#53676d" font-family="sans-serif">0</text>
+<path d="M60,160 L231.25,182.5 L285,205 L341.25,227.5 L360,250 L378.75,227.5 L435,205 L528.75,182.5 L660,160" fill="none" stroke="#147f80" stroke-width="2.6"/>
+<path d="M60,340 L231.25,317.5 L285,295 L341.25,272.5 L360,250 L378.75,272.5 L435,295 L528.75,317.5 L660,340" fill="none" stroke="#7461ba" stroke-width="2.6"/>
+<circle cx="360" cy="250" r="5" fill="#c66345"/>
+<text x="374" y="300" font-size="15" fill="#147f80" font-family="sans-serif">λ₊ = 1+√(ε²)</text>
+<text x="374" y="324" font-size="15" fill="#7461ba" font-family="sans-serif">λ₋ = 1−√(ε²)</text>
+<text x="120" y="118" font-size="15" fill="#c66345" font-family="sans-serif">ε→0 时 |dλ/dε|→∞</text>
+<text x="452" y="150" font-size="14" fill="#53676d" font-family="sans-serif">斜率 ±1（ε≠0）</text></svg>
