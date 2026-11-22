@@ -8,5 +8,3 @@
 
 @media print{.article-body figure{overflow:visible!important}.article-body figure img{min-width:0!important;width:100%!important}}
 
-/* Long MathML expressions get a paper-like fixed measure inside a swipeable region. */
-@media(max-width:480px){.article-body .equation{display:block;overflow-x:auto;white-space:nowrap}.article-body .equation math{display:block;width:960px;min-width:960px;max-width:none;white-space:nowrap}.article-body .equation math *{white-space:nowrap}.article-body .equation .eq-tag{display:block;text-align:right;margin:.35rem 0 0}}
