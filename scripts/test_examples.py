@@ -60,6 +60,12 @@ class MatrixExamples(unittest.TestCase):
         def mm(X,Y): return [[sum(X[i][k]*Y[k][j] for k in range(2)) for j in range(2)] for i in range(2)]
         self.assertEqual(mm([[1,0],[0,0]],A),[[2.,0.],[0.,0.]])
         self.assertEqual(mm(A,P),[[1.,0.],[0.,0.]])
+        # Penrose conditions for the diagonal pedagogical example
+        self.assertEqual(mm(mm(A,P),A),[[2.,0.],[0.,0.]])
+        self.assertEqual(mm(mm(P,A),P),[[.5,0.],[0.,0.]])
+        AP=mm(A,P); PA=mm(P,A)
+        self.assertEqual(AP,[list(row) for row in zip(*AP)])
+        self.assertEqual(PA,[list(row) for row in zip(*PA)])
         self.assertEqual(4/(4+1),.8)
     def test_weyl_gap_nonnormal(self):
         eps=.2
