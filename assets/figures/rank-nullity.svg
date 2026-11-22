@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 410" role="img" aria-labelledby="kernel-title kernel-desc"><title id="kernel-title">秩与零空间的几何对照</title><desc id="kernel-desc">从三维输入到二维输出的线性映射，三个基向量在值域落在两个方向，非零核向量被映射到原点。</desc><defs><marker id="kernel-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1,1 L8,4.5 L1,8" fill="none" stroke="#147f80" stroke-width="1.5"/></marker></defs><rect width="920" height="410" rx="18" fill="#f7faf8"/><g font-family="Arial,'PingFang SC','Microsoft YaHei',sans-serif" font-size="16" fill="#203035">
+<rect x="26" y="70" width="355" height="300" rx="10" fill="#fff" stroke="#dce5df"/><rect x="541" y="70" width="353" height="300" rx="10" fill="#fff" stroke="#dce5df"/>
+<text x="55" y="53" fill="#203035" font-size="20" font-weight="700">输入空间 R³</text><text x="561" y="53" fill="#203035" font-size="20" font-weight="700">输出空间 R²</text>
+<circle cx="193" cy="239" r="6" fill="#203035"/>
+<line x1="193" y1="239" x2="292" y2="239" stroke="#c66345" stroke-width="4" /><line x1="193" y1="239" x2="130" y2="164" stroke="#7461ba" stroke-width="4" /><line x1="193" y1="239" x2="205" y2="110" stroke="#147f80" stroke-width="4" />
+<text x="304" y="244" fill="#c66345" font-size="16" font-weight="400">e₁</text><text x="105" y="157" fill="#7461ba" font-size="16" font-weight="400">e₂</text><text x="210" y="103" fill="#147f80" font-size="16" font-weight="400">e₃</text>
+<path d="M193 239 L106 316" stroke="#916c22" stroke-width="3" stroke-dasharray="7 5"/><text x="70" y="346" fill="#916c22" font-size="15" font-weight="700">ker(A): (-1,-1,1)</text>
+<path d="M401 225 H520" stroke="#147f80" stroke-width="3" marker-end="url(#kernel-arrow)"/>
+<text x="395" y="205" fill="#147f80" font-size="18" font-weight="700">A (2×3)</text>
+<line x1="578" y1="286" x2="841" y2="286" stroke="#b9c9c5" stroke-width="2" /><line x1="704" y1="347" x2="704" y2="126" stroke="#b9c9c5" stroke-width="2" />
+<circle cx="704" cy="286" r="6" fill="#203035"/>
+<line x1="704" y1="286" x2="825" y2="286" stroke="#c66345" stroke-width="4" /><line x1="704" y1="286" x2="704" y2="170" stroke="#7461ba" stroke-width="4" /><line x1="704" y1="286" x2="825" y2="170" stroke="#147f80" stroke-width="4" />
+<text x="814" y="312" fill="#c66345" font-size="16" font-weight="400">A e₁</text><text x="710" y="161" fill="#7461ba" font-size="16" font-weight="400">A e₂</text><text x="782" y="159" fill="#147f80" font-size="16" font-weight="400">A e₃</text>
+<text x="567" y="350" fill="#53676d" font-size="15" font-weight="400">像空间维数 = 2；核维数 = 1</text>
+</g></svg>
