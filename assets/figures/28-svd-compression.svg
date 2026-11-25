@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300" role="img" aria-labelledby="cr-title cr-desc"><title id="cr-title">200×200 灰度图在截断 SVD 下的压缩率随秩 k 的变化</title><desc id="cr-desc">压缩率 = mn/(k(m+n+1))，m=n=200。k=2 时压缩率约 49.88，k=10 时约 9.98，k=20 时约 4.99，k=50 时约 2.00。k 增大时压缩率迅速下降并趋近 1——此时存储分解参数几乎不再省空间。</desc><rect width="900" height="300" rx="14" fill="#fffdf9" stroke="#dce3df"/>
+<line x1="80" y1="240" x2="860" y2="240" stroke="#203035" stroke-width="1.6"/>
+<line x1="80" y1="40" x2="80" y2="240" stroke="#203035" stroke-width="1.6"/>
+<line x1="80" y1="202" x2="860" y2="202" stroke="#c66345" stroke-width="1.4" stroke-dasharray="6 5"/>
+<text x="700" y="196" font-size="13" fill="#c66345" font-family="sans-serif">压缩率 = 1（不省空间）</text>
+<rect x="120" y="61" width="80" height="179" fill="#e8f4f2" stroke="#147f80" stroke-width="1.6"/>
+<text x="120" y="52" font-size="14" fill="#147f80" font-family="sans-serif">49.88×</text>
+<rect x="300" y="204" width="80" height="36" fill="#efeaf8" stroke="#7461ba" stroke-width="1.6"/>
+<text x="304" y="196" font-size="14" fill="#7461ba" font-family="sans-serif">9.98×</text>
+<rect x="480" y="222" width="80" height="18" fill="#f6e8dc" stroke="#c66345" stroke-width="1.6"/>
+<text x="484" y="214" font-size="14" fill="#c66345" font-family="sans-serif">4.99×</text>
+<rect x="660" y="233" width="80" height="7" fill="#edf4f0" stroke="#53676d" stroke-width="1.6"/>
+<text x="664" y="226" font-size="14" fill="#53676d" font-family="sans-serif">2.00×</text>
+<text x="140" y="264" font-size="14" fill="#203035" font-family="sans-serif">k=2</text>
+<text x="316" y="264" font-size="14" fill="#203035" font-family="sans-serif">k=10</text>
+<text x="496" y="264" font-size="14" fill="#203035" font-family="sans-serif">k=20</text>
+<text x="676" y="264" font-size="14" fill="#203035" font-family="sans-serif">k=50</text>
+<text x="90" y="60" font-size="14" fill="#203035" font-family="sans-serif">压缩率</text>
+<text x="90" y="288" font-size="13" fill="#53676d" font-family="sans-serif">可验证观察：k 从 2 增到 50，压缩率由 ~49.9 降到 ~2.0；数值由公式算出，非实验数据。</text></svg>

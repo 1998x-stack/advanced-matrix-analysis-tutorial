@@ -125,6 +125,11 @@ document.querySelectorAll('[data-lab]').forEach(lab => {
       const full = m * n, lora = r * (m + n);
       output.textContent = 'r=' + r + '（m=n=4096）：全量 ' + full + ' 参数，LoRA ' + lora
         + '，压缩比 ' + (full / lora).toFixed(1) + '×。';
+    } else if (kind === 'compress-ratio') {
+      const k = Number(raw), m = 200, n = 200;
+      const stored = k * (m + n + 1);
+      output.textContent = 'k=' + k + '（m=n=200）：存储 ' + stored + ' 个，压缩率 '
+        + ((m * n) / stored).toFixed(2) + '×。';
     }
   }
   field.addEventListener('input', show);

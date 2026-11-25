@@ -133,4 +133,10 @@ class MatrixExamples(unittest.TestCase):
             self.assertAlmostEqual((m * n) / lora, ratio)
         self.assertEqual(m * n, 16777216)
         self.assertEqual(8 * (m + n), 65536)
+    def test_svd_compression_ratio(self):
+        m = n = 200
+        for k, stored, ratio in ((2, 802, 49.875), (10, 4010, 9.975),
+                                 (20, 8020, 4.988), (50, 20050, 1.995)):
+            self.assertEqual(k * (m + n + 1), stored)
+            self.assertAlmostEqual((m * n) / stored, ratio, places=2)
 if __name__=='__main__': unittest.main(verbosity=2)
