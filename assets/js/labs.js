@@ -115,6 +115,11 @@ document.querySelectorAll('[data-lab]').forEach(lab => {
       output.textContent = 'R=' + r + '（3×4×5 张量）：CP 参数 ' + (r * 12)
         + '；Tucker 参数（P=Q=R=' + r + '）' + (core + r * 12)
         + '，相差的核心张量项 PQR=' + core + '。';
+    } else if (kind === 'tt-save') {
+      const d = Number(raw), n = 10, r = 5;
+      const original = Math.pow(n, d), tt = d * n * r * r;
+      output.textContent = 'd=' + d + '，n=10，r=5：原始 ' + original.toExponential(1)
+        + ' 个参数，TT ' + tt + ' 个，比值 ≈ ' + (original / tt).toFixed(0) + '。';
     }
   }
   field.addEventListener('input', show);

@@ -118,4 +118,11 @@ class MatrixExamples(unittest.TestCase):
         for r in (1,2,3):
             self.assertEqual(r*(3+4+5),12*r)
             self.assertEqual(r**3+r*(3+4+5),r**3+12*r)
+    def test_tensor_train_storage(self):
+        n, d, r = 10, 10, 5
+        original = n ** d
+        tt = d * n * r * r
+        self.assertEqual(original, 10000000000)
+        self.assertEqual(tt, 2500)
+        self.assertEqual(original // tt, 4000000)
 if __name__=='__main__': unittest.main(verbosity=2)
