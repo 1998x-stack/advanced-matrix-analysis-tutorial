@@ -102,6 +102,13 @@ document.querySelectorAll('[data-lab]').forEach(lab => {
       const mass = g > 1 ? '；λ=0 处 δ 峰质量 ' + (1 - 1 / g).toFixed(3) : '；无 0 处 δ 峰';
       output.textContent = 'γ=' + g.toFixed(2) + '：MP 支撑 [' + a.toFixed(3)
         + ', ' + b.toFixed(3) + ']' + mass + '。';
+    } else if (kind === 'unfold') {
+      const dims = [2, 3, 2];
+      const n0 = Number(raw);
+      const rows = dims[n0 - 1];
+      const cols = dims.reduce((a, b) => a * b, 1) / rows;
+      output.textContent = 'T∈R^{2×3×2}，模-' + n0 + '展开 T_(' + n0
+        + ')∈R^{' + rows + '×' + cols + '}；元素总和 78，平方和 650。';
     }
   }
   field.addEventListener('input', show);

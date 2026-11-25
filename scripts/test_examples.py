@@ -95,4 +95,14 @@ class MatrixExamples(unittest.TestCase):
         self.assertAlmostEqual(a,0.08578643762690495)
         self.assertAlmostEqual(b,2.914213562373095)
         self.assertAlmostEqual(a+b,2*(1+g))
+    def test_tensor_unfolding(self):
+        T=[[[1,7],[2,8],[3,9]],[[4,10],[5,11],[6,12]]]   # T[i][j][k]，形状 2×3×2
+        flat=[T[i][j][k] for i in range(2) for j in range(3) for k in range(2)]
+        self.assertEqual(sum(flat),78)
+        self.assertEqual(sum(x*x for x in flat),650)
+        self.assertAlmostEqual(math.sqrt(650),25.495097567963924)
+        T1=[[T[i][j][k] for k in range(2) for j in range(3)] for i in range(2)]
+        T2=[[T[i][j][k] for k in range(2) for i in range(2)] for j in range(3)]
+        self.assertEqual(T1,[[1,2,3,7,8,9],[4,5,6,10,11,12]])
+        self.assertEqual(T2,[[1,4,7,10],[2,5,8,11],[3,6,9,12]])
 if __name__=='__main__': unittest.main(verbosity=2)
