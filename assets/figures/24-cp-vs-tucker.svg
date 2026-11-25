@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="340" viewBox="0 0 900 340" role="img" aria-labelledby="ct-title ct-desc"><title id="ct-title">CP 分解与 Tucker 分解的结构对比</title><desc id="ct-desc">左：CP 把张量写成 R 个秩-1 外积 a_r∘b_r∘c_r 之和，等价于一个超对角核心。右：Tucker 把张量写成一个稠密小核心张量 G 沿三个模分别乘因子矩阵 A、B、C。CP 是 Tucker 在核心超对角时的特例。</desc><rect width="900" height="340" rx="14" fill="#fffdf9" stroke="#dce3df"/>
+<text x="30" y="40" font-size="15" fill="#147f80" font-family="sans-serif">CP：T ≈ Σ_r λ_r · a_r ∘ b_r ∘ c_r（核心超对角）</text>
+<rect x="30" y="130" width="80" height="70" rx="6" fill="#e8f4f2" stroke="#147f80" stroke-width="1.8"/><text x="58" y="172" font-size="17" fill="#203035" font-family="serif">T</text><text x="40" y="222" font-size="13" fill="#53676d" font-family="sans-serif">I×J×K</text>
+<text x="122" y="172" font-size="24" fill="#203035" font-family="serif">≈</text><text x="156" y="172" font-size="26" fill="#203035" font-family="serif">Σ</text>
+<g stroke="#203035" stroke-width="1.4" fill="#fff"><rect x="196" y="132" width="16" height="66" fill="#e8f4f2"/><rect x="216" y="146" width="16" height="52"/><rect x="236" y="158" width="16" height="40"/></g>
+<text x="196" y="222" font-size="13" fill="#147f80" font-family="sans-serif">a_r</text><text x="216" y="222" font-size="13" fill="#7461ba" font-family="sans-serif">b_r</text><text x="236" y="222" font-size="13" fill="#c66345" font-family="sans-serif">c_r</text>
+<text x="205" y="118" font-size="13" fill="#203035" font-family="sans-serif">∘</text><text x="225" y="118" font-size="13" fill="#203035" font-family="sans-serif">∘</text>
+<text x="270" y="172" font-size="16" fill="#203035" font-family="serif">+ … (R 项)</text>
+<text x="30" y="258" font-size="14" fill="#53676d" font-family="sans-serif">参数 R(I+J+K)，随 R 线性增长；满足 Kruskal 条件时唯一。</text>
+<text x="30" y="284" font-size="14" fill="#53676d" font-family="sans-serif">可验证观察：每加一个成分只多 I+J+K 个参数。</text>
+<line x1="450" y1="60" x2="450" y2="300" stroke="#dce3df" stroke-width="1.5"/>
+<text x="470" y="40" font-size="15" fill="#7461ba" font-family="sans-serif">Tucker：T = G ×₁ A ×₂ B ×₃ C（核心稠密）</text>
+<rect x="470" y="130" width="80" height="70" rx="6" fill="#efeaf8" stroke="#7461ba" stroke-width="1.8"/><text x="498" y="172" font-size="17" fill="#203035" font-family="serif">T</text>
+<text x="562" y="172" font-size="22" fill="#203035" font-family="serif">=</text>
+<rect x="600" y="140" width="60" height="52" rx="6" fill="#f6e8dc" stroke="#c66345" stroke-width="1.6"/><text x="616" y="172" font-size="15" fill="#203035" font-family="serif">G</text><text x="600" y="208" font-size="13" fill="#c66345" font-family="sans-serif">P×Q×R</text>
+<text x="668" y="172" font-size="17" fill="#203035" font-family="serif">×</text>
+<g stroke-width="1.5" fill="#fff"><rect x="700" y="140" width="34" height="52" stroke="#147f80"/><rect x="742" y="140" width="34" height="52" stroke="#7461ba"/><rect x="784" y="140" width="34" height="52" stroke="#c66345"/></g>
+<text x="704" y="208" font-size="13" fill="#147f80" font-family="sans-serif">A</text><text x="746" y="208" font-size="13" fill="#7461ba" font-family="sans-serif">B</text><text x="788" y="208" font-size="13" fill="#c66345" font-family="sans-serif">C</text>
+<text x="470" y="258" font-size="14" fill="#53676d" font-family="sans-serif">参数 PQR+IP+JQ+KR，含三次的核心项；因子不唯一。</text>
+<text x="470" y="284" font-size="14" fill="#53676d" font-family="sans-serif">可验证观察：G 超对角（p=q=r）时 Tucker 退回 CP。</text></svg>

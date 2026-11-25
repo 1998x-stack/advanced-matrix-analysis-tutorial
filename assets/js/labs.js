@@ -109,6 +109,12 @@ document.querySelectorAll('[data-lab]').forEach(lab => {
       const cols = dims.reduce((a, b) => a * b, 1) / rows;
       output.textContent = 'T∈R^{2×3×2}，模-' + n0 + '展开 T_(' + n0
         + ')∈R^{' + rows + '×' + cols + '}；元素总和 78，平方和 650。';
+    } else if (kind === 'tucker-params') {
+      const r = Number(raw);
+      const core = r * r * r;
+      output.textContent = 'R=' + r + '（3×4×5 张量）：CP 参数 ' + (r * 12)
+        + '；Tucker 参数（P=Q=R=' + r + '）' + (core + r * 12)
+        + '，相差的核心张量项 PQR=' + core + '。';
     }
   }
   field.addEventListener('input', show);

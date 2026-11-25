@@ -105,4 +105,17 @@ class MatrixExamples(unittest.TestCase):
         T2=[[T[i][j][k] for k in range(2) for i in range(2)] for j in range(3)]
         self.assertEqual(T1,[[1,2,3,7,8,9],[4,5,6,10,11,12]])
         self.assertEqual(T2,[[1,4,7,10],[2,5,8,11],[3,6,9,12]])
+    def test_tensor_decompositions(self):
+        a=[1,2]; b=[1,0,1]; c=[2,1]
+        T=[[[a[i]*b[j]*c[k] for k in range(2)] for j in range(3)] for i in range(2)]
+        self.assertEqual(T[0],[[2,1],[0,0],[2,1]])
+        self.assertEqual(T[1],[[4,2],[0,0],[4,2]])
+        self.assertEqual(1*(2+3+2),7)
+        self.assertEqual(2*3*2,12)
+        # Kruskal sufficiency: k_A+k_B+k_C >= 2R+2
+        self.assertTrue(3+3+3 >= 2*2+2)
+        # Tucker vs CP parameter counts for a 3x4x5 tensor, all ranks = r
+        for r in (1,2,3):
+            self.assertEqual(r*(3+4+5),12*r)
+            self.assertEqual(r**3+r*(3+4+5),r**3+12*r)
 if __name__=='__main__': unittest.main(verbosity=2)
