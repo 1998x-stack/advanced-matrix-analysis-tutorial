@@ -125,4 +125,12 @@ class MatrixExamples(unittest.TestCase):
         self.assertEqual(original, 10000000000)
         self.assertEqual(tt, 2500)
         self.assertEqual(original // tt, 4000000)
+    def test_lora_params(self):
+        m = n = 4096
+        for r, ratio in ((8, 256.0), (64, 32.0)):
+            lora = r * (m + n)
+            self.assertEqual(lora, r * 2 * m)
+            self.assertAlmostEqual((m * n) / lora, ratio)
+        self.assertEqual(m * n, 16777216)
+        self.assertEqual(8 * (m + n), 65536)
 if __name__=='__main__': unittest.main(verbosity=2)

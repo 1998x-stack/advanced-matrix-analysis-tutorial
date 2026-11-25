@@ -1,350 +1,54 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第26章 深度学习中的矩阵分析</title>
-    <link rel="stylesheet" href="theme.css">
-    <script>
-    MathJax = {
-        tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            tags: 'ams'
-        },
-        options: {
-            enableMenu: true
-        }
-    };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/es5/tex-mml-chtml.js"></script>
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>📐 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 矩阵分析导论</a></li>
-            <li><a href="02.html">第2章 线性空间与线性变换</a></li>
-            <li><a href="03.html">第3章 特殊矩阵与矩阵运算</a></li>
-            <li><a href="04.html">第4章 范数与内积空间</a></li>
-            <li><a href="05.html">第5章 特征值与特征向量</a></li>
-            <li><a href="06.html">第6章 矩阵相似性与Jordan标准形</a></li>
-            <li><a href="07.html">第7章 矩阵函数</a></li>
-            <li><a href="08.html">第8章 LU分解与高斯消元法</a></li>
-            <li><a href="09.html">第9章 QR分解</a></li>
-            <li><a href="10.html">第10章 特征值分解与谱定理</a></li>
-            <li><a href="11.html">第11章 奇异值分解（SVD）</a></li>
-            <li><a href="12.html">第12章 Schur分解与广义特征值</a></li>
-            <li><a href="13.html">第13章 广义逆矩阵与最小二乘</a></li>
-            <li><a href="14.html">第14章 矩阵扰动理论</a></li>
-            <li><a href="15.html">第15章 矩阵导数基础</a></li>
-            <li><a href="16.html">第16章 矩阵微分进阶</a></li>
-            <li><a href="17.html">第17章 矩阵优化方法</a></li>
-            <li><a href="18.html">第18章 流形上的矩阵优化</a></li>
-            <li><a href="19.html">第19章 Kronecker积与矩阵方程</a></li>
-            <li><a href="20.html">第20章 非负矩阵分解（NMF）</a></li>
-            <li><a href="21.html">第21章 稀疏表示与压缩感知</a></li>
-            <li><a href="22.html">第22章 随机矩阵理论入门</a></li>
-            <li><a href="23.html">第23章 张量代数基础</a></li>
-            <li><a href="24.html">第24章 CP分解、Tucker分解与HOSVD</a></li>
-            <li><a href="25.html">第25章 张量网络与高级分解</a></li>
-            <li><a href="26.html" class="active">第26章 深度学习中的矩阵分析</a></li>
-            <li><a href="27.html">第27章 矩阵分析前沿趋势</a></li>
-            <li><a href="28.html">第28章 综合项目实战</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-
-        <h2>引言：深度学习中的矩阵无处不在</h2>
-
-        <p>经过前面25章的学习，我们从线性空间走到了张量网络，从矩阵分解走到了流形优化。现在是时候把这些知识串联起来了。你会发现——<strong>深度学习的每一个核心机制，本质上都是矩阵分析的应用</strong>。</p>
-
-        <p>Transformer的自注意力是一系列矩阵乘法；LoRA微调依赖低秩分解；GAN训练的稳定性靠谱归一化控制；模型压缩通过SVD和Kronecker分解完成——就连最新的"参数矩阵模型"（PMM），都在尝试用矩阵方程替代神经网络。这一章，我们将逐一拆解这些技术背后的矩阵分析原理。</p>
-
-        <div class="highlight">
-            <strong>本章定位：</strong> 前面25章我们打下了矩阵分析的理论基础。从这里开始，你会发现——你学过的每一个分解、每一条定理，都在深度学习的世界里找到了用武之地。这不是巧合。矩阵分析本就是深度学习的最底层语言。
-        </div>
-
-        <h2>26.1 注意力机制的矩阵视角</h2>
-
-        <p>Transformer 的核心操作——缩放点积注意力（Scaled Dot-Product Attention）——其数学形式为：</p>
-
-        $$ \text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V $$
-
-        <p>从矩阵分析的角度审视，这里每一步都对应着我们学过的概念：</p>
-
-        <ul>
-            <li>$QK^\top \in \mathbb{R}^{n \times n}$ 是一个<strong>Gram 矩阵</strong>，其元素 $(QK^\top)_{ij} = \mathbf{q}_i^\top \mathbf{k}_j$ 度量了第 $i$ 个查询与第 $j$ 个键的<strong>内积相似度</strong>——这正是第4章内积空间的具体应用。</li>
-            <li>除以 $\sqrt{d_k}$ 是一种<strong>缩放归一化</strong>，保证 softmax 的输入方差不会随维度增长而爆炸。从变量分析的角度看，$\text{Var}(QK^\top_{ij}) \approx d_k$，所以除以 $\sqrt{d_k}$ 后方差回到 $O(1)$。</li>
-            <li>softmax 按行作用于这个 Gram 矩阵，得到注意力权重矩阵 $A \in \mathbb{R}^{n \times n}$。每一行 $\mathbf{a}_i$ 是一个概率分布——$\sum_j a_{ij} = 1$。这是<strong>行随机矩阵</strong>（row-stochastic matrix），我们在第7章矩阵函数中曾讨论过类似结构。</li>
-            <li>最终输出 $AV$ 是注意力权重对值矩阵的<strong>凸组合</strong>——每行是值向量的加权平均。</li>
-        </ul>
-
-        <p>多头注意力（Multi-Head Attention）则将这一过程分解为多个并行子空间：</p>
-
-        $$ \text{MultiHead}(Q,K,V) = \text{Concat}(\text{head}_1,\ldots,\text{head}_h)W^O $$
-
-        $$ \text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V) $$
-
-        <p>每个 $W_i^Q \in \mathbb{R}^{d_{\text{model}} \times d_k}$ 是一个<strong>投影矩阵</strong>——它将查询向量投影到第 $i$ 个注意力头的子空间中。$h$ 个头合起来，等价于把 $d_{\text{model}}$ 维空间分解为 $h$ 个 $d_k$ 维子空间的直和。这正是第2章中<strong>线性变换在不同基下的表示</strong>在现代深度学习中的回响。</p>
-
-        <p>从矩阵分解的角度看，多头注意力还可以理解为将注意力矩阵 $A$ 分解为 $h$ 个低秩分量之和。每个头捕捉不同的关系模式（语法的、语义的、位置的），这与 SVD 将矩阵分解为奇异值分量的思路如出一辙——只是这里的"秩"由头的数量决定。</p>
-
-        <div class="tip">
-            <strong>洞察：</strong> 如果你把单头注意力视为一个秩-$n$ 的注意力矩阵（因为它是对所有位置的加权），那么 $h$ 头注意力就是把这些信息分配到 $h$ 个子空间中。每个子空间的 $d_k = d_{\text{model}}/h$，意味着每个头只能捕捉特定维度的模式。这正是"分而治之"的矩阵分析思维——把一个大矩阵分解为结构化的低秩分量之和，每个分量承担不同的语义角色。
-        </div>
-
-        <h2>26.2 LoRA 与低秩适配</h2>
-
-        <p>LoRA（Low-Rank Adaptation）是当前大模型微调的主流方法。它的核心思想异常简洁——只需一行矩阵公式就能说清楚：</p>
-
-        <p>全量微调时，我们需要更新预训练权重矩阵 $W_0 \in \mathbb{R}^{m \times n}$：</p>
-
-        $$ W = W_0 + \Delta W $$
-
-        <p>LoRA 假设 $\Delta W$ 是<strong>低秩</strong>的，因此可以分解为两个小矩阵的乘积：</p>
-
-        $$ \Delta W = BA, \quad B \in \mathbb{R}^{m \times r}, \; A \in \mathbb{R}^{r \times n}, \; r \ll \min(m,n) $$
-
-        <p>前向传播时：</p>
-
-        $$ h = W_0 x + BAx = W_0 x + \underbrace{B(Ax)}_{\text{先降维再升维}} $$
-
-        <p>这个看似简单的分解，蕴含着深刻的矩阵分析思想：</p>
-
-        <ul>
-            <li>$\text{rank}(\Delta W) \le r \ll \min(m,n)$ —— 微调带来的参数变化被约束在一个低秩子空间中。这等价于假设：大模型的参数变化本质上是低维的。</li>
-            <li>可训练参数量从 $mn$ 降为 $r(m+n)$。以 LLaMA-7B 的注意力投影层为例：$m=n=4096$，取 $r=8$ 时，从 $16.8\times 10^6$ 降为 $6.5\times 10^4$——压缩了 256 倍。</li>
-            <li>$A$ 用随机高斯初始化，$B$ 初始化为零，这样 $\Delta W = BA$ 从零开始学习，不破坏 $W_0$ 的初始输出。</li>
-        </ul>
-
-        <div class="highlight">
-            <strong>融会贯通——课程在此形成闭环：</strong> 还记得第11章的 Eckart-Young 定理吗？它告诉我们：在 Frobenius 范数下，矩阵 $A$ 的最优秩-$k$ 近似就是其 SVD 截断 $A_k = U_k \Sigma_k V_k^\top$。LoRA 的低秩假设 $\text{rank}(\Delta W) \ll \min(m,n)$ 在数学上等价于：<strong>大模型微调时的参数变化，绝大多数能量都集中在一个低秩子空间中</strong>。SVD 告诉我们在 Frobenius 范数下什么是最优的低秩近似，而 LoRA 则用端到端学习自动发现了这个低秩结构。正如 Eckart-Young 定理是 SVD 的理论支柱，LoRA 的成功也反过来验证了这一经典定理的深刻性——<strong>整个课程在这里形成了一个完美的闭环</strong>。
-        </div>
-
-        <p>来看一个 NumPy 实现的 LoRA 正向传播，直观感受它的计算过程：</p>
-
-        <pre><code>import numpy as np
-
-class LoRALayer:
-    """LoRA低秩适配层 - NumPy实现"""
-    def __init__(self, m, n, r):
-        # 原始预训练权重（冻结，不参与梯度更新）
-        self.W0 = np.random.randn(m, n) * 0.02
-        # LoRA矩阵：A（降维）和 B（升维）
-        self.A = np.random.randn(r, n) * 0.01   # 高斯初始化
-        self.B = np.zeros((m, r))               # 零初始化，保证初始BA=0
-
-    def forward(self, x, scaling=1.0):
-        """前向传播: y = W0 @ x + scaling * (B @ (A @ x))"""
-        return self.W0 @ x + scaling * (self.B @ (self.A @ x))
-
-    def trainable_params_count(self):
-        return self.A.size + self.B.size
-
-
-# 模拟一个注意力投影层
-m, n, r = 4096, 4096, 8
-layer = LoRALayer(m, n, r)
-x = np.random.randn(n)
-y = layer.forward(x)
-
-full_params = m * n
-lora_params = layer.trainable_params_count()
-print(f"全量微调参数量: {full_params:,}")
-print(f"LoRA 参数量 (r={r}): {lora_params:,}")
-print(f"压缩比: {full_params / lora_params:.1f}x")
-# 输出:
-# 全量微调参数量: 16,777,216
-# LoRA 参数量 (r=8): 65,536
-# 压缩比: 256.0x</code></pre>
-
-        <div class="warning">
-            <strong>踩坑回忆：</strong> 我第一次用 LoRA 微调 LLaMA 时，犯了新手常见错误——给所有层都设了相同的秩 $r=64$。结果微调后在目标任务上表现不错，但模型的通用能力出现了明显的<strong>灾难性遗忘</strong>。后来读了一系列深入分析才明白：<strong>LoRA 的秩 $r$ 控制着学习容量与稳定性的平衡</strong>。$r$ 太大时低秩约束形同虚设，微调会过度偏离预训练分布；$r$ 太小时表达能力又不够。更关键的是：不同层需要不同的秩。注意力层的 $W_Q$ 和 $W_V$ 通常只需要 $r=4\sim16$，而 $W_O$ 和 MLP 层可能需要 $r=16\sim32$。这反映了不同层的权重矩阵的<strong>本征秩（intrinsic rank）</strong>不同——而通过 SVD 分析奇异值谱，你就能定量地回答"这层应该用多大的 $r$"。从那之后我养成了一个习惯：每次做 LoRA 之前，先对预训练权重做一次 SVD，画出奇异值分布曲线。这是矩阵分析思维在工程实践中的最直接体现。
-        </div>
-
-        <h2>26.3 谱归一化</h2>
-
-        <p>谱归一化（Spectral Normalization）由 Miyato 等人于 2018 年提出，是 GAN 训练中稳定判别器（Discriminator）的关键技术。它的核心思路出奇地简洁——用矩阵的谱范数来约束每层的 Lipschitz 常数。</p>
-
-        <p>回忆第4章学过的内容：矩阵 $W$ 的谱范数（即 $2$-范数）等于其最大奇异值：</p>
-
-        $$ \|W\|_2 = \sigma_{\max}(W) $$
-
-        <p>谱归一化就是将每层的权重矩阵除以其谱范数：</p>
-
-        $$ \bar{W}_{\text{SN}} = \frac{W}{\sigma_{\max}(W)} $$
-
-        <p>归一化后，$\|\bar{W}_{\text{SN}}\|_2 = 1$。由于神经网络的整体 Lipschitz 常数满足 $\text{Lip}(f) \le \prod_{l=1}^L \|W_l\|_2$（在逐点激活函数是 1-Lipschitz 的假设下），谱归一化保证了网络不会过度放大输入中的微小扰动。这对 GAN 训练极为重要——判别器必须是 Lipschitz 连续的，才能提供有意义的梯度信号。</p>
-
-        <p>但问题来了：每次迭代都做完整 SVD 计算 $\sigma_{\max}(W)$ 实在太昂贵了。实际实现中采用<strong>幂迭代法（Power Iteration）</strong>——一个我们在第5章介绍过的技巧：</p>
-
-        $$ \mathbf{u} \leftarrow \frac{W^\top \mathbf{v}}{\|W^\top \mathbf{v}\|_2}, \qquad \mathbf{v} \leftarrow \frac{W \mathbf{u}}{\|W \mathbf{u}\|_2} $$
-
-        <p>经过少数几次迭代（通常 1-3 次），$\sigma_{\max}(W) \approx \mathbf{v}^\top W \mathbf{u}$。这个近似的计算量仅为几次矩阵-向量乘法，比完整 SVD 快了几个数量级。</p>
-
-        <pre><code>def spectral_norm(W, u, v, n_iter=1):
-    """对权重矩阵 W 做谱归一化（幂迭代版本）
-
-    Args:
-        W: 权重矩阵 (m x n)
-        u: 右奇异向量的初始估计 (m,)
-        v: 左奇异向量的初始估计 (n,)
-        n_iter: 幂迭代步数
-
-    Returns:
-        W_sn: 谱归一化后的权重矩阵
-        u, v: 更新后的奇异向量估计（供下次调用复用）
-        sigma: 估计的最大奇异值
-    """
-    for _ in range(n_iter):
-        v = W.T @ u
-        v = v / np.linalg.norm(v)
-        u = W @ v
-        u = u / np.linalg.norm(u)
-
-    sigma = v @ (W.T @ u)  # 等价于 u^T W v
-    return W / sigma, u, v, sigma
-
-
-# 演示
-m, n = 128, 256
-W = np.random.randn(m, n)
-# 计算真实谱范数
-_, s, _ = np.linalg.svd(W, full_matrices=False)
-true_sigma = s[0]
-# 幂迭代估计
-u = np.random.randn(m)
-v = np.random.randn(n)
-_, _, _, est_sigma = spectral_norm(W, u, v, n_iter=5)
-print(f"真实谱范数: {true_sigma:.4f}")
-print(f"幂迭代估计: {est_sigma:.4f}")
-print(f"相对误差: {abs(true_sigma - est_sigma) / true_sigma:.4%}")
-# 输出: 相对误差 &lt; 0.1%</code></pre>
-
-        <p>从矩阵分析的角度看，谱归一化之所以有效，不仅因为它控制了 Lipschitz 常数。更深层的原因是：它确保了每层权重矩阵的<strong>所有奇异值都落在 $[0,1]$ 区间内</strong>。这意味着信号在前向传播中不会被放大，在反向传播中梯度也不会爆炸——这正是深层网络训练中的核心挑战之一。</p>
-
-        <div class="tip">
-            <strong>联系与延伸：</strong> 谱归一化与权重归一化（Weight Normalization）的区别在于：权重归一化逐列调整向量的范数，而谱归一化从矩阵的整体角度考虑。这种"全局 vs 局部"的视角差异，和我们在第4章学过的向量范数与矩阵范数的关系如出一辙。另一个有趣的联系是：谱归一化中的幂迭代，与第5章讨论的 Rayleigh 商迭代本质上是同一类算法。
-        </div>
-
-        <h2>26.4 权重归一化与模型压缩中的矩阵分解</h2>
-
-        <p>矩阵分解不仅在微调中发挥作用（LoRA），也是模型压缩的核心工具。下表总结了主要的矩阵分解压缩方法及其适用场景：</p>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>方法</th>
-                    <th>核心思想</th>
-                    <th>参数量压缩比</th>
-                    <th>加速比</th>
-                    <th>适用层类型</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>SVD 剪枝</strong></td>
-                    <td>对权重矩阵做 SVD，截断小奇异值分量 $A \approx U_k \Sigma_k V_k^\top$</td>
-                    <td>2–5×</td>
-                    <td>1.5–3×</td>
-                    <td>全连接层、嵌入层</td>
-                </tr>
-                <tr>
-                    <td><strong>Kronecker 分解</strong></td>
-                    <td>将大矩阵拆为 Kronecker 积 $W = A \otimes B$</td>
-                    <td>4–16×</td>
-                    <td>2–4×</td>
-                    <td>卷积核 $4\times4$ 以上</td>
-                </tr>
-                <tr>
-                    <td><strong>CP 分解</strong></td>
-                    <td>将权重张量分解为秩-1 张量之和（第24章）</td>
-                    <td>3–10×</td>
-                    <td>2–5×</td>
-                    <td>卷积层的通道间压缩</td>
-                </tr>
-                <tr>
-                    <td><strong>Tucker 分解</strong></td>
-                    <td>保留核心张量，在空间和通道维度同时压缩（第24章）</td>
-                    <td>5–20×</td>
-                    <td>3–6×</td>
-                    <td>大规模 CNN 的卷积层</td>
-                </tr>
-                <tr>
-                    <td><strong>LoRA（推理融合）</strong></td>
-                    <td>将微调后的 $\Delta W = BA$ 合并回 $W_0$：$W = W_0 + BA$</td>
-                    <td>—</td>
-                    <td>1×（无推理开销）</td>
-                    <td>注意力投影层</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <p>特别值得一提的是 Kronecker 分解。给定一个 $mn \times pq$ 的大矩阵 $W$，如果它能表示为两个小矩阵的 Kronecker 积：</p>
-
-        $$ W = A \otimes B, \quad A \in \mathbb{R}^{m \times p}, \; B \in \mathbb{R}^{n \times q} $$
-
-        <p>则参数量从 $mnpq$ 降为 $mp + nq$。当 $m=p=\sqrt{M}$ 且 $n=q=\sqrt{N}$ 时，$MN$ 的参数被压缩到 $\sqrt{MN}(\sqrt{M} + \sqrt{N})$。在卷积神经网络中，$4\times4$ 以上的卷积核用 Kronecker 分解后，参数量可减少一个数量级。</p>
-
-        <p>但 Kronecker 分解有一个关键局限：并不是所有矩阵都能精确分解为单个 Kronecker 积。更一般的做法是<strong>Kronecker 积分解和</strong>（Kronecker Product Decomposition, KPD）：</p>
-
-        $$ W \approx \sum_{i=1}^s A_i \otimes B_i $$
-
-        <p>这等价于用一个更大的 Kronecker 结构来近似原矩阵。从矩阵分析的角度看，它和张量分解（第24章）之间存在深刻联系——实际上，Kronecker 积分解可以被视为 Tucker-2 分解的一种特例。</p>
-
-        <h2>26.5 参数矩阵模型</h2>
-
-        <p>2025 年，一篇发表在 <em>Nature Communications</em> 上的论文提出了一种令人眼前一亮的新范式——<strong>参数矩阵模型</strong>（Parameter Matrix Model, PMM）。它的核心思想简洁而激进：<strong>用矩阵方程替代神经网络</strong>。</p>
-
-        <p>传统神经网络通过多层非线性变换来学习映射：</p>
-
-        $$ \mathbf{h}_{l+1} = \sigma(W_l \mathbf{h}_l + \mathbf{b}_l) $$
-
-        <p>而 PMM 将学习过程建模为一个<strong>线性矩阵微分方程</strong>（LDE）：</p>
-
-        $$ \dot{X}(t) = A(t)X(t) + B(t)U(t) $$
-
-        <p>其中 $X(t)$ 是系统的状态矩阵，$A(t)$ 是系统的转移矩阵，$U(t)$ 是输入矩阵，$B(t)$ 是输入映射矩阵。模型的参数就是 $A(t)$ 和 $B(t)$——它们本身是 $t$ 的函数（或分段常数）。</p>
-
-        <p>这一范式带来的参数量节省是惊人的：传统神经网络中每层的参数量是 $O(n_{\text{in}} \times n_{\text{out}})$，而在 PMM 中，状态转移矩阵 $A$ 的参数量仅为 $O(d^2)$，其中 $d$ 是状态维度。通过选择合适的 $d$，参数量可以减少一个数量级甚至更多。</p>
-
-        <p>更重要的是，PMM 的数学结构使得它可以利用<strong>矩阵分析中的所有工具</strong>：</p>
-
-        <ul>
-            <li>解的存在性和唯一性由第2章的线性系统理论保证</li>
-            <li>解的稳定性分析依赖于第5章的特征值分布（矩阵 $A$ 的特征值实部必须为负）</li>
-            <li>数值求解需要第8章的高效线性求解器</li>
-            <li>模型的可控性和可观性分析依赖第13章的广义逆理论</li>
-        </ul>
-
-        <div class="highlight">
-            <strong>令人兴奋的方向：</strong> PMM 是"矩阵分析完全体"的体现——它不是简单地把矩阵当作计算工具，而是将整个学习过程嵌入到矩阵微分方程的框架中。当传统深度学习社区还在争论更大的模型、更深的网络时，PMM 提出了一个根本性问题：<strong>神经网络真的是必要的吗？</strong>也许我们需要的不是更多层，而是更大的矩阵？这个问题的答案，或许就在你们这一代研究者手中。
-        </div>
-
-        <h2>本章小结</h2>
-
-        <p>这一章，我们完成了矩阵分析从理论到深度学习实践的"最后一公里"：</p>
-
-        <ul>
-            <li><strong>注意力机制</strong>本质上是 Gram 矩阵 + 行随机矩阵 + 凸组合的矩阵运算——内积、归一化、线性变换，都是我们熟知的矩阵分析概念。</li>
-            <li><strong>LoRA</strong> 的低秩假设可以用 Eckart-Young 定理来理解——它是 SVD 最优截断思想在微调场景中的实践，也是整个课程形成闭环的时刻。</li>
-            <li><strong>谱归一化</strong>用幂迭代高效近似谱范数，将 Lipschitz 约束转化为矩阵范数约束——这是第4章矩阵范数理论在 GAN 训练中的直接应用。</li>
-            <li><strong>矩阵分解压缩</strong>——SVD 剪枝、Kronecker 分解、CP/Tucker 分解——是矩阵和张量分解技术在模型小型化中的系统应用。</li>
-            <li><strong>参数矩阵模型</strong>则展示了矩阵分析的一种未来可能性：用矩阵方程替代神经网络，从根本上重新思考深度学习。</li>
-        </ul>
-
-        <p>下一章，我们将把目光投向更远的前沿——深度矩阵分解、量子矩阵计算、四元数矩阵、矩阵函数通用近似框架……这些2025-2026年的最新进展，将为你的矩阵分析之旅打开全新的视野。</p>
-
-        <div class="footer-nav">
-            <a href="25.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="27.html">下一章 →</a>
-        </div>
-    </div>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="深度学习中的矩阵分析：注意力的 Gram 矩阵视角、LoRA 低秩适配与 Eckart–Young、谱归一化与幂迭代、以及 SVD/Kronecker/CP/Tucker 在模型压缩中的角色。"><title>26 · 深度学习中的矩阵分析：注意力、LoRA 与谱归一化 | 高级矩阵分析</title><link rel="stylesheet" href="../assets/css/site.css"><script src="../assets/js/labs.js" defer></script></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-top"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">M</span><span>矩阵分析 <small>Matrix Atlas</small></span></a><nav class="top-links" aria-label="站点导航"><a href="../index.html#syllabus">全部 28 章</a><a href="https://github.com/1998x-stack/advanced-matrix-analysis-tutorial">GitHub</a></nav></header><div class="article-shell"><aside class="article-toc"><h2>本章目录 / 26</h2><nav aria-label="本章目录"><a href="#problem">01 / 深度学习为何是矩阵分析</a><a href="#attention">02 / 注意力的矩阵视角</a><a href="#lora">03 / LoRA 与低秩适配</a><a href="#spectral">04 / 谱归一化</a><a href="#compress">05 / 模型压缩中的分解</a><a href="#replicate">06 / 可复算算例</a><a href="#references">参考与延伸阅读</a></nav></aside><main id="content" class="article-main"><article><header class="article-header"><a class="article-top-link" href="../index.html">← 返回课程地图</a><p class="eyebrow">CHAPTER 26 / ADVANCED MATRIX ANALYSIS</p><h1>深度学习中的矩阵分析：注意力、LoRA 与谱归一化</h1><p class="dek">注意力是关于 Gram 矩阵与行随机矩阵的运算；LoRA 把微调增量约束为低秩乘积，用 Eckart–Young 定理写清代价；谱归一化用幂迭代估计最大奇异值。本文用矩阵分析的语言拆解这些机制。</p></header><div class="article-body"><section id="problem" aria-labelledby="problem-heading"><h2 id="problem-heading">01 / 深度学习为何是矩阵分析</h2>
+<p class="lede">一个全连接层就是 <code>y=Wx</code>；一层卷积是可写成稀疏、带状结构的矩阵乘法；自注意力是 <code>softmax(QKᵀ/√d_k)V</code>；LoRA 微调把参数增量约束成两个小矩阵的乘积。这些机制的名字各异，背后都是矩阵分析的对象：内积、低秩、奇异值、范数。</p>
+<p>本章不重复推导网络结构，而是把四个具体机制翻译成矩阵语言，并指出它们各自<strong>用的是哪一条定理</strong>：</p>
+<ul><li><strong>注意力：</strong> <code>QKᵀ</code> 是 Gram 矩阵，<code>softmax</code> 逐行归一化得到行随机矩阵，再乘 <code>V</code> 是凸组合。</li><li><strong>LoRA：</strong> 微调增量 <code>ΔW</code> 被约束为低秩乘积 <code>BA</code>，与第 11 章的 Eckart–Young 定理直接相关。</li><li><strong>谱归一化：</strong> 用最大奇异值 <code>σ_max</code> 控制 Lipschitz 常数，用幂迭代估计它。</li><li><strong>模型压缩：</strong> SVD、Kronecker、CP/Tucker 分解把参数变少。</li></ul>
+<div class="callout"><strong>对象与前提：</strong> 除非另行说明，权重与激活均为实矩阵；<code>W∈R^{m×n}</code>，<code>x∈R^n</code>，注意力中 <code>Q,K,V∈R^{n×d_k}</code>。这些矩阵的<strong>数值行为</strong>（条件数、奇异值）决定了训练稳定性和压缩空间，而不仅是它们的形状。</div></section><section id="attention" aria-labelledby="attention-heading"><h2 id="attention-heading">02 / 注意力的矩阵视角</h2>
+<p>缩放点积注意力：</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="26.1"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="缩放点积注意力"><mi>Attention</mi><mo>(</mo><mi>Q</mi><mo>,</mo><mi>K</mi><mo>,</mo><mi>V</mi><mo>)</mo><mo>=</mo><mi>softmax</mi><mrow><mo>(</mo><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></mrow><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt></mfrac><mo>)</mo></mrow><mi>V</mi></math><span class="eq-tag">26.1</span></div>
+<p>逐步用矩阵分析的语言读它：</p>
+<ul><li><code>QKᵀ∈R^{n×n}</code> 是 <strong>Gram 矩阵</strong>，元素 <code>(QKᵀ)_{ij}=q_iᵀk_j</code> 是第 <code>i</code> 个查询与第 <code>j</code> 个键的内积——第 4 章的内积与对偶性。</li><li>除以 <code>√d_k</code> 是<strong>方差归一</strong>：若各分量独立、零均值、单位方差，则 <code>q_iᵀk_j</code> 的方差约为 <code>d_k</code>，除以 <code>√d_k</code> 后方差约为 <code>1</code>，使 <code>softmax</code> 不会因维度变大而饱和。</li><li><code>softmax</code> 逐<strong>行</strong>归一化，得到行随机矩阵 <code>A∈R^{n×n}</code>（每行非负且和为 1）。行随机矩阵是有限马尔可夫链的转移矩阵，其谱半径与平稳分布有成熟理论。</li><li>输出 <code>AV</code> 的每一行是值向量的<strong>凸组合</strong>，即加权平均。</li></ul>
+<p>多头注意力把上述过程分到 <code>h</code> 个子空间：</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="26.2"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="多头注意力"><msub><mi>head</mi><mi>i</mi></msub><mo>=</mo><mi>Attention</mi><mrow><mo>(</mo><mi>Q</mi><msubsup><mi>W</mi><mi>i</mi><mi>Q</mi></msubsup><mo>,</mo><mi>K</mi><msubsup><mi>W</mi><mi>i</mi><mi>K</mi></msubsup><mo>,</mo><mi>V</mi><msubsup><mi>W</mi><mi>i</mi><mi>V</mi></msubsup><mo>)</mo></mrow><mo>,</mo><mspace width="0.7em"></mspace><mi>MultiHead</mi><mo>=</mo><mi>Concat</mi><mrow><mo>(</mo><msub><mi>head</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>head</mi><mi>h</mi></msub><mo>)</mo></mrow><msup><mi>W</mi><mi>O</mi></msup></math><span class="eq-tag">26.2</span></div>
+<div class="callout warning"><strong>别过度解读：</strong> 说“注意力矩阵是低秩的”或“每个头对应一个秩-1 分量”只是启发式类比，不一定成立：<code>A</code> 是行随机的，通常接近满秩；各头的权重也并非正交分解。<strong>能严格说的是：</strong> <code>A</code> 的秩不超过 <code>n</code>，且 <code>AV</code> 的行落在 <code>V</code> 的行张成的子空间内。</div></section><section id="lora" aria-labelledby="lora-heading"><h2 id="lora-heading">03 / LoRA 与低秩适配</h2>
+<p>全量微调更新预训练权重 <code>W_0∈R^{m×n}</code>：</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="26.3"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="全量微调"><mi>W</mi><mo>=</mo><msub><mi>W</mi><mn>0</mn></msub><mo>+</mo><mi>Δ</mi><mi>W</mi></math><span class="eq-tag">26.3</span></div>
+<p><strong>LoRA</strong>（Hu 等，2021）假设 <code>ΔW</code> 低秩，把它写成两个小矩阵之积：</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="26.4"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="LoRA 低秩增量"><mi>Δ</mi><mi>W</mi><mo>=</mo><mi>B</mi><mi>A</mi><mo>,</mo><mspace width="0.6em"></mspace><mi>B</mi><mo>∈</mo><msup><mi>R</mi><mrow><mi>m</mi><mo>×</mo><mi>r</mi></mrow></msup><mo>,</mo><mspace width="0.4em"></mspace><mi>A</mi><mo>∈</mo><msup><mi>R</mi><mrow><mi>r</mi><mo>×</mo><mi>n</mi></mrow></msup><mo>,</mo><mspace width="0.6em"></mspace><mi>r</mi><mo>≪</mo><mi>min</mi><mo>(</mo><mi>m</mi><mo>,</mo><mi>n</mi><mo>)</mo></math><span class="eq-tag">26.4</span></div>
+<p>于是前向变成“先降维再升维”：<code>h=W_0x+B(Ax)</code>。可训练参数从 <code>mn</code> 降为 <code>r(m+n)</code>。例如取 <code>m=n=4096、r=8</code>：<code>mn=16777216</code>，<code>r(m+n)=65536</code>，比值恰好 <code>256</code>——这只是由公式直接算出的算术，不是实验数据。</p>
+<figure><svg xmlns="http://www.w3.org/2000/svg" width="900" height="280" viewBox="0 0 900 280" role="img" aria-labelledby="lora-title lora-desc"><title id="lora-title">LoRA：低秩增量 ΔW 分解为 B 与 A 的乘积</title><desc id="lora-desc">微调后的权重 W 等于冻结的预训练权重 W0 加上低秩增量 BA。B 是 m×r 的高瘦矩阵，A 是 r×n 的扁宽矩阵，中间维 r 远小于 m 与 n，形成一个参数瓶颈。</desc><rect width="900" height="280" rx="14" fill="#fffdf9" stroke="#dce3df"/><rect x="30" y="90" width="120" height="100" rx="6" fill="#e8f4f2" stroke="#203035" stroke-width="1.6"/><text x="72" y="146" font-size="18" fill="#203035" font-family="serif">W</text><text x="45" y="212" font-size="13" fill="#53676d" font-family="sans-serif">m×n</text><text x="164" y="146" font-size="22" fill="#203035" font-family="serif">=</text><rect x="196" y="90" width="120" height="100" rx="6" fill="#edf4f0" stroke="#203035" stroke-width="1.6" stroke-dasharray="5 4"/><text x="216" y="146" font-size="15" fill="#53676d" font-family="serif">W₀（冻结）</text><text x="330" y="146" font-size="22" fill="#203035" font-family="serif">+</text><rect x="362" y="70" width="44" height="140" rx="6" fill="#f6e8dc" stroke="#c66345" stroke-width="1.8"/><text x="374" y="146" font-size="18" fill="#203035" font-family="serif">B</text><text x="362" y="228" font-size="13" fill="#c66345" font-family="sans-serif">m×r</text><text x="420" y="146" font-size="20" fill="#203035" font-family="serif">·</text><rect x="446" y="118" width="140" height="44" rx="6" fill="#efeaf8" stroke="#7461ba" stroke-width="1.8"/><text x="506" y="147" font-size="18" fill="#203035" font-family="serif">A</text><text x="446" y="228" font-size="13" fill="#7461ba" font-family="sans-serif">r×n</text><line x1="620" y1="40" x2="620" y2="250" stroke="#dce3df" stroke-width="1.5"/><text x="646" y="76" font-size="15" fill="#203035" font-family="sans-serif">瓶颈：r ≪ min(m,n)</text><text x="646" y="106" font-size="14" fill="#53676d" font-family="sans-serif">可训练参数：mn → r(m+n)</text><text x="646" y="134" font-size="14" fill="#53676d" font-family="sans-serif">m=n=4096, r=8：16777216 → 65536（比值 256）</text><text x="646" y="170" font-size="14" fill="#147f80" font-family="sans-serif">可验证观察：W₀ 冻结不改；梯度只经过 B 与 A。</text><text x="646" y="198" font-size="14" fill="#c66345" font-family="sans-serif">注意：参数比值为公式算术，非实验数据。</text><text x="646" y="226" font-size="14" fill="#53676d" font-family="sans-serif">若 ΔW 接近满秩，低秩约束会限制表达能力。</text></svg><figcaption>LoRA 的参数瓶颈结构。<strong>可验证观察：</strong> 冻结 <code>W₀</code> 不变，只训练 <code>B</code> 与 <code>A</code>；可训练参数量由 <code>mn</code> 降为 <code>r(m+n)</code>。图中比值为公式直接算出的算术，<strong>非</strong>实验数据。</figcaption></figure>
+<div class="callout"><strong>与 Eckart–Young 的联系：</strong> 第 11 章指出，Frobenius 范数下矩阵的最优秩 <code>k</code> 逼近就是 SVD 截断 <code>A_k=U_kΣ_kV_kᵀ</code>。LoRA 的假设 <code>rank(ΔW)≤r≪min(m,n)</code> 等价于“微调增量几乎落在低维子空间”。Hu 等人报告，在多个任务上很小的 <code>r</code> 就足够，说明微调增量确实大幅低秩——这是经验发现，不是对所有任务都成立的定理。</div>
+<div class="callout warning"><strong>边界：</strong> (1) 若任务需要的更新接近满秩，低秩约束会限制表达能力（这可由 <code>σ_{r+1}</code> 的大小预判）；(2) 秩 <code>r</code> 控制“容量–稳定”权衡，但仍需按任务与层选择，常见做法是先用 SVD 查看权重奇异值谱再定 <code>r</code>；(3) <code>ΔW</code> 与 <code>W_0</code> 的关系（LoRA 初始化时令 <code>B=0</code> 使增量从零开始）影响训练初期行为。</div></section><section id="spectral" aria-labelledby="spectral-heading"><h2 id="spectral-heading">04 / 谱归一化：用最大奇异值控制 Lipschitz 常数</h2>
+<p>矩阵的谱范数（算子 2-范数）等于其最大奇异值（第 4 章）：</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="26.5"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="谱范数"><msub><mrow><mo>‖</mo><mi>W</mi><mo>‖</mo></mrow><mn>2</mn></msub><mo>=</mo><msub><mi>σ</mi><mtext>max</mtext></msub><mo>(</mo><mi>W</mi><mo>)</mo></math><span class="eq-tag">26.5</span></div>
+<p><strong>谱归一化</strong>（Miyato 等，2018）把每层权重除以其谱范数：</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="26.6"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="谱归一化"><msub><mover><mi>W</mi><mo>‾</mo></mover><mtext>SN</mtext></msub><mo>=</mo><mfrac><mi>W</mi><mrow><msub><mi>σ</mi><mtext>max</mtext></msub><mo>(</mo><mi>W</mi><mo>)</mo></mrow></mfrac></math><span class="eq-tag">26.6</span></div>
+<p>归一化后 <code>‖W̄‖₂=1</code>。由于逐点激活函数是 1-Lipschitz 时，网络整体 Lipschitz 常数满足 <code>Lip(f)≤∏_l‖W_l‖₂</code>，逐层谱归一就给出了一个可控的上界，使判别器不会过度放大微小扰动。</p>
+<p>但每次迭代做完整 SVD 太贵。实际用<strong>幂迭代</strong>估 <code>σ_max</code>：</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="26.7"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="幂迭代"><mi>v</mi><mo>←</mo><mfrac><mrow><msup><mi>W</mi><mi>T</mi></msup><mi>u</mi></mrow><msub><mrow><mo>‖</mo><msup><mi>W</mi><mi>T</mi></msup><mi>u</mi><mo>‖</mo></mrow><mn>2</mn></msub></mfrac><mo>,</mo><mspace width="0.9em"></mspace><mi>u</mi><mo>←</mo><mfrac><mrow><mi>W</mi><mi>v</mi></mrow><msub><mrow><mo>‖</mo><mi>W</mi><mi>v</mi><mo>‖</mo></mrow><mn>2</mn></msub></mfrac></math><span class="eq-tag">26.7</span></div>
+<p>几次迭代后 <code>σ_max(W)≈uᵀWv</code>（第 5 章幂法与 Rayleigh 商）。计算量仅几次矩阵–向量乘法，远快于完整 SVD。</p>
+<div class="callout warning"><strong>称呼区分：</strong> 谱归一化（除以 <code>σ_max</code>）与权重归一化（逐列调整范数）不同；前者是矩阵层面的整体约束，后者是向量层面的重参数化。两者对应的 Lipschitz 控制也不同。</div></section><section id="compress" aria-labelledby="compress-heading"><h2 id="compress-heading">05 / 模型压缩中的分解</h2>
+<p>矩阵与张量分解是模型压缩的主力工具。各方法的核心思想如下：</p>
+<table><caption>常见分解式压缩方法（不含具体压缩比数值；实际收益随网络与所选秩而变）</caption><thead><tr><th>方法</th><th>核心思想</th><th>适用层</th></tr></thead><tbody>
+<tr><td>SVD 剪枝</td><td>对权重做 SVD，保留前 <code>k</code> 个奇异值：<code>W≈U_kΣ_kV_kᵀ</code></td><td>全连接、嵌入层</td></tr>
+<tr><td>Kronecker 分解</td><td>把大矩阵写成两小矩阵的 Kronecker 积 <code>W=A⊗B</code></td><td>较大的卷积核</td></tr>
+<tr><td>CP 分解</td><td>把权重张量写成秩-1 张量之和（第 24 章）</td><td>卷积层通道间</td></tr>
+<tr><td>Tucker 分解</td><td>保留核心张量，在空间与通道维度同时压缩（第 24 章）</td><td>大型 CNN 卷积层</td></tr>
+<tr><td>LoRA 推理融合</td><td>把 <code>ΔW=BA</code> 合并回 <code>W_0</code>：<code>W=W₀+BA</code>，推理无额外开销</td><td>注意力投影层</td></tr>
+</tbody></table>
+<p>Kronecker 分解值得单独说。若 <code>mn×pq</code> 的大矩阵可写成两个小矩阵的 Kronecker 积：</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="26.8"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Kronecker 分解"><mi>W</mi><mo>=</mo><mi>A</mi><mo>⊗</mo><mi>B</mi><mo>,</mo><mspace width="0.7em"></mspace><mi>A</mi><mo>∈</mo><msup><mi>R</mi><mrow><mi>m</mi><mo>×</mo><mi>p</mi></mrow></msup><mo>,</mo><mspace width="0.4em"></mspace><mi>B</mi><mo>∈</mo><msup><mi>R</mi><mrow><mi>n</mi><mo>×</mo><mi>q</mi></mrow></msup></math><span class="eq-tag">26.8</span></div>
+<p>参数量就从 <code>mnpq</code> 降为 <code>mp+nq</code>。但不是所有矩阵都能精确写成单个 Kronecker 积；更一般的是<strong>Kronecker 积分解和</strong>（KPD）：</p>
+<div class="equation eq-scroll" tabindex="0" role="region" aria-label="26.9"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Kronecker 积分解和"><mi>W</mi><mo>≈</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>s</mi></munderover><msub><mi>A</mi><mi>i</mi></msub><mo>⊗</mo><msub><mi>B</mi><mi>i</mi></msub></math><span class="eq-tag">26.9</span></div>
+<p>它与张量分解（第 24 章）相关：Kronecker 积分解可看作一种受限的 Tucker 分解（Tucker-2）。</p>
+<div class="callout warning"><strong>不要迷信表格：</strong> 压缩比与精度损失强烈依赖具体权重与所选秩，没有“普适最优秩”。压缩前应用 SVD 查看奇异值谱，用 <code>σ_{k+1}/σ_1</code> 判断低秩近似是否可行。</div></section><section id="replicate" aria-labelledby="replicate-heading"><h2 id="replicate-heading">06 / 可复算算例：LoRA 参数与压缩比</h2>
+<p>用标准库直接算出 LoRA 的可训练参数与压缩比（<code>m=n=4096</code>，即 LLaMA-7B 的注意力投影层宽度）。</p>
+<pre class="codeblock"><code>m = n = 4096
+for r in (8, 64):
+    full = m * n
+    lora = r * (m + n)
+    print("r=%2d: LoRA=%6d  压缩比=%.1fx" % (r, lora, full / lora))</code></pre>
+<p>预期输出：<code>r= 8: LoRA= 65536  压缩比=256.0x</code> 与 <code>r=64: LoRA=524288  压缩比=32.0x</code>。<strong>核对要点：</strong> LoRA 参数为 <code>r(m+n)</code>，随 <code>r</code> 线性增长；<code>m=n</code> 时压缩比 <code>= mn/(r(m+n)) = m/(2r)</code>。<strong>失败模式：</strong> 若把参数量误写成 <code>r·max(m,n)</code>，会低估 LoRA 参数；若把 <code>B、A</code> 的维度写反（<code>B</code> 为 <code>r×m</code>），矩阵乘法 <code>BA</code> 将无法进行。</p>
+<div class="demo" data-lab="lora-params"><label for="lora-r">LoRA 秩 r（固定 m=n=4096）</label><input id="lora-r" type="range" min="1" max="64" step="1" value="8"><output for="lora-r">r=8（m=n=4096）：全量 16777216 参数，LoRA 65536，压缩比 256.0×。</output></div>
+<p>该控件展示：秩 <code>r</code> 越大，LoRA 参数越多、压缩比越小。<code>r</code> 控制的是“容量—压缩”权衡。默认状态无需脚本即可读出；键盘方向键可调 <code>r</code>。</p></section><section id="references" aria-labelledby="references-heading"><h2 id="references-heading">参考与延伸阅读</h2><ul class="source-list"><li><a href="https://arxiv.org/abs/1706.03762">Vaswani 等, <em>Attention Is All You Need</em>, NeurIPS, 2017：缩放点积与多头注意力</a></li><li><a href="https://arxiv.org/abs/2106.09685">Hu 等, <em>LoRA: Low-Rank Adaptation of Large Language Models</em>, 2021：低秩适配与内禀秩</a></li><li><a href="https://arxiv.org/abs/1802.05957">Miyato 等, <em>Spectral Normalization for Generative Adversarial Networks</em>, ICLR, 2018：谱范数与幂迭代</a></li><li><a href="https://arxiv.org/abs/1404.0736">Denton 等, <em>Exploiting Linear Structure Within Convolutional Networks</em>, NeurIPS, 2014：SVD 压缩</a></li><li><a href="https://arxiv.org/abs/1412.6553">Lebedev 等, <em>Speeding-up Convolutional Neural Networks Using Fine-tuned CP-Decomposition</em>, 2014：CP 压缩</a></li><li><a href="https://arxiv.org/abs/2012.13255">Aghajanyan, Zettlemoyer &amp; Gupta, <em>Intrinsic Dimensionality Explains the Effectiveness of Language Model Fine-Tuning</em>, 2020：微调的内禀维度</a></li></ul><p class="article-note">注意力、LoRA、谱归一化与压缩方法的定义与机制转述自上述文献，本页不重证。代码块依赖 NumPy；算例为仅用标准库的确定性数值核对。文中 <code>m=n=4096, r=8</code> 的参数比值由公式 <code>mn→r(m+n)</code> 直接算出，<strong>不是</strong>实验测得数据；模型压缩表也刻意略去具体压缩比与加速比。历史与工程建议为概括，具体数值以原文实验表为准。</p></section>
 </div>
-</div>
-</body>
-</html>
+<nav class="article-nav" aria-label="前后章节"><a href="25.html">← 第 25 章</a><a href="27.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>高级矩阵分析 / 第 26 章</span><a href="../index.html">返回课程首页</a></footer></body></html>

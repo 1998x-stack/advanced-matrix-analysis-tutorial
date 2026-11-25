@@ -48,11 +48,11 @@ inspect(ROOT/'index.html')
 for n in range(1,29):
     p=ROOT/'chapters'/f'{n:02}.html'
     if not p.is_file(): ERRORS.append(f'missing chapter {n:02}'); continue
-    inspect(p,deep=n<=25)
+    inspect(p,deep=n<=26)
     if not (ROOT/f'{n:02}.html').is_file(): ERRORS.append(f'missing legacy redirect {n:02}')
     c=catalog['chapters'][n-1]
     if c['file']!=f'chapters/{n:02}.html': ERRORS.append(f'wrong chapter file {n}')
-    if c['status']!=('illustrated' if n<=25 else 'legacy'): ERRORS.append(f'wrong chapter status {n}')
+    if c['status']!=('illustrated' if n<=26 else 'legacy'): ERRORS.append(f'wrong chapter status {n}')
 for file in (ROOT/'assets/figures').glob('*.svg'):
     try:
         root=ET.fromstring(file.read_text(encoding='utf-8'))
@@ -64,4 +64,4 @@ for file in (ROOT/'assets/figures').glob('*.svg'):
 if ERRORS:
     print('\n'.join('ERROR '+e for e in ERRORS))
     sys.exit(1)
-print('OK: 28 lessons, 25 illustrated, legacy routes, MathML, SVG XML, local links')
+print('OK: 28 lessons, 26 illustrated, legacy routes, MathML, SVG XML, local links')

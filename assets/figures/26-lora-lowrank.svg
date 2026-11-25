@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="280" viewBox="0 0 900 280" role="img" aria-labelledby="lora-title lora-desc"><title id="lora-title">LoRA：低秩增量 ΔW 分解为 B 与 A 的乘积</title><desc id="lora-desc">微调后的权重 W 等于冻结的预训练权重 W0 加上低秩增量 BA。B 是 m×r 的高瘦矩阵，A 是 r×n 的扁宽矩阵，中间维 r 远小于 m 与 n，形成一个参数瓶颈。可训练参数量由 mn 降为 r(m+n)。</desc><rect width="900" height="280" rx="14" fill="#fffdf9" stroke="#dce3df"/>
+<rect x="30" y="90" width="120" height="100" rx="6" fill="#e8f4f2" stroke="#203035" stroke-width="1.6"/><text x="72" y="146" font-size="18" fill="#203035" font-family="serif">W</text><text x="45" y="212" font-size="13" fill="#53676d" font-family="sans-serif">m×n</text>
+<text x="164" y="146" font-size="22" fill="#203035" font-family="serif">=</text>
+<rect x="196" y="90" width="120" height="100" rx="6" fill="#edf4f0" stroke="#203035" stroke-width="1.6" stroke-dasharray="5 4"/><text x="228" y="146" font-size="16" fill="#53676d" font-family="serif">W₀（冻结）</text>
+<text x="330" y="146" font-size="22" fill="#203035" font-family="serif">+</text>
+<rect x="362" y="70" width="44" height="140" rx="6" fill="#f6e8dc" stroke="#c66345" stroke-width="1.8"/><text x="372" y="146" font-size="18" fill="#203035" font-family="serif">B</text><text x="362" y="228" font-size="13" fill="#c66345" font-family="sans-serif">m×r</text>
+<text x="420" y="146" font-size="20" fill="#203035" font-family="serif">·</text>
+<rect x="446" y="118" width="140" height="44" rx="6" fill="#efeaf8" stroke="#7461ba" stroke-width="1.8"/><text x="500" y="147" font-size="18" fill="#203035" font-family="serif">A</text><text x="446" y="228" font-size="13" fill="#7461ba" font-family="sans-serif">r×n</text>
+<line x1="620" y1="40" x2="620" y2="250" stroke="#dce3df" stroke-width="1.5"/>
+<text x="646" y="76" font-size="15" fill="#203035" font-family="sans-serif">瓶颈：r ≪ min(m,n)</text>
+<text x="646" y="106" font-size="14" fill="#53676d" font-family="sans-serif">可训练参数：mn → r(m+n)</text>
+<text x="646" y="134" font-size="14" fill="#53676d" font-family="sans-serif">m=n=4096, r=8：16777216 → 65536（比值 256）</text>
+<text x="646" y="170" font-size="14" fill="#147f80" font-family="sans-serif">可验证观察：W₀ 冻结不改；梯度只经过 B 与 A。</text>
+<text x="646" y="198" font-size="14" fill="#c66345" font-family="sans-serif">注意：参数比值为公式算术，非实验数据。</text>
+<text x="646" y="226" font-size="14" fill="#53676d" font-family="sans-serif">若 ΔW 接近满秩，低秩约束会限制表达能力。</text></svg>

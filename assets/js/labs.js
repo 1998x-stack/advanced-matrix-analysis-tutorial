@@ -120,6 +120,11 @@ document.querySelectorAll('[data-lab]').forEach(lab => {
       const original = Math.pow(n, d), tt = d * n * r * r;
       output.textContent = 'd=' + d + '，n=10，r=5：原始 ' + original.toExponential(1)
         + ' 个参数，TT ' + tt + ' 个，比值 ≈ ' + (original / tt).toFixed(0) + '。';
+    } else if (kind === 'lora-params') {
+      const r = Number(raw), m = 4096, n = 4096;
+      const full = m * n, lora = r * (m + n);
+      output.textContent = 'r=' + r + '（m=n=4096）：全量 ' + full + ' 参数，LoRA ' + lora
+        + '，压缩比 ' + (full / lora).toFixed(1) + '×。';
     }
   }
   field.addEventListener('input', show);
