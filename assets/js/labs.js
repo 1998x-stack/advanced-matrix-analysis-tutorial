@@ -96,6 +96,12 @@ document.querySelectorAll('[data-lab]').forEach(lab => {
       const l2 = y / (1 + 2 * lam);
       output.textContent = 'λ=' + lam.toFixed(2) + '（固定 y=0.3）：ℓ₁ 解='
         + l1.toFixed(4) + '，ℓ₂ 解=' + l2.toFixed(4) + '。';
+    } else if (kind === 'mp-gamma') {
+      const g = n, s = Math.sqrt(g);
+      const a = (1 - s) * (1 - s), b = (1 + s) * (1 + s);
+      const mass = g > 1 ? '；λ=0 处 δ 峰质量 ' + (1 - 1 / g).toFixed(3) : '；无 0 处 δ 峰';
+      output.textContent = 'γ=' + g.toFixed(2) + '：MP 支撑 [' + a.toFixed(3)
+        + ', ' + b.toFixed(3) + ']' + mass + '。';
     }
   }
   field.addEventListener('input', show);

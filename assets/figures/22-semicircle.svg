@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" role="img" aria-labelledby="sc-title sc-desc"><title id="sc-title">Wigner 半圆律：大对称随机矩阵的特征值密度收敛到半圆</title><desc id="sc-desc">归一化实对称随机矩阵 M=X/√n 的特征值经验分布随 n 增大收敛到半圆密度 ρ(λ)=1/(2π)√(4−λ²)，支撑为 [−2,2]。左图同时画出 n 较小时带涨落的经验直方图轮廓与光滑半圆极限曲线，右图说明普适性：极限形状只依赖前两阶矩。</desc><rect width="900" height="340" rx="14" fill="#fffdf9" stroke="#dce3df"/>
+<line x1="70" y1="250" x2="500" y2="250" stroke="#203035" stroke-width="1.6"/>
+<line x1="285" y1="60" x2="285" y2="270" stroke="#203035" stroke-width="1.6"/>
+<path d="M80 250 Q285 -70 490 250" fill="none" stroke="#147f80" stroke-width="2.6"/>
+<path d="M96 250 L108 205 L128 168 L150 132 L178 106 L206 92 L240 84 L268 83 L300 85 L332 92 L362 108 L386 128 L408 152 L430 182 L450 214 L468 250" fill="none" stroke="#c66345" stroke-width="1.6" stroke-dasharray="5 4"/>
+<circle cx="80" cy="250" r="4.5" fill="#147f80"/><circle cx="490" cy="250" r="4.5" fill="#147f80"/>
+<text x="74" y="272" font-size="14" fill="#53676d" font-family="sans-serif">λ=−2</text>
+<text x="466" y="272" font-size="14" fill="#53676d" font-family="sans-serif">λ=+2</text>
+<text x="292" y="66" font-size="14" fill="#203035" font-family="sans-serif">ρ(λ)</text>
+<text x="120" y="300" font-size="14" fill="#c66345" font-family="sans-serif">n 较小时的经验分布（带涨落）</text>
+<text x="120" y="322" font-size="14" fill="#147f80" font-family="sans-serif">n→∞ 的半圆极限</text>
+<line x1="540" y1="40" x2="540" y2="300" stroke="#dce3df" stroke-width="1.5"/>
+<text x="570" y="86" font-size="15" fill="#203035" font-family="sans-serif">普适性（universality）</text>
+<text x="570" y="116" font-size="14" fill="#53676d" font-family="sans-serif">只要元素独立、均值为 0、方差归一，</text>
+<text x="570" y="138" font-size="14" fill="#53676d" font-family="sans-serif">极限谱分布就只由前两阶矩决定。</text>
+<text x="570" y="176" font-size="14" fill="#53676d" font-family="sans-serif">均匀、伯努利、t 分布给出同一条半圆。</text>
+<text x="570" y="214" font-size="14" fill="#147f80" font-family="sans-serif">可验证观察：半圆在两端 λ=±2 处趋于 0，</text>
+<text x="570" y="236" font-size="14" fill="#147f80" font-family="sans-serif">在 λ=0 处取最大值 1/π≈0.318。</text>
+<text x="570" y="274" font-size="14" fill="#c66345" font-family="sans-serif">注意：直方图轮廓为示意，未按真实样本绘制。</text></svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="320" viewBox="0 0 900 320" role="img" aria-labelledby="mp-title mp-desc"><title id="mp-title">Marčenko–Pastur 律：样本协方差矩阵谱支撑随 γ=p/n 展宽</title><desc id="mp-desc">Wishart 矩阵 S=XᵀX/n（X 含 p 列、n 行）的特征值密度支撑为 [a,b]，a=(1−√γ)²、b=(1+√γ)²，γ=p/n。图中三条横带分别给出 γ=0.25、γ=1、γ=2 的支撑区间；γ 增大时支撑展宽，γ&gt;1 时在 λ=0 处出现质量 1−1/γ 的 δ 峰（矩阵奇异）。</desc><rect width="900" height="320" rx="14" fill="#fffdf9" stroke="#dce3df"/>
+<line x1="90" y1="278" x2="810" y2="278" stroke="#203035" stroke-width="1.6"/>
+<g font-size="13" fill="#53676d" font-family="sans-serif">
+<text x="86" y="300">0</text><text x="206" y="300">1</text><text x="326" y="300">2</text><text x="446" y="300">3</text><text x="566" y="300">4</text><text x="686" y="300">5</text><text x="806" y="300">6</text>
+<text x="400" y="316">λ（特征值）</text></g>
+<text x="30" y="100" font-size="14" fill="#147f80" font-family="sans-serif">γ=0.25</text>
+<line x1="120" y1="92" x2="360" y2="92" stroke="#147f80" stroke-width="4"/>
+<line x1="120" y1="82" x2="120" y2="102" stroke="#147f80" stroke-width="2"/><line x1="360" y1="82" x2="360" y2="102" stroke="#147f80" stroke-width="2"/>
+<text x="370" y="97" font-size="13" fill="#53676d" font-family="sans-serif">[a,b]=[0.25, 2.25]，支撑窄，集中于 1 附近</text>
+<text x="30" y="170" font-size="14" fill="#7461ba" font-family="sans-serif">γ=1</text>
+<line x1="90" y1="162" x2="570" y2="162" stroke="#7461ba" stroke-width="4"/>
+<line x1="90" y1="152" x2="90" y2="172" stroke="#7461ba" stroke-width="2"/><line x1="570" y1="152" x2="570" y2="172" stroke="#7461ba" stroke-width="2"/>
+<text x="580" y="167" font-size="13" fill="#53676d" font-family="sans-serif">[a,b]=[0, 4]，a 触到 0，矩阵趋于奇异</text>
+<text x="30" y="240" font-size="14" fill="#c66345" font-family="sans-serif">γ=2</text>
+<line x1="111" y1="232" x2="789" y2="232" stroke="#c66345" stroke-width="4"/>
+<line x1="111" y1="222" x2="111" y2="242" stroke="#c66345" stroke-width="2"/><line x1="789" y1="222" x2="789" y2="242" stroke="#c66345" stroke-width="2"/>
+<line x1="90" y1="248" x2="90" y2="204" stroke="#c66345" stroke-width="6"/>
+<text x="96" y="200" font-size="13" fill="#c66345" font-family="sans-serif">δ 峰：质量 1−1/γ=0.5（零特征值）</text>
+<text x="470" y="52" font-size="14" fill="#203035" font-family="sans-serif">γ=p/n 越大，样本协方差谱被“展宽”得越厉害</text>
+<text x="470" y="74" font-size="13" fill="#53676d" font-family="sans-serif">注意：横带为支撑区间示意，曲线形状未按真实密度绘制。</text></svg>

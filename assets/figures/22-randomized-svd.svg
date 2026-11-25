@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300" role="img" aria-labelledby="rs-title rs-desc"><title id="rs-title">随机 SVD 的范围查找流程：随机投影、QR 正交化、低维精确 SVD</title><desc id="rs-desc">流程：生成随机测试矩阵 Ω（n×ℓ，ℓ=k+p），计算 Y=AΩ（m×ℓ）以捕获 A 的主要作用方向，对 Y 作 QR 分解得正交基 Q，再形成小矩阵 B=QᵀA（ℓ×n），对 B 作精确 SVD 得 B=ÛΣVᵀ，最后以 U=QÛ 恢复左奇异向量。过采样 p 通常取 5–10 以提升精度。</desc><rect width="900" height="300" rx="14" fill="#fffdf9" stroke="#dce3df"/>
+<g font-family="sans-serif">
+<rect x="40" y="120" width="120" height="70" rx="8" fill="#e8f4f2" stroke="#147f80" stroke-width="1.8"/>
+<text x="66" y="150" font-size="17" fill="#203035">A</text><text x="60" y="176" font-size="13" fill="#53676d">m×n（大）</text>
+<line x1="160" y1="155" x2="216" y2="155" stroke="#53676d" stroke-width="1.8" marker-end="url(#ar)"/>
+<rect x="226" y="120" width="130" height="70" rx="8" fill="#fff" stroke="#203035" stroke-width="1.6"/>
+<text x="248" y="150" font-size="17" fill="#203035">Y=AΩ</text><text x="242" y="176" font-size="13" fill="#53676d">m×(k+p)</text>
+<line x1="356" y1="155" x2="412" y2="155" stroke="#53676d" stroke-width="1.8" marker-end="url(#ar)"/>
+<rect x="422" y="120" width="130" height="70" rx="8" fill="#fff" stroke="#203035" stroke-width="1.6"/>
+<text x="448" y="150" font-size="17" fill="#203035">Q</text><text x="432" y="176" font-size="13" fill="#53676d">正交基 m×(k+p)</text>
+<line x1="552" y1="155" x2="608" y2="155" stroke="#53676d" stroke-width="1.8" marker-end="url(#ar)"/>
+<rect x="618" y="120" width="130" height="70" rx="8" fill="#efeaf8" stroke="#7461ba" stroke-width="1.8"/>
+<text x="638" y="150" font-size="17" fill="#203035">B=QᵀA</text><text x="640" y="176" font-size="13" fill="#53676d">(k+p)×n（小）</text>
+<line x1="748" y1="155" x2="806" y2="155" stroke="#53676d" stroke-width="1.8" marker-end="url(#ar)"/>
+<text x="812" y="150" font-size="15" fill="#203035">SVD(B)</text><text x="800" y="172" font-size="13" fill="#53676d">U=QÛ</text>
+<text x="40" y="92" font-size="14" fill="#147f80">① 随机投影：ℓ=k+p，p 常取 5–10 过采样</text>
+<text x="40" y="232" font-size="14" fill="#53676d">② Y 的列张成 A 值域的高概率近似；QR 给出数值稳定的正交基</text>
+<text x="40" y="256" font-size="14" fill="#53676d">③ 只对 (k+p)×n 的小矩阵做精确 SVD，再回代 Q 得到近最优截断</text>
+<text x="40" y="282" font-size="13" fill="#c66345">注意：复杂度与误差界随 A 的谱衰减而定，但本图为流程示意。</text>
+</g>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#53676d"/></marker></defs></svg>

@@ -86,4 +86,13 @@ class MatrixExamples(unittest.TestCase):
         # residual=[1,1], A^T residual=[1,3]
         self.assertEqual((1,2*1+1),(1,3))
 
+    def test_random_matrix_densities(self):
+        rho=lambda lam: math.sqrt(4-lam*lam)/(2*math.pi)
+        self.assertAlmostEqual(rho(0.0),1/math.pi)
+        self.assertAlmostEqual(rho(2.0),0.0)
+        g=0.5; s=math.sqrt(g)
+        a=(1-s)**2; b=(1+s)**2
+        self.assertAlmostEqual(a,0.08578643762690495)
+        self.assertAlmostEqual(b,2.914213562373095)
+        self.assertAlmostEqual(a+b,2*(1+g))
 if __name__=='__main__': unittest.main(verbosity=2)
