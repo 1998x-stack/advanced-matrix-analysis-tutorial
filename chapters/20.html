@@ -4,7 +4,34 @@
 <p>非负矩阵分解（NMF）要求两个因子都非负：</p>
 <div class="equation eq-scroll" tabindex="0" role="region" aria-label="20.1"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="NMF 分解"><mi>A</mi><mo>≈</mo><mi>W</mi><mi>H</mi><mo>,</mo><mspace width="1em"></mspace><mi>W</mi><mo>≥</mo><mn>0</mn><mo>,</mo><mspace width="0.5em"></mspace><mi>H</mi><mo>≥</mo><mn>0</mn></math><span class="eq-tag">20.1</span></div>
 <p><code>W∈R_+^{m×r}</code> 是基矩阵，<code>H∈R_+^{r×n}</code> 是系数矩阵，<code>r</code> 通常远小于 <code>min(m,n)</code>。非负约束迫使数据只能由<strong>非负基向量相加</strong>得到，于是基向量往往对应“局部部件”，这与“整体由局部组成”的直觉一致。</p>
-<figure><img src="../assets/figures/20-nmf-parts.svg" alt="A 约等于 W 乘 H 的块图，W 每列标注为眼、鼻、嘴等非负局部部件，H 为非负系数。"><figcaption><code>A≈WH</code>：<code>W</code> 的每一列是一个非负局部部件，<code>H</code> 的每一列给出“用了多少”。可验证观察：<code>H</code> 的各元素非负，故任意列 <code>A_{:,j}=Σ_k W_{:,k}H_{k,j}</code> 只能由部件相加得到。图中部件为示意，非真实数据。</figcaption></figure>
+<figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" role="img" aria-labelledby="nmf-title nmf-desc"><title id="nmf-title">非负矩阵分解：数据由非负基部件叠加而成</title><desc id="nmf-desc">A≈WH：W 的每一列是一个非负基部件（眼、鼻、嘴等局部模式），H 是非负系数矩阵。与 SVD 不同，所有因子非负，因此数据只能由部件相加得到，不允许正负相消。</desc><rect width="900" height="340" rx="14" fill="#fffdf9" stroke="#dce3df"/>
+<text x="30" y="142" font-size="15" fill="#53676d" font-family="sans-serif">A ≥ 0　(m×n)</text>
+<rect x="30" y="150" width="80" height="110" fill="#e8f4f2" stroke="#203035" stroke-width="1.6"/>
+<text x="120" y="214" font-size="26" fill="#203035" font-family="serif">≈</text>
+<text x="165" y="112" font-size="15" fill="#53676d" font-family="sans-serif">W ≥ 0　(m×r)</text>
+<rect x="165" y="120" width="72" height="150" fill="#fff" stroke="#203035" stroke-width="1.6"/>
+<line x1="189" y1="120" x2="189" y2="270" stroke="#203035" stroke-width="1"/>
+<line x1="213" y1="120" x2="213" y2="270" stroke="#203035" stroke-width="1"/>
+<text x="171" y="200" font-size="14" fill="#147f80" font-family="sans-serif">眼</text>
+<text x="195" y="200" font-size="14" fill="#c66345" font-family="sans-serif">鼻</text>
+<text x="219" y="200" font-size="14" fill="#7461ba" font-family="sans-serif">嘴</text>
+<text x="165" y="288" font-size="14" fill="#53676d" font-family="sans-serif">列=局部部件</text>
+<text x="258" y="214" font-size="26" fill="#203035" font-family="serif">×</text>
+<text x="300" y="142" font-size="15" fill="#53676d" font-family="sans-serif">H ≥ 0　(r×n)</text>
+<rect x="300" y="150" width="150" height="110" fill="#fff" stroke="#203035" stroke-width="1.6"/>
+<line x1="300" y1="186.7" x2="450" y2="186.7" stroke="#203035" stroke-width="1"/>
+<line x1="300" y1="223.3" x2="450" y2="223.3" stroke="#203035" stroke-width="1"/>
+<text x="308" y="174" font-size="14" fill="#53676d" font-family="sans-serif">0.8　0.0　0.2</text>
+<text x="308" y="211" font-size="14" fill="#53676d" font-family="sans-serif">0.3　0.5　0.1</text>
+<text x="308" y="248" font-size="14" fill="#53676d" font-family="sans-serif">0.5　0.4　0.0</text>
+<line x1="510" y1="24" x2="510" y2="316" stroke="#dce3df" stroke-width="1.5"/>
+<text x="540" y="70" font-size="15" fill="#203035" font-family="sans-serif">NMF：A ≈ WH，因子全非负</text>
+<text x="540" y="100" font-size="14" fill="#53676d" font-family="sans-serif">数据 = 非负部件之和，系数即“用了多少”。</text>
+<text x="540" y="122" font-size="14" fill="#53676d" font-family="sans-serif">可验证观察：H 的每列非负，故重建只能相加。</text>
+<text x="540" y="180" font-size="15" fill="#203035" font-family="sans-serif">SVD：A = UΣVᵀ，因子可正可负</text>
+<text x="540" y="210" font-size="14" fill="#53676d" font-family="sans-serif">允许正负相消，逼近更优但部件不一定是局部。</text>
+<text x="540" y="232" font-size="14" fill="#53676d" font-family="sans-serif">非负约束换来可解释性，代价是解不唯一。</text>
+<text x="540" y="288" font-size="14" fill="#c66345" font-family="sans-serif">注意：图为人脸分解的示意，非真实数据。</text></svg><figcaption><code>A≈WH</code>：<code>W</code> 的每一列是一个非负局部部件，<code>H</code> 的每一列给出“用了多少”。可验证观察：<code>H</code> 的各元素非负，故任意列 <code>A_{:,j}=Σ_k W_{:,k}H_{k,j}</code> 只能由部件相加得到。图中部件为示意，非真实数据。</figcaption></figure>
 <div class="callout"><strong>代价：</strong> 非负约束带来可解释性，但也使目标函数非凸、解不唯一（<code>W</code> 与 <code>H</code> 可同时按比例缩放而不改变乘积）。因此 NMF 只能保证收敛到局部最优。</div></section>
 <section id="mu" aria-labelledby="mu-heading"><h2 id="mu-heading">02 / 乘性更新规则</h2>
 <p>最经典的求解目标是 Frobenius 范数下的逼近误差：</p>

@@ -1,7 +1,55 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Kronecker 积与矩阵方程：块结构、混合积性质、vec 算子与 vec-trick、Sylvester/Lyapunov 方程与 Bartels-Stewart 算法。附可复算的 vec-trick 核对。"><title>19 · Kronecker 积与矩阵方程：vec-trick 与 Sylvester | 高级矩阵分析</title><link rel="stylesheet" href="../assets/css/site.css"><script src="../assets/js/labs.js" defer></script></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-top"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">M</span><span>矩阵分析 <small>Matrix Atlas</small></span></a><nav class="top-links" aria-label="站点导航"><a href="../index.html#syllabus">全部 28 章</a><a href="https://github.com/1998x-stack/advanced-matrix-analysis-tutorial">GitHub</a></nav></header><div class="article-shell"><aside class="article-toc"><h2>本章目录 / 19</h2><nav aria-label="本章目录"><a href="#problem">01 / 为什么 AX+XB=C 难解？</a><a href="#kron">02 / Kronecker 积与混合积性质</a><a href="#vec">03 / vec 算子与 vec-trick</a><a href="#sylvester">04 / Sylvester、Lyapunov 与 Bartels–Stewart</a><a href="#replicate">05 / 可复算算例</a><a href="#references">参考与延伸阅读</a></nav></aside><main id="content" class="article-main"><article><header class="article-header"><a class="article-top-link" href="../index.html">← 返回课程地图</a><p class="eyebrow">CHAPTER 19 / ADVANCED MATRIX ANALYSIS</p><h1>Kronecker 积与矩阵方程：vec-trick 与 Sylvester</h1><p class="dek">矩阵方程 <code>AX+XB=C</code> 的未知量是一整块矩阵，不能逐元素孤立求解。本文用 Kronecker 积与 vec 算子把它化成标准线性系统，说明“可写”与“可算”之间的差别，并给出可复算的恒等式核对。</p></header><div class="article-body">
 <section id="problem" aria-labelledby="problem-heading"><h2 id="problem-heading">01 / 为什么 AX+XB=C 难解？</h2>
 <p class="lede">给定 <code>A∈R^{m×m}</code>、<code>B∈R^{n×n}</code>、<code>C∈R^{m×n}</code>，求 <code>X∈R^{m×n}</code> 使 <code>AX+XB=C</code>。未知量有 <code>mn</code> 个且相互耦合；朴素地把它当作 <code>mn×mn</code> 的线性系统会把矩阵维度“平方”——两个 <code>1000×1000</code> 的矩阵会生成 <code>10⁶×10⁶</code> 的系统，远超内存。</p>
-<figure><img src="../assets/figures/19-kronecker-vec.svg" alt="左侧为 A 与 B 的 Kronecker 积块矩阵，右侧为 vec 把矩阵按列堆叠成列向量。"><figcaption>左：<code>A⊗B</code> 的每个块是 <code>a_ij</code> 乘整个 <code>B</code>，维数从 <code>m×n</code>、<code>p×q</code> 变为 <code>mp×nq</code>。右：<code>vec</code> 按<strong>列</strong>堆叠。可验证观察：<code>vec(X)</code> 的前两个分量来自 <code>X</code> 的第一列，后两个来自第二列。</figcaption></figure>
+<figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 380" role="img" aria-labelledby="kron-title kron-desc"><title id="kron-title">Kronecker 积的块结构与 vec 的列堆叠</title><desc id="kron-desc">左：A（2×2）与 B（2×2）的 Kronecker 积 A⊗B 是 4×4 块矩阵，每个块是 a_ij 乘整个 B。右：vec 把 2×2 矩阵按列堆叠成 4×1 列向量，顺序为第一列再第二列。</desc><rect width="920" height="380" rx="14" fill="#fffdf9" stroke="#dce3df"/>
+<text x="40" y="104" font-size="15" fill="#53676d" font-family="sans-serif">A (m×n)</text>
+<rect x="40" y="118" width="64" height="64" fill="#fff" stroke="#203035" stroke-width="1.6"/>
+<line x1="72" y1="118" x2="72" y2="182" stroke="#203035" stroke-width="1"/>
+<line x1="40" y1="150" x2="104" y2="150" stroke="#203035" stroke-width="1"/>
+<text x="118" y="160" font-size="26" fill="#203035" font-family="serif">⊗</text>
+<text x="150" y="104" font-size="15" fill="#53676d" font-family="sans-serif">B (p×q)</text>
+<rect x="150" y="118" width="64" height="64" fill="#fff" stroke="#203035" stroke-width="1.6"/>
+<line x1="182" y1="118" x2="182" y2="182" stroke="#203035" stroke-width="1"/>
+<line x1="150" y1="150" x2="214" y2="150" stroke="#203035" stroke-width="1"/>
+<text x="234" y="160" font-size="26" fill="#203035" font-family="serif">=</text>
+<text x="286" y="88" font-size="15" fill="#53676d" font-family="sans-serif">A⊗B (mp×nq)</text>
+<rect x="286" y="100" width="176" height="176" fill="#fff" stroke="#203035" stroke-width="1.6"/>
+<rect x="286" y="100" width="88" height="88" fill="#e8f4f2" stroke="none"/>
+<rect x="374" y="100" width="88" height="88" fill="#f7e8e1" stroke="none"/>
+<rect x="286" y="188" width="88" height="88" fill="#efeaf8" stroke="none"/>
+<rect x="374" y="188" width="88" height="88" fill="#fff" stroke="none"/>
+<rect x="286" y="100" width="176" height="176" fill="none" stroke="#203035" stroke-width="1.6"/>
+<line x1="374" y1="100" x2="374" y2="276" stroke="#203035" stroke-width="1.6"/>
+<line x1="286" y1="188" x2="462" y2="188" stroke="#203035" stroke-width="1.6"/>
+<line x1="330" y1="100" x2="330" y2="276" stroke="#dce3df" stroke-width="1"/>
+<line x1="418" y1="100" x2="418" y2="276" stroke="#dce3df" stroke-width="1"/>
+<line x1="286" y1="144" x2="462" y2="144" stroke="#dce3df" stroke-width="1"/>
+<line x1="286" y1="232" x2="462" y2="232" stroke="#dce3df" stroke-width="1"/>
+<text x="304" y="148" font-size="14" fill="#147f80" font-family="sans-serif">a₁₁B</text>
+<text x="392" y="148" font-size="14" fill="#c66345" font-family="sans-serif">a₁₂B</text>
+<text x="304" y="236" font-size="14" fill="#7461ba" font-family="sans-serif">a₂₁B</text>
+<text x="392" y="236" font-size="14" fill="#53676d" font-family="sans-serif">a₂₂B</text>
+<line x1="520" y1="20" x2="520" y2="360" stroke="#dce3df" stroke-width="1.5"/>
+<text x="600" y="104" font-size="15" fill="#53676d" font-family="sans-serif">X (n×p)</text>
+<rect x="600" y="116" width="80" height="80" fill="#fff" stroke="#203035" stroke-width="1.6"/>
+<line x1="640" y1="116" x2="640" y2="196" stroke="#203035" stroke-width="1"/>
+<line x1="600" y1="156" x2="680" y2="156" stroke="#203035" stroke-width="1"/>
+<text x="606" y="142" font-size="14" fill="#53676d" font-family="sans-serif">x₁₁</text>
+<text x="606" y="182" font-size="14" fill="#53676d" font-family="sans-serif">x₂₁</text>
+<text x="646" y="142" font-size="14" fill="#53676d" font-family="sans-serif">x₁₂</text>
+<text x="646" y="182" font-size="14" fill="#53676d" font-family="sans-serif">x₂₂</text>
+<path d="M640 204 L640 224" stroke="#203035" stroke-width="1.6" marker-end="url(#kron-arrow)"/>
+<defs><marker id="kron-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1 1 L8 4.5 L1 8" fill="none" stroke="#203035" stroke-width="1.6"/></marker></defs>
+<text x="652" y="220" font-size="14" fill="#53676d" font-family="sans-serif">vec</text>
+<rect x="600" y="228" width="80" height="128" fill="#fff" stroke="#203035" stroke-width="1.6"/>
+<line x1="600" y1="260" x2="680" y2="260" stroke="#203035" stroke-width="1"/>
+<line x1="600" y1="292" x2="680" y2="292" stroke="#203035" stroke-width="1"/>
+<line x1="600" y1="324" x2="680" y2="324" stroke="#203035" stroke-width="1"/>
+<text x="612" y="250" font-size="14" fill="#147f80" font-family="sans-serif">x₁₁</text>
+<text x="612" y="282" font-size="14" fill="#147f80" font-family="sans-serif">x₂₁</text>
+<text x="612" y="314" font-size="14" fill="#c66345" font-family="sans-serif">x₁₂</text>
+<text x="612" y="346" font-size="14" fill="#c66345" font-family="sans-serif">x₂₂</text>
+<text x="700" y="300" font-size="14" fill="#53676d" font-family="sans-serif">vec(X) (np×1)</text></svg><figcaption>左：<code>A⊗B</code> 的每个块是 <code>a_ij</code> 乘整个 <code>B</code>，维数从 <code>m×n</code>、<code>p×q</code> 变为 <code>mp×nq</code>。右：<code>vec</code> 按<strong>列</strong>堆叠。可验证观察：<code>vec(X)</code> 的前两个分量来自 <code>X</code> 的第一列，后两个来自第二列。</figcaption></figure>
 <p>关键工具是 <strong>vec 算子</strong>与 **vec-trick**：它们把“矩阵未知量”转成“向量未知量”，从而把 <code>AX+XB=C</code> 写成标准形式 <code>M vec(X)=vec(C)</code>。难点随即从“能不能写”变成“能不能高效求”。</p>
 <div class="callout"><strong>记号约定：</strong> <code>vec</code> 按列堆叠；<code>⊗</code> 为 Kronecker 积；<code>I_k</code> 为 <code>k×k</code> 单位阵。贯穿全文区分“理论可写成线性系统”与“数值上应避免显式构造”。</div></section>
 <section id="kron" aria-labelledby="kron-heading"><h2 id="kron-heading">02 / Kronecker 积与混合积性质</h2>
