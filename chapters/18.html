@@ -1,7 +1,27 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="流形上的矩阵优化：Stiefel 与 Grassmann 流形、切空间、指数映射与收缩映射，以及 Riemannian 梯度下降。用球面与单位圆给出可复算算例。"><title>18 · 流形上的矩阵优化：Stiefel 与 Riemannian 梯度 | 高级矩阵分析</title><link rel="stylesheet" href="../assets/css/site.css"><script src="../assets/js/labs.js" defer></script></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-top"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">M</span><span>矩阵分析 <small>Matrix Atlas</small></span></a><nav class="top-links" aria-label="站点导航"><a href="../index.html#syllabus">全部 28 章</a><a href="https://github.com/1998x-stack/advanced-matrix-analysis-tutorial">GitHub</a></nav></header><div class="article-shell"><aside class="article-toc"><h2>本章目录 / 18</h2><nav aria-label="本章目录"><a href="#problem">01 / 先走再投影为何不是最陡方向</a><a href="#stiefel">02 / Stiefel 与 Grassmann 流形</a><a href="#geometry">03 / 切空间、指数映射与收缩</a><a href="#rgd">04 / Riemannian 梯度下降</a><a href="#replicate">05 / 可复算算例</a><a href="#references">参考与延伸阅读</a></nav></aside><main id="content" class="article-main"><article><header class="article-header"><a class="article-top-link" href="../index.html">← 返回课程地图</a><p class="eyebrow">CHAPTER 18 / ADVANCED MATRIX ANALYSIS</p><h1>流形上的矩阵优化：Stiefel 与 Riemannian 梯度</h1><p class="dek">当约束是“列正交”或“落在某个子空间”时，先做欧几里得梯度再投影，得到的方向只是切向分量的近似搬运。本文用切空间、收缩与 Riemannian 梯度把这套几何说清楚，并给出单位圆上的可复算算例。</p></header><div class="article-body">
 <section id="problem" aria-labelledby="problem-heading"><h2 id="problem-heading">01 / 先走再投影为何不是最陡方向</h2>
 <p class="lede">设约束集是单位球面 <code>{x: ‖x‖₂=1}</code>。若从球面上一点 <code>X</code> 沿欧几里得负梯度走一步到切平面上的 <code>Y</code>，再径向投影回球面得到 <code>Π(Y)</code>。与此同时，沿球面本身的“直线”（测地线）走同一个切向量，终点是 <code>Exp_X(ηξ)</code>。<strong>两个终点一阶相同，但从二阶开始分离</strong>——这正是流形优化与“梯度下降 + 投影”的本质差别。</p>
-<figure><img src="../assets/figures/18-manifold-step.svg" alt="单位圆上的点 X，沿切方向到 Y 再投影得到 Π(Y)，以及沿圆弧测地线到 Exp_X 的对比。"><figcaption>单位圆表示 <code>St(1,2)</code>。紫线是切方向 <code>ξ</code> 上的一步 <code>Y=X+ηξ</code>；橙色虚线把 <code>Y</code> 径向投影回圆周；青色弧是沿测地线走同一切向量。可验证观察：<code>Π(Y)</code> 与 <code>Exp_X(ηξ)</code> 不重合，且两者都在圆周上。</figcaption></figure>
+<figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 410" role="img" aria-labelledby="mnf-title mnf-desc"><title id="mnf-title">在球面上先走再投影，与沿测地线走一步的结果不同</title><desc id="mnf-desc">单位圆表示 Stiefel 流形 St(1,2)。从点 X 沿切方向 ξ 走一步到 Y=X+ηξ，再径向投影回圆周得到 Π(Y)；沿测地线（圆弧）走同样的切向量得到 Exp_X(ηξ)。两者一阶相同，但从二阶起分离。</desc><rect width="780" height="410" rx="14" fill="#fffdf9" stroke="#dce3df"/>
+<circle cx="260" cy="220" r="140" fill="#e8f4f2" stroke="#147f80" stroke-width="2"/>
+<circle cx="260" cy="220" r="3" fill="#53676d"/>
+<line x1="24.2" y1="283.2" x2="281.4" y2="-23.2" stroke="#53676d" stroke-width="1.2" stroke-dasharray="6 5"/>
+<polyline points="152.8,130 170,112.8 190,98.8 212.1,88.4 235.7,82.1 247.8,80.5" fill="none" stroke="#147f80" stroke-width="2.8"/>
+<line x1="152.8" y1="130" x2="223.5" y2="45.7" stroke="#7461ba" stroke-width="2.4"/>
+<path d="M223.5 45.7 L215 50 M223.5 45.7 L219 55" stroke="#7461ba" stroke-width="2" fill="none"/>
+<line x1="223.5" y1="45.7" x2="231.3" y2="83" stroke="#c66345" stroke-width="2" stroke-dasharray="4 4"/>
+<circle cx="152.8" cy="130" r="5.5" fill="#c66345"/>
+<circle cx="223.5" cy="45.7" r="5.5" fill="#7461ba"/>
+<circle cx="231.3" cy="83" r="5.5" fill="#c66345"/>
+<circle cx="247.8" cy="80.5" r="5.5" fill="#147f80"/>
+<text x="128" y="126" font-size="15" fill="#c66345" font-family="sans-serif">X</text>
+<text x="232" y="42" font-size="14" fill="#7461ba" font-family="sans-serif">Y = X+ηξ</text>
+<text x="240" y="92" font-size="14" fill="#c66345" font-family="sans-serif">Π(Y)</text>
+<text x="256" y="76" font-size="14" fill="#147f80" font-family="sans-serif">Exp_X(ηξ)</text>
+<text x="40" y="330" font-size="14" fill="#53676d" font-family="sans-serif">虚线：切空间 T_X M</text>
+<text x="40" y="352" font-size="14" fill="#53676d" font-family="sans-serif">紫：沿切方向 ξ 到 Y；橙：投影回流形；青：沿测地线</text>
+<text x="430" y="70" font-size="15" fill="#203035" font-family="sans-serif">一阶等价，二阶分离</text>
+<text x="430" y="98" font-size="14" fill="#53676d" font-family="sans-serif">两者切向量都是 ξ，</text>
+<text x="430" y="120" font-size="14" fill="#53676d" font-family="sans-serif">差别来自“如何回到流形”。</text></svg><figcaption>单位圆表示 <code>St(1,2)</code>。紫线是切方向 <code>ξ</code> 上的一步 <code>Y=X+ηξ</code>；橙色虚线把 <code>Y</code> 径向投影回圆周；青色弧是沿测地线走同一切向量。可验证观察：<code>Π(Y)</code> 与 <code>Exp_X(ηξ)</code> 不重合，且两者都在圆周上。</figcaption></figure>
 <div class="callout"><strong>对象定义：</strong> 本章讨论嵌入在 <code>R^{n×p}</code> 中的<strong>嵌入子流形</strong> <code>M</code>。切空间 <code>T_X M</code> 是过 <code>X</code> 的最佳线性近似；<code>Exp_X</code> 是精确测地线映射；收缩 <code>R_X</code> 是它的一阶近似。</div></section>
 <section id="stiefel" aria-labelledby="stiefel-heading"><h2 id="stiefel-heading">02 / Stiefel 与 Grassmann：两种流形</h2>
 <p>最重要的矩阵流形是 <strong>Stiefel 流形</strong>，即所有 <code>n×p</code> 列正交矩阵的集合：</p>

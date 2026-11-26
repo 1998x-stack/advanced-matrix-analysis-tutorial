@@ -1,7 +1,28 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="矩阵约束优化：投影梯度法、近端梯度法与 ADMM。解释投影算子与近端算子的差别，给出核范数软阈值、半正定锥投影与矩阵补全的可复算算例。"><title>17 · 矩阵优化方法：投影、近端与 ADMM | 高级矩阵分析</title><link rel="stylesheet" href="../assets/css/site.css"><script src="../assets/js/labs.js" defer></script></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-top"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">M</span><span>矩阵分析 <small>Matrix Atlas</small></span></a><nav class="top-links" aria-label="站点导航"><a href="../index.html#syllabus">全部 28 章</a><a href="https://github.com/1998x-stack/advanced-matrix-analysis-tutorial">GitHub</a></nav></header><div class="article-shell"><aside class="article-toc"><h2>本章目录 / 17</h2><nav aria-label="本章目录"><a href="#problem">01 / 约束下的矩阵优化</a><a href="#pgd">02 / 投影梯度法</a><a href="#prox">03 / 近端梯度法</a><a href="#admm">04 / ADMM 变量分裂</a><a href="#replicate">05 / 可复算算例</a><a href="#references">参考与延伸阅读</a></nav></aside><main id="content" class="article-main"><article><header class="article-header"><a class="article-top-link" href="../index.html">← 返回课程地图</a><p class="eyebrow">CHAPTER 17 / ADVANCED MATRIX ANALYSIS</p><h1>矩阵优化方法：投影、近端与 ADMM</h1><p class="dek">当待优化对象必须满足对称正定、正交或低秩等约束时，直接沿负梯度走会跑出可行域。本文比较三种把迭代拉回可行域的机制：投影、近端算子与变量分裂，并给出可复算的一维核对。</p></header><div class="article-body">
 <section id="problem" aria-labelledby="problem-heading"><h2 id="problem-heading">01 / 约束下的矩阵优化</h2>
 <p class="lede">设目标函数 <code>f(X)</code> 定义在 <code>X∈R^{m×n}</code> 上，但解被限制在一个集合 <code>C</code> 内，例如半正定锥 <code>C={X: X⪰0}</code> 或正交群 <code>C={X: XᵀX=I}</code>。问题写作 <code>min_X f(X) s.t. X∈C</code>。若直接做 <code>X←X−η∇f(X)</code>，迭代点会离开 <code>C</code>，因此每一步都需要一个“回拉”操作。</p>
-<figure><img src="../assets/figures/17-projection-prox.svg" alt="左图为投影回圆盘约束集，右图为一维软阈值函数及其中间的死区。"><figcaption>左：梯度步 <code>Y</code> 落在约束集 <code>C</code> 之外，投影 <code>Π_C(Y)</code> 取到 <code>C</code> 上离 <code>Y</code> 最近的点。右：一维软阈值 <code>S_λ(y)</code> 在 <code>|y|≤λ</code> 时输出 0，其余部分相对 <code>y</code> 平移 <code>λ</code>。可验证观察：右图虚线为 <code>S_λ(y)=y</code>，实线与虚线平行但整体下移 <code>λ</code>。</figcaption></figure>
+<figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" role="img" aria-labelledby="pp-title pp-desc"><title id="pp-title">投影梯度把迭代拉回约束集，近端算子把坐标软阈值</title><desc id="pp-desc">左图：约束集 C 是平面上的圆盘，梯度步 Y 落在集合外，投影 Π_C(Y) 取到 C 上最近点。右图：一维软阈值 S_λ(y)=sign(y)max(|y|−λ,0) 在 |y|≤λ 的死区内输出为零，其余部分整体平移 λ。</desc><rect width="900" height="380" rx="14" fill="#fffdf9" stroke="#dce3df"/>
+<circle cx="220" cy="190" r="120" fill="#e8f4f2" stroke="#147f80" stroke-width="2"/>
+<circle cx="116" cy="130" r="5" fill="#c66345"/>
+<circle cx="55" cy="95" r="5" fill="#7461ba"/>
+<path d="M116 130 L63 99" stroke="#7461ba" stroke-width="2" fill="none"/>
+<path d="M63 99 L116 130" stroke="#c66345" stroke-width="2" fill="none" marker-end="url(#pp-arrow)"/>
+<defs><marker id="pp-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1 1 L8 4.5 L1 8" fill="none" stroke="#c66345" stroke-width="1.6"/></marker></defs>
+<text x="196" y="196" font-size="15" fill="#147f80" font-family="sans-serif">C</text>
+<text x="128" y="126" font-size="14" fill="#c66345" font-family="sans-serif">Xₜ=Π_C(Y)</text>
+<text x="8" y="88" font-size="14" fill="#7461ba" font-family="sans-serif">Y（梯度步）</text>
+<text x="40" y="330" font-size="15" fill="#53676d" font-family="sans-serif">投影：min_X‖X−Y‖ 且 X∈C</text>
+<line x1="460" y1="20" x2="460" y2="360" stroke="#dce3df" stroke-width="1.5"/>
+<line x1="500" y1="190" x2="876" y2="190" stroke="#53676d" stroke-width="1.4"/>
+<line x1="680" y1="45" x2="680" y2="340" stroke="#53676d" stroke-width="1.4"/>
+<text x="880" y="196" font-size="14" fill="#53676d" font-family="sans-serif">y</text>
+<text x="686" y="55" font-size="14" fill="#53676d" font-family="sans-serif">S_λ(y)</text>
+<path d="M522.5,347.5 L837.5,32.5" stroke="#53676d" stroke-width="1.2" stroke-dasharray="5 5"/>
+<path d="M500,325 L635,190 L725,190 L860,55" stroke="#c66345" stroke-width="2.8" fill="none"/>
+<line x1="635" y1="190" x2="725" y2="190" stroke="#147f80" stroke-width="6"/>
+<text x="612" y="215" font-size="14" fill="#147f80" font-family="sans-serif">死区 |y|≤λ → 0</text>
+<text x="760" y="120" font-size="14" fill="#53676d" font-family="sans-serif">虚线：y 本身</text>
+<text x="486" y="330" font-size="15" fill="#53676d" font-family="sans-serif">软阈值：prox 的闭式解</text></svg><figcaption>左：梯度步 <code>Y</code> 落在约束集 <code>C</code> 之外，投影 <code>Π_C(Y)</code> 取到 <code>C</code> 上离 <code>Y</code> 最近的点。右：一维软阈值 <code>S_λ(y)</code> 在 <code>|y|≤λ</code> 时输出 0，其余部分相对 <code>y</code> 平移 <code>λ</code>。可验证观察：右图虚线为 <code>S_λ(y)=y</code>，实线与虚线平行但整体下移 <code>λ</code>。</figcaption></figure>
 <div class="callout"><strong>两套回拉机制：</strong> 对“硬约束”用投影 <code>Π_C</code>；对“目标里带不可微正则项”用近端算子 <code>prox</code>。两者形式相似，但语义不同，混用会得到错误的不动点。</div></section>
 <section id="pgd" aria-labelledby="pgd-heading"><h2 id="pgd-heading">02 / 投影梯度法：投影算子决定可行性</h2>
 <p>投影梯度法（PGD）先沿负梯度走一步，再投影回可行集：</p>
