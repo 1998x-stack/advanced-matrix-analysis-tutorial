@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Dependency-free correctness regression tests for chapters 04–10."""
+"""Dependency-free correctness regression tests for illustrated matrix-analysis chapters."""
 import math
 import unittest
 class MatrixExamples(unittest.TestCase):
