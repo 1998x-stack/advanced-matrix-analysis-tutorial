@@ -27,7 +27,7 @@
 <p>考虑同一空间上的线性算子 T。若旧基矩阵与新基矩阵之间满足 <code>V_new = V_old P</code>，并且旧基下矩阵为 <code>A</code>，新基表示为 <code>P⁻¹ A P</code>（要求 P 可逆）。这是相似变换。它保持特征多项式、迹与行列式，但通常改变矩阵元素。</p>
 <div class="equation eq-scroll" tabindex="0" role="region" aria-label="2.3"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="式 2.3"><msub><mi>A</mi><mi>new</mi></msub><mo>=</mo><msup><mi>P</mi><mn>-1</mn></msup><msub><mi>A</mi><mi>old</mi></msub><mi>P</mi></math><span class="eq-tag">2.3</span></div>
 <p>必须强调：上式适用于定义域和值域为同一空间、且在两侧一致换基的线性算子。如果是 <code>Fⁿ→Fᵐ</code> 的一般映射，输入和输出可能采用不同换基矩阵，公式应是 <code>Q⁻¹AP</code>（各自可逆且尺寸匹配）。</p></section><section id="explore" aria-labelledby="explore-heading"><h2 id="explore-heading">05 / 只改一行，秩就变化</h2>
-<div class="demo" data-lab="rank"><label for="rank-case">选择矩阵结构</label><select id="rank-case"><option value="full">两行独立：满行秩</option><option value="deficient">第二行是第一行的两倍</option></select><output for="rank-case">A = [[1,0,1],[0,1,1]]：rank(A)=2，nullity(A)=1；零空间由 (-1,-1,1) 张成。</output></div>
+<div class="demo" data-lab="rank"><label for="rank-case">选择矩阵结构</label><select id="rank-case"><option value="full">两行独立：满行秩</option><option value="deficient">第二行是第一行的两倍</option></select><output aria-live="polite" for="rank-case">A = [[1,0,1],[0,1,1]]：rank(A)=2，nullity(A)=1；零空间由 (-1,-1,1) 张成。</output></div>
 <p>改变行向量之间的线性依赖关系，就改变了矩阵的秩。这里两种矩阵都把三维输入送到二维输出，但第一种有二维像，第二种只保留一维像；秩与矩阵的外形尺寸不是一回事。</p>
 <pre class="codeblock"><code>def apply(A, x):
     return tuple(sum(a*b for a,b in zip(row,x)) for row in A)

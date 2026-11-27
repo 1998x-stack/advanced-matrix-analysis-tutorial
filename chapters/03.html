@@ -30,7 +30,7 @@
 <div class="equation eq-scroll" tabindex="0" role="region" aria-label="3.2"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="式 3.2"><msup><msub><mi>x</mi><mn>1</mn></msub><mn>2</mn></msup><mo>+</mo><msup><msub><mi>x</mi><mn>2</mn></msub><mn>2</mn></msup><mo>+</mo><msup><mrow><mo>(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>+</mo><msub><mi>x</mi><mn>2</mn></msub><mo>)</mo></mrow><mn>2</mn></msup><mo>></mo><mn>0</mn></math><span class="eq-tag">3.2</span></div>
 <p>上式在非零向量处严格大于 0，因而 A 正定。另一个等价刻画是全部特征值为正；本例的特征值分别为 3 与 1。正定性使线性方程、二次优化与协方差模型拥有更强的结构。</p>
 <div class="callout warning"><strong>注意：</strong>非对称矩阵即使满足 <code>xᵀAx &gt; 0</code>，在不同定义体系中也未必直接称为“正定矩阵”。本章固定实对称/复 Hermitian 的标准约定。</div></section><section id="explore" aria-labelledby="explore-heading"><h2 id="explore-heading">05 / 一处负号使正定性失效</h2>
-<div class="demo" data-lab="spd"><label for="spd-case">比较两个对角矩阵</label><select id="spd-case"><option value="positive">diag(2, 1)：正定</option><option value="negative">diag(2, −1)：不定</option></select><output for="spd-case">A = [[2,0],[0,1]]：特征值 2、1；对所有非零 x，xᵀAx &gt; 0。</output></div>
+<div class="demo" data-lab="spd"><label for="spd-case">比较两个对角矩阵</label><select id="spd-case"><option value="positive">diag(2, 1)：正定</option><option value="negative">diag(2, −1)：不定</option></select><output aria-live="polite" for="spd-case">A = [[2,0],[0,1]]：特征值 2、1；对所有非零 x，xᵀAx &gt; 0。</output></div>
 <p>一项负特征值就足以找到负二次型方向。反过来，有限次采样“看起来全为正”无法证明正定；严格验证需分析所有方向，或计算特征值、Sylvester 判据、成功的 Cholesky 分解等结构性条件。</p>
 <pre class="codeblock"><code>A = ((2,1),(1,2))
 def quadratic(x):
