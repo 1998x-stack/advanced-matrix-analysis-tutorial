@@ -1,116 +1,171 @@
 {
-  "scope": "chapters 01-20",
-  "version": "2026-11-23",
-  "claims": [
-    {
-      "chapter": "04",
-      "claim": "spectral 2-norm equals maximum singular value",
-      "source": "https://ocw.mit.edu/courses/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/"
-    },
-    {
-      "chapter": "05",
-      "claim": "eigenvalues are roots of characteristic polynomial det(lambda I-A)",
-      "source": "https://www.mit.edu/~18.06/"
-    },
-    {
-      "chapter": "06",
-      "claim": "generalized eigenvectors form Jordan chains",
-      "source": "https://web.mit.edu/18.06/www/Spring09/generalized-eigenvectors.pdf"
-    },
-    {
-      "chapter": "07",
-      "claim": "scaling-and-squaring with Padé approximation is standard for matrix exponential",
-      "source": "https://eprints.maths.manchester.ac.uk/634/"
-    },
-    {
-      "chapter": "08",
-      "claim": "DGESV uses LU factorization with partial pivoting and row interchanges",
-      "source": "https://www.netlib.org/lapack/explore-html/d8/da6/group__gesv_ga831ce6a40e7fd16295752d18aed2d541.html"
-    },
-    {
-      "chapter": "09",
-      "claim": "DGEQRF computes QR by products of elementary reflectors",
-      "source": "https://www.netlib.org/lapack/explore-html/d0/da1/group__geqrf_gade26961283814bb4e62183d9133d8bf5.html"
-    },
-    {
-      "chapter": "10",
-      "claim": "Courant-Fischer characterizes ordered symmetric eigenvalues via subspace optimization",
-      "source": "https://mmids-textbook.github.io/chap05_specgraph/03_extremal/roch-mmids-specgraph-extremal.html"
-    },
-    {
-      "chapter": "11",
-      "claim": "SVD of an arbitrary real matrix A=U Sigma V^T with nonnegative singular values",
-      "source": "https://www.netlib.org/lapack/explore-html/d1/d7f/group__gesvd_gac6bd5d4e645049e49bb70691180abf07.html"
-    },
-    {
-      "chapter": "12",
-      "claim": "DGEES computes real Schur form; DGGES computes generalized real Schur with alpha beta eigenvalue pairs",
-      "source": "https://www.netlib.org/lapack/explore-html/d7/d25/group__gges_ga556be4f39b39e5008c8eb36814aa7e20.html"
-    },
-    {
-      "chapter": "13",
-      "claim": "DGELSD computes minimum norm least squares solutions even for rank-deficient matrices",
-      "source": "https://www.netlib.org/lapack/explore-html/d9/d67/group__gelsd_ga0bee7e1b9e7e43f59ecf2419b2759c42.html"
-    },
-    {
-      "chapter": "14",
-      "claim": "Davis-Kahan requires spectral gap and Bauer-Fike controls perturbations for diagonalizable matrices",
-      "source": "https://www.cs.cornell.edu/courses/cs6210/2025fa/lec/2025-11-03.html"
-    },
-    {
-      "chapter": "15",
-      "claim": "matrix differential and trace gradient identities with explicitly stated layout",
-      "source": "https://www2.imm.dtu.dk/pubdb/pubs/3274-full.html"
-    },
-    {
-      "chapter": "16",
-      "claim": "simple eigenvalue and singular value directional derivatives; repeated eigenvalue spectral-function differentiability must be treated separately",
-      "source": "https://ocw.mit.edu/courses/18-s096-matrix-calculus-for-machine-learning-and-beyond-january-iap-2023/pages/lecture-notes-and-readings/"
-    },
-    {
-      "chapter": "16",
-      "claim": "Fréchet derivative of a spectral function and generalized gradient at nonsmooth points",
-      "source": "https://doi.org/10.1287/moor.21.3.576"
-    },
-    {
-      "chapter": "17",
-      "claim": "ADMM primal and dual residual stopping conditions and convex splitting framework",
-      "source": "https://www.nparikh.org/publications/admm/"
-    },
-    {
-      "chapter": "17",
-      "claim": "nuclear norm proximal operator is singular value thresholding for matrix completion",
-      "source": "https://doi.org/10.1137/080738970"
-    },
-    {
-      "chapter": "18",
-      "claim": "Stiefel orthonormal-frame manifold and Grassmann subspace manifold with retraction methods",
-      "source": "https://pymanopt.org/docs/stable/manifolds.html"
-    },
-    {
-      "chapter": "19",
-      "claim": "column-major vec Kronecker identity and Bartels-Stewart Sylvester solver",
-      "source": "https://www.cs.cornell.edu/~bindel/class/cs6210-f16/lec/2016-11-02.pdf"
-    },
-    {
-      "chapter": "19",
-      "claim": "SciPy continuous Lyapunov equation solves AX+XA^H=Q using Bartels-Stewart; sign convention explicit",
-      "source": "https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.solve_continuous_lyapunov.html"
-    },
-    {
-      "chapter": "20",
-      "claim": "Frobenius and generalized KL NMF multiplicative updates have nonincreasing objective under the stated algorithm",
-      "source": "https://www.cs.cornell.edu/courses/cs6241/2020sp/readings/Lee-Seung-2001-NMF.pdf"
-    },
-    {
-      "chapter": "20",
-      "claim": "NMF CD and MU solvers, beta-divergence options and nonconvex alternate minima",
-      "source": "https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html"
-    },
-    {
-      "chapter": "20",
-      "claim": "NMF factors are not generally identifiable; scaling and permutation ambiguity and other nonuniqueness",
-      "source": "https://epubs.siam.org/doi/book/10.1137/1.9781611976410"
-    }
-  ]
+ "scope": "chapters 01-28",
+ "version": "2026-11-27",
+ "claims": [
+  {
+   "chapter": "04",
+   "claim": "spectral 2-norm equals maximum singular value",
+   "source": "https://ocw.mit.edu/courses/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/"
+  },
+  {
+   "chapter": "05",
+   "claim": "eigenvalues are roots of characteristic polynomial det(lambda I-A)",
+   "source": "https://www.mit.edu/~18.06/"
+  },
+  {
+   "chapter": "06",
+   "claim": "generalized eigenvectors form Jordan chains",
+   "source": "https://web.mit.edu/18.06/www/Spring09/generalized-eigenvectors.pdf"
+  },
+  {
+   "chapter": "07",
+   "claim": "scaling-and-squaring with Padé approximation is standard for matrix exponential",
+   "source": "https://eprints.maths.manchester.ac.uk/634/"
+  },
+  {
+   "chapter": "08",
+   "claim": "DGESV uses LU factorization with partial pivoting and row interchanges",
+   "source": "https://www.netlib.org/lapack/explore-html/d8/da6/group__gesv_ga831ce6a40e7fd16295752d18aed2d541.html"
+  },
+  {
+   "chapter": "09",
+   "claim": "DGEQRF computes QR by products of elementary reflectors",
+   "source": "https://www.netlib.org/lapack/explore-html/d0/da1/group__geqrf_gade26961283814bb4e62183d9133d8bf5.html"
+  },
+  {
+   "chapter": "10",
+   "claim": "Courant-Fischer characterizes ordered symmetric eigenvalues via subspace optimization",
+   "source": "https://mmids-textbook.github.io/chap05_specgraph/03_extremal/roch-mmids-specgraph-extremal.html"
+  },
+  {
+   "chapter": "11",
+   "claim": "SVD of an arbitrary real matrix A=U Sigma V^T with nonnegative singular values",
+   "source": "https://www.netlib.org/lapack/explore-html/d1/d7f/group__gesvd_gac6bd5d4e645049e49bb70691180abf07.html"
+  },
+  {
+   "chapter": "12",
+   "claim": "DGEES computes real Schur form; DGGES computes generalized real Schur with alpha beta eigenvalue pairs",
+   "source": "https://www.netlib.org/lapack/explore-html/d7/d25/group__gges_ga556be4f39b39e5008c8eb36814aa7e20.html"
+  },
+  {
+   "chapter": "13",
+   "claim": "DGELSD computes minimum norm least squares solutions even for rank-deficient matrices",
+   "source": "https://www.netlib.org/lapack/explore-html/d9/d67/group__gelsd_ga0bee7e1b9e7e43f59ecf2419b2759c42.html"
+  },
+  {
+   "chapter": "14",
+   "claim": "Davis-Kahan requires spectral gap and Bauer-Fike controls perturbations for diagonalizable matrices",
+   "source": "https://www.cs.cornell.edu/courses/cs6210/2025fa/lec/2025-11-03.html"
+  },
+  {
+   "chapter": "15",
+   "claim": "matrix differential and trace gradient identities with explicitly stated layout",
+   "source": "https://www2.imm.dtu.dk/pubdb/pubs/3274-full.html"
+  },
+  {
+   "chapter": "16",
+   "claim": "simple eigenvalue and singular value directional derivatives; repeated eigenvalue spectral-function differentiability must be treated separately",
+   "source": "https://ocw.mit.edu/courses/18-s096-matrix-calculus-for-machine-learning-and-beyond-january-iap-2023/pages/lecture-notes-and-readings/"
+  },
+  {
+   "chapter": "16",
+   "claim": "Fréchet derivative of a spectral function and generalized gradient at nonsmooth points",
+   "source": "https://doi.org/10.1287/moor.21.3.576"
+  },
+  {
+   "chapter": "17",
+   "claim": "ADMM primal and dual residual stopping conditions and convex splitting framework",
+   "source": "https://www.nparikh.org/publications/admm/"
+  },
+  {
+   "chapter": "17",
+   "claim": "nuclear norm proximal operator is singular value thresholding for matrix completion",
+   "source": "https://doi.org/10.1137/080738970"
+  },
+  {
+   "chapter": "18",
+   "claim": "Stiefel orthonormal-frame manifold and Grassmann subspace manifold with retraction methods",
+   "source": "https://pymanopt.org/docs/stable/manifolds.html"
+  },
+  {
+   "chapter": "19",
+   "claim": "column-major vec Kronecker identity and Bartels-Stewart Sylvester solver",
+   "source": "https://www.cs.cornell.edu/~bindel/class/cs6210-f16/lec/2016-11-02.pdf"
+  },
+  {
+   "chapter": "19",
+   "claim": "SciPy continuous Lyapunov equation solves AX+XA^H=Q using Bartels-Stewart; sign convention explicit",
+   "source": "https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.solve_continuous_lyapunov.html"
+  },
+  {
+   "chapter": "20",
+   "claim": "Frobenius and generalized KL NMF multiplicative updates have nonincreasing objective under the stated algorithm",
+   "source": "https://www.cs.cornell.edu/courses/cs6241/2020sp/readings/Lee-Seung-2001-NMF.pdf"
+  },
+  {
+   "chapter": "20",
+   "claim": "NMF CD and MU solvers, beta-divergence options and nonconvex alternate minima",
+   "source": "https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html"
+  },
+  {
+   "chapter": "20",
+   "claim": "NMF factors are not generally identifiable; scaling and permutation ambiguity and other nonuniqueness",
+   "source": "https://epubs.siam.org/doi/book/10.1137/1.9781611976410"
+  },
+  {
+   "chapter": "01",
+   "claim": "determinant measures signed area/volume scaling of a linear map; conditioning must name a norm",
+   "source": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/"
+  },
+  {
+   "chapter": "02",
+   "claim": "rank-nullity dim(ker A)+rank(A)=n uses the domain dimension n for A in F^{m x n}",
+   "source": "https://github.com/mitmath/1806"
+  },
+  {
+   "chapter": "03",
+   "claim": "real symmetric vs complex Hermitian; positive definiteness requires Hermitian plus positive quadratic form on nonzero vectors",
+   "source": "https://ocw.mit.edu/courses/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/"
+  },
+  {
+   "chapter": "21",
+   "claim": "l1 convex relaxation for sparse recovery and compressed sensing under restricted isometry; matrix completion via convex optimization",
+   "source": "https://doi.org/10.1109/TIT.2006.871582"
+  },
+  {
+   "chapter": "22",
+   "claim": "Marchenko-Pastur limiting spectral density of large sample covariance matrices; Wigner semicircle law",
+   "source": "https://doi.org/10.1070/SM1967v001n04ABEH001994"
+  },
+  {
+   "chapter": "23",
+   "claim": "tensor unfoldings/matricization and multilinear HOSVD/Tucker decomposition; most tensor problems are NP-hard",
+   "source": "https://doi.org/10.1137/07070111X"
+  },
+  {
+   "chapter": "24",
+   "claim": "CP decomposition and Kruskal-rank uniqueness condition; CP vs Tucker parameter counts",
+   "source": "https://doi.org/10.1137/07070111X"
+  },
+  {
+   "chapter": "25",
+   "claim": "tensor-train storage d*n*r^2 versus n^d for the dense tensor",
+   "source": "https://doi.org/10.1137/090752286"
+  },
+  {
+   "chapter": "26",
+   "claim": "LoRA parameter count r(m+n) versus full m*n; scaled dot-product attention",
+   "source": "https://arxiv.org/abs/2106.09685"
+  },
+  {
+   "chapter": "27",
+   "claim": "HHL quantum linear-solver speedup requires sparsity, low condition number, state preparation and QRAM, with a read-out bottleneck",
+   "source": "https://doi.org/10.1103/PhysRevLett.103.150502"
+  },
+  {
+   "chapter": "28",
+   "claim": "truncated SVD rank-k storage k(m+n+1), compression ratio, and Eckart-Young optimality",
+   "source": "https://doi.org/10.1007/BF02288367"
+  }
+ ]
 }
